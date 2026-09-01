@@ -217,6 +217,101 @@ export const LIGAS = [
             goles: 1.65, xg: 1.62,
         },
     },
+    {
+        id: "league:fra-ligue1",
+        slug: "fra-ligue1",
+        nombre: "Ligue 1",
+        pais: "Francia",
+        bandera: "fr",
+        temporada: "2026-27",
+        // Francia: tras los puntos, diferencia de gol general (luego el mano a mano).
+        tiebreakers: ["PTS", "DIF", "H2H", "GF"],
+        matchdays: 7,
+        // 18 equipos: descienden 17 y 18 directo (sin repesca en esta muestra).
+        zones: [
+            { from: 1, to: 4, key: "champions", label: "UEFA Champions League", color: "#39FF6A" },
+            { from: 5, to: 5, key: "europa", label: "UEFA Europa League", color: "#6FA8FF" },
+            { from: 6, to: 6, key: "conference", label: "UEFA Conference League", color: "#2FBF9B" },
+            { from: 7, to: 16, key: "media", label: "Zona media", color: "#566270" },
+            { from: 17, to: 18, key: "descenso", label: "Descenso a Ligue 2", color: "#C4404A" },
+        ],
+        adjustments: [],
+        // Promedios POR PARTIDO por posición (Francia: físico, transiciones).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.02, pasesClave: 0.25, entradas: 0.2, despejes: 1.1, duelosGanados: 1.4 },
+            DEF: { goles: 0.06, asistencias: 0.06, pasesClave: 0.6,  entradas: 2.1, despejes: 3.7, duelosGanados: 5.2 },
+            MID: { goles: 0.12, asistencias: 0.16, pasesClave: 1.4,  entradas: 1.7, despejes: 1.0, duelosGanados: 5.6 },
+            FWD: { goles: 0.38, asistencias: 0.19, pasesClave: 1.2,  entradas: 0.7, despejes: 0.4, duelosGanados: 4.1 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 12.6, rematesAlArco: 4.5, corners: 4.9,
+            faltas: 12.4, amarillas: 2.3, pases: 455, precisionPases: 81, offsides: 2.2,
+            goles: 1.42, xg: 1.4,
+        },
+    },
+    {
+        id: "league:por-primeira",
+        slug: "por-primeira",
+        nombre: "Primeira Liga",
+        pais: "Portugal",
+        bandera: "pt",
+        temporada: "2026-27",
+        // Portugal: tras los puntos, el mano a mano (particular) y luego la diferencia general.
+        tiebreakers: ["PTS", "H2H", "DIF", "GF"],
+        matchdays: 7,
+        zones: [
+            { from: 1, to: 2, key: "champions", label: "UEFA Champions League", color: "#39FF6A" },
+            { from: 3, to: 3, key: "europa", label: "UEFA Europa League", color: "#6FA8FF" },
+            { from: 4, to: 4, key: "conference", label: "UEFA Conference League", color: "#2FBF9B" },
+            { from: 5, to: 15, key: "media", label: "Zona media", color: "#566270" },
+            { from: 16, to: 16, key: "repesca", label: "Repesca de permanencia", color: "#E8A13C" },
+            { from: 17, to: 18, key: "descenso", label: "Descenso a Liga Portugal 2", color: "#C4404A" },
+        ],
+        adjustments: [],
+        // Promedios POR PARTIDO por posición (Portugal: técnica, menos gol).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.02, pasesClave: 0.2, entradas: 0.2, despejes: 1.2, duelosGanados: 1.5 },
+            DEF: { goles: 0.05, asistencias: 0.05, pasesClave: 0.5, entradas: 2.2, despejes: 3.8, duelosGanados: 5.2 },
+            MID: { goles: 0.11, asistencias: 0.14, pasesClave: 1.3, entradas: 1.8, despejes: 1.1, duelosGanados: 5.4 },
+            FWD: { goles: 0.32, asistencias: 0.16, pasesClave: 1.1, entradas: 0.7, despejes: 0.4, duelosGanados: 4.0 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 12.0, rematesAlArco: 4.1, corners: 4.7,
+            faltas: 12.6, amarillas: 2.5, pases: 460, precisionPases: 82, offsides: 2.0,
+            goles: 1.32, xg: 1.3,
+        },
+    },
+    {
+        id: "league:ksa-proleague",
+        slug: "ksa-proleague",
+        nombre: "Liga Profesional Saudí",
+        pais: "Arabia Saudita",
+        bandera: "sa",
+        temporada: "2026-27",
+        // Arabia: tras los puntos, diferencia de gol, goles a favor y por último el mano a mano.
+        tiebreakers: ["PTS", "DIF", "GF", "H2H"],
+        matchdays: 7,
+        // Cupos continentales de la AFC + 3 descensos directos.
+        zones: [
+            { from: 1, to: 4, key: "afc-elite", label: "AFC Champions League Elite", color: "#39FF6A" },
+            { from: 5, to: 5, key: "afc-two", label: "AFC Champions League Two", color: "#6FA8FF" },
+            { from: 6, to: 15, key: "media", label: "Zona media", color: "#566270" },
+            { from: 16, to: 18, key: "descenso", label: "Descenso a Primera División", color: "#C4404A" },
+        ],
+        adjustments: [],
+        // Promedios POR PARTIDO por posición (Arabia: juego abierto, más gol).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.03, pasesClave: 0.3, entradas: 0.2, despejes: 1.1, duelosGanados: 1.3 },
+            DEF: { goles: 0.07, asistencias: 0.07, pasesClave: 0.7, entradas: 2.0, despejes: 3.6, duelosGanados: 5.0 },
+            MID: { goles: 0.15, asistencias: 0.18, pasesClave: 1.5, entradas: 1.6, despejes: 1.0, duelosGanados: 5.6 },
+            FWD: { goles: 0.46, asistencias: 0.22, pasesClave: 1.3, entradas: 0.6, despejes: 0.4, duelosGanados: 4.3 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 13.5, rematesAlArco: 5.0, corners: 5.3,
+            faltas: 11.5, amarillas: 2.2, pases: 430, precisionPases: 78, offsides: 2.4,
+            goles: 1.6, xg: 1.55,
+        },
+    },
 ];
 
 /** FECHA_DEMO — la "jornada actual" del sitio (hay partidos en vivo/programados).

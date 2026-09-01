@@ -27,6 +27,18 @@ import { EQUIPOS as EQ_ALE } from "./ale-bundesliga/teams.js";
 import { PARTIDOS as PA_ALE } from "./ale-bundesliga/matches.js";
 import { PLANTELES as PL_ALE } from "./ale-bundesliga/squads.js";
 
+import { EQUIPOS as EQ_FRA } from "./fra-ligue1/teams.js";
+import { PARTIDOS as PA_FRA } from "./fra-ligue1/matches.js";
+import { PLANTELES as PL_FRA } from "./fra-ligue1/squads.js";
+
+import { EQUIPOS as EQ_POR } from "./por-primeira/teams.js";
+import { PARTIDOS as PA_POR } from "./por-primeira/matches.js";
+import { PLANTELES as PL_POR } from "./por-primeira/squads.js";
+
+import { EQUIPOS as EQ_KSA } from "./ksa-proleague/teams.js";
+import { PARTIDOS as PA_KSA } from "./ksa-proleague/matches.js";
+import { PLANTELES as PL_KSA } from "./ksa-proleague/squads.js";
+
 /**
  * @typedef {Object} BloqueLiga
  * @property {import("./leagues.js").LigaConfig} cfg
@@ -45,5 +57,8 @@ export const DATOS_CRUDOS = {
         { cfg: LIGAS[2], equipos: EQ_ESP, partidos: PA_ESP, planteles: PL_ESP },
         { cfg: LIGAS[3], equipos: EQ_ITA, partidos: PA_ITA, planteles: PL_ITA },
         { cfg: LIGAS[4], equipos: EQ_ALE, partidos: PA_ALE, planteles: PL_ALE },
+        { cfg: LIGAS[5], equipos: EQ_FRA, partidos: PA_FRA, planteles: PL_FRA },
+        { cfg: LIGAS[6], equipos: EQ_POR, partidos: PA_POR, planteles: PL_POR },
+        { cfg: LIGAS[7], equipos: EQ_KSA, partidos: PA_KSA, planteles: PL_KSA },
     ],
 };
