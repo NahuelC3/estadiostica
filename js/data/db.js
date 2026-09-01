@@ -124,6 +124,16 @@ const BLOQUES = [
 ];
 const PIES = ["derecho", "derecho", "derecho", "izquierdo", "ambidiestro"];
 
+// Nacionalidad de los jugadores autogenerados, por liga: [predominante, secundaria].
+// Códigos flag-icons. Sin esto, todos saldrían con la misma bandera.
+const NAC_LIGA = {
+    "arg-lpf":        ["ar", "uy"],
+    "eng-premier":    ["gb-eng", "fr"],
+    "esp-laliga":     ["es", "ar"],
+    "ita-seriea":     ["it", "br"],
+    "ale-bundesliga": ["de", "at"],
+};
+
 /**
  * generarPlantel — 23 jugadores deterministas para un equipo sin squad manual.
  * @param {string} teamId
@@ -136,7 +146,7 @@ export function generarPlantel(teamId) {
 
     const nombres = rngMezclar(rng, NOMBRES);
     const apellidos = rngMezclar(rng, APELLIDOS);
-    const paisLiga = leagueId.includes("arg") ? "ar" : "gb-eng";
+    const [nacPredom, nacSecundaria] = NAC_LIGA[leagueId.replace("league:", "")] ?? ["ar", "uy"];
 
     /** @type {Jugador[]} */
     const plantel = [];
@@ -152,7 +162,7 @@ export function generarPlantel(teamId) {
                 posicion: bloque.pos,
                 pieHabil: PIES[rngEntero(rng, 0, PIES.length - 1)],
                 edad: rngEntero(rng, 18, 35),
-                nacionalidad: rng() < 0.75 ? paisLiga : (leagueId.includes("arg") ? "uy" : "fr"),
+                nacionalidad: rng() < 0.75 ? nacPredom : nacSecundaria,
                 altura: rngEntero(rng, 168, 195),
                 teamId,
                 leagueId,

@@ -116,6 +116,107 @@ export const LIGAS = [
             goles: 1.5, xg: 1.5,
         },
     },
+    {
+        id: "league:esp-laliga",
+        slug: "esp-laliga",
+        nombre: "LaLiga",
+        pais: "España",
+        bandera: "es",
+        temporada: "2026-27",
+        // España: tras los puntos, primero el enfrentamiento directo (H2H).
+        tiebreakers: ["PTS", "H2H", "DIF", "GF"],
+        matchdays: 7,
+        zones: [
+            { from: 1, to: 4, key: "champions", label: "UEFA Champions League", color: "#39FF6A" },
+            { from: 5, to: 5, key: "europa", label: "UEFA Europa League", color: "#6FA8FF" },
+            { from: 6, to: 6, key: "conference", label: "UEFA Conference League", color: "#2FBF9B" },
+            { from: 7, to: 17, key: "media", label: "Zona media", color: "#566270" },
+            { from: 18, to: 20, key: "descenso", label: "Descenso a Segunda", color: "#C4404A" },
+        ],
+        adjustments: [
+            { team: "team:esp-mal", points: -3, reason: "Sanción por incumplimiento del límite salarial" },
+        ],
+        // Promedios POR PARTIDO por posición (España: técnica, posesión, pases).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.02, pasesClave: 0.25, entradas: 0.2, despejes: 1.1, duelosGanados: 1.4 },
+            DEF: { goles: 0.05, asistencias: 0.05, pasesClave: 0.55, entradas: 2.0, despejes: 3.7, duelosGanados: 5.1 },
+            MID: { goles: 0.12, asistencias: 0.16, pasesClave: 1.4,  entradas: 1.7, despejes: 1.0, duelosGanados: 5.5 },
+            FWD: { goles: 0.36, asistencias: 0.18, pasesClave: 1.2,  entradas: 0.7, despejes: 0.4, duelosGanados: 4.0 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 12.4, rematesAlArco: 4.4, corners: 4.9,
+            faltas: 13.0, amarillas: 2.7, pases: 465, precisionPases: 82, offsides: 2.2,
+            goles: 1.4, xg: 1.38,
+        },
+    },
+    {
+        id: "league:ita-seriea",
+        slug: "ita-seriea",
+        nombre: "Serie A",
+        pais: "Italia",
+        bandera: "it",
+        temporada: "2026-27",
+        // Italia: tras los puntos, primero el enfrentamiento directo (H2H).
+        tiebreakers: ["PTS", "H2H", "DIF", "GF"],
+        matchdays: 7,
+        zones: [
+            { from: 1, to: 4, key: "champions", label: "UEFA Champions League", color: "#39FF6A" },
+            { from: 5, to: 5, key: "europa", label: "UEFA Europa League", color: "#6FA8FF" },
+            { from: 6, to: 6, key: "conference", label: "UEFA Conference League", color: "#2FBF9B" },
+            { from: 7, to: 17, key: "media", label: "Zona media", color: "#566270" },
+            { from: 18, to: 20, key: "descenso", label: "Descenso a Serie B", color: "#C4404A" },
+        ],
+        adjustments: [
+            { team: "team:ita-juv", points: -10, reason: "Caso de plusvalías (penalización deportiva)" },
+        ],
+        // Promedios POR PARTIDO por posición (Italia: táctica, más faltas y amarillas).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.02, pasesClave: 0.2, entradas: 0.2, despejes: 1.3, duelosGanados: 1.6 },
+            DEF: { goles: 0.06, asistencias: 0.05, pasesClave: 0.5, entradas: 2.3, despejes: 4.0, duelosGanados: 5.4 },
+            MID: { goles: 0.11, asistencias: 0.14, pasesClave: 1.3, entradas: 1.9, despejes: 1.2, duelosGanados: 5.6 },
+            FWD: { goles: 0.33, asistencias: 0.16, pasesClave: 1.1, entradas: 0.8, despejes: 0.5, duelosGanados: 4.2 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 12.9, rematesAlArco: 4.5, corners: 5.0,
+            faltas: 14.2, amarillas: 2.9, pases: 455, precisionPases: 83, offsides: 2.5,
+            goles: 1.42, xg: 1.4,
+        },
+    },
+    {
+        id: "league:ale-bundesliga",
+        slug: "ale-bundesliga",
+        nombre: "Bundesliga",
+        pais: "Alemania",
+        bandera: "de",
+        temporada: "2026-27",
+        // Alemania: tras los puntos, primero la diferencia de gol.
+        tiebreakers: ["PTS", "DIF", "GF", "H2H"],
+        matchdays: 7,
+        // La Bundesliga tiene 18 equipos: sólo 17-18 descienden directo y el 16 juega repesca.
+        zones: [
+            { from: 1, to: 4, key: "champions", label: "UEFA Champions League", color: "#39FF6A" },
+            { from: 5, to: 5, key: "europa", label: "UEFA Europa League", color: "#6FA8FF" },
+            { from: 6, to: 6, key: "conference", label: "UEFA Conference League", color: "#2FBF9B" },
+            { from: 7, to: 15, key: "media", label: "Zona media", color: "#566270" },
+            { from: 16, to: 16, key: "repesca", label: "Repesca de descenso", color: "#E8A13C" },
+            { from: 17, to: 18, key: "descenso", label: "Descenso a 2. Bundesliga", color: "#C4404A" },
+        ],
+        adjustments: [
+            { team: "team:ale-s04", points: -3, reason: "Sanción por licencia y control financiero" },
+        ],
+        // Promedios POR PARTIDO por posición (Alemania: ritmo alto, más goles y remates).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.03, pasesClave: 0.3, entradas: 0.2, despejes: 1.0, duelosGanados: 1.3 },
+            DEF: { goles: 0.07, asistencias: 0.07, pasesClave: 0.7, entradas: 2.0, despejes: 3.8, duelosGanados: 5.2 },
+            MID: { goles: 0.15, asistencias: 0.19, pasesClave: 1.6, entradas: 1.6, despejes: 1.0, duelosGanados: 5.8 },
+            FWD: { goles: 0.45, asistencias: 0.22, pasesClave: 1.4, entradas: 0.6, despejes: 0.4, duelosGanados: 4.4 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 14.0, rematesAlArco: 5.3, corners: 5.2,
+            faltas: 10.0, amarillas: 1.7, pases: 470, precisionPases: 83, offsides: 2.0,
+            goles: 1.65, xg: 1.62,
+        },
+    },
 ];
 
 /** FECHA_DEMO — la "jornada actual" del sitio (hay partidos en vivo/programados).
