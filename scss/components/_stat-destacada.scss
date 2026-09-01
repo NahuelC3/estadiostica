@@ -1,0 +1,59 @@
+// ============================================================
+//  STAT-DESTACADA — número de temporada con ranking relativo
+// ------------------------------------------------------------
+//  Tarjeta grande: valor protagonista + etiqueta + "Nº de la liga".
+//  Se usan 3–4 en fila en la pestaña Temporada del jugador.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+// Trae el mixin panel() y el placeholder %panel-base que éste @extiende.
+@use "panel" as *;
+
+.stats-destacadas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+
+    @include desktop {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.stat-destacada {
+    @include panel($fondo: $color-panel-alt, $esp: 14px);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    // Barrita sesgada de adorno arriba a la izquierda.
+    &::before {
+        content: "";
+        inline-size: 24px;
+        block-size: 4px;
+        background: $color-acento;
+        transform: skewX($sesgo);
+        margin-block-end: 4px;
+    }
+
+    .stat-destacada__valor {
+        font-family: $fuente-titulo;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        font-size: 1.75rem;
+        line-height: 1;
+        color: $color-texto;
+    }
+    .stat-destacada__label {
+        font-family: $fuente-mono;
+        font-size: 0.625rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: $color-texto-3;
+    }
+    .stat-destacada__ranking {
+        font-family: $fuente-mono;
+        font-size: 0.625rem;
+        color: $color-acento;
+    }
+}

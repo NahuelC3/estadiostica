@@ -1,0 +1,47 @@
+// ============================================================
+//  PIE — footer con la tagline "ESTADIO + ESTADÍSTICA"
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.pie {
+    padding: 24px 16px 32px;
+    background: $color-panel;
+    border-top: $borde-fino;
+
+    @include desktop {
+        padding-inline: 24px;
+    }
+}
+
+// Línea de 3px acento arriba de la tagline.
+.pie__tagline {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &::before {
+        content: "";
+        // La barrita también lleva el sesgo de la marca.
+        inline-size: 40px;
+        block-size: 3px;
+        background: $color-acento;
+        transform: skewX($sesgo);
+    }
+}
+
+.pie__tagline-texto {
+    font-family: $fuente-mono;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+}
+
+.pie__legal {
+    margin-block-start: 16px;
+    font-family: $fuente-mono;
+    font-size: 11px;
+    color: $color-texto-3;
+}

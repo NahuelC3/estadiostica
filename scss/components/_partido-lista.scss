@@ -1,0 +1,67 @@
+// ============================================================
+//  PARTIDO-LISTA — grupos de partidos por torneo
+// ------------------------------------------------------------
+//  Cada grupo lleva un encabezado sesgado con el nombre del torneo
+//  (bandera + nombre) y debajo la pila de .partido-fila.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.partido-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+// Barra de controles del fixture (selector de fecha + filtro de estado).
+.fixture-controles {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-block: 12px 18px;
+}
+
+// Fecha larga ("sábado 1 de septiembre de 2026").
+.fixture-fecha {
+    font-family: $fuente-mono;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+    margin-block-end: 4px;
+}
+
+.partido-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.partido-grupo__encabezado {
+    @include encabezado-sesgado($color-linea: $color-borde);
+
+    // Bandera + nombre del torneo van después del ::before del mixin.
+    .fi {
+        margin-inline-end: 2px;
+    }
+}
+
+.partido-grupo__filas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+// Estado "no hay partidos para esta fecha / filtro".
+.partido-lista__vacio {
+    padding: 32px 16px;
+    text-align: center;
+    color: $color-texto-3;
+    font-family: $fuente-mono;
+    font-size: 0.8125rem;
+    border: 1px dashed $color-borde;
+    border-radius: $radio;
+}

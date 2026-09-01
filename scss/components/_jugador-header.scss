@@ -1,0 +1,124 @@
+// ============================================================
+//  JUGADOR-HEADER — cabecera de la página de jugador
+// ------------------------------------------------------------
+//  Silueta + número (sin foto). El día que exista la foto real, reemplaza
+//  a la silueta dentro del mismo cuadro y el layout no se mueve.
+//  Al lado: nombre, posición, pie hábil, equipo, edad / nacionalidad
+//  (bandera flag-icons) / altura, y 3–4 números de temporada con ranking.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.jugador-header {
+    display: grid;
+    gap: 16px;
+    padding: 20px 16px;
+
+    @include desktop {
+        grid-template-columns: auto 1fr;
+        gap: 24px;
+        padding: 24px;
+    }
+}
+
+// -- Retrato (silueta + número) ---------------------
+.jugador-retrato {
+    position: relative;
+    inline-size: 96px;
+    block-size: 96px;
+    border-radius: $radio;
+    background: $color-panel-alt;
+    border: $borde-fino;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+
+    // Silueta simple con un pseudo (hombros + cabeza).
+    &::before {
+        content: "";
+        position: absolute;
+        inset-block-end: -18px;
+        inline-size: 78px;
+        block-size: 78px;
+        background: $color-borde;
+        border-radius: 50% 50% 0 0 / 60% 60% 0 0;
+    }
+
+    // La foto real, cuando exista, va con esta clase y tapa la silueta.
+    img {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+    }
+}
+
+.jugador-retrato__numero {
+    position: relative;   // por encima de la silueta
+    z-index: 1;
+    font-family: $fuente-titulo;
+    font-weight: 900;
+    font-size: 2.5rem;
+    font-variant-numeric: tabular-nums;
+    color: $color-texto;
+    text-shadow: 0 1px 0 $color-fondo;
+}
+
+// -- Datos --------------------------------------
+.jugador-header__nombre {
+    font-family: $fuente-titulo;
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.jugador-header__bio {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-block-start: 6px;
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+
+    .fi { margin-inline-end: 4px; }
+}
+
+// -- Números de temporada ----------------------
+.jugador-header__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-block-start: 14px;
+}
+
+.jugador-header__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-inline-size: 72px;
+
+    .valor {
+        font-family: $fuente-titulo;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        font-size: 1.375rem;
+        color: $color-texto;
+    }
+    .label {
+        font-family: $fuente-mono;
+        font-size: 0.5625rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: $color-texto-3;
+    }
+    .rank {   // "3º de la liga", "1º del equipo"
+        font-family: $fuente-mono;
+        font-size: 0.5625rem;
+        color: $color-acento;
+    }
+}

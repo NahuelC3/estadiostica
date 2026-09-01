@@ -1,0 +1,69 @@
+// ============================================================
+//  SELECTOR DE FECHA — ‹  fecha  ›
+// ------------------------------------------------------------
+//  Marcado:
+//    <div class="selector-fecha">
+//      <button class="selector-fecha__nav" data-paso="-1" aria-label="Día anterior">‹</button>
+//      <div class="selector-fecha__actual">
+//        <span class="selector-fecha__dia">SÁB</span>
+//        <span class="selector-fecha__fecha">16 AGO</span>
+//      </div>
+//      <button class="selector-fecha__nav" data-paso="1" aria-label="Día siguiente">›</button>
+//    </div>
+//  El JS (js/ui/selector-fecha.js) emite un evento con la nueva fecha.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.selector-fecha {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    border: $borde-fino;
+    border-radius: $radio;
+    overflow: hidden;
+    inline-size: max-content;
+}
+
+.selector-fecha__nav {
+    display: grid;
+    place-items: center;
+    inline-size: 40px;
+    background: $color-panel;
+    font-size: 1.25rem;
+    color: $color-texto-2;
+    @include transicion((color, background-color));
+
+    &:hover {
+        background: $color-panel-alt;
+        color: $color-acento;
+    }
+}
+
+.selector-fecha__actual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 16px;
+    min-inline-size: 96px;
+    background: $color-panel-alt;
+}
+
+.selector-fecha__dia {
+    font-family: $fuente-mono;
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+}
+
+.selector-fecha__fecha {
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-size: 0.9375rem;
+    text-transform: uppercase;
+    color: $color-texto;
+}

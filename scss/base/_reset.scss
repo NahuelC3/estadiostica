@@ -1,0 +1,92 @@
+// ============================================================
+//  RESET — normalización mínima y propia (sin librerías)
+// ============================================================
+
+// box-sizing heredable: cada elemento usa border-box salvo que se pida otra cosa.
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+// Sacamos márgenes por defecto de todo lo que solemos re-estilar.
+html,
+body,
+h1, h2, h3, h4, h5, h6,
+p,
+figure,
+blockquote,
+dl, dd,
+ul, ol {
+    margin: 0;
+}
+
+// Listas usadas como componentes: sin viñetas ni padding.
+ul[role="list"],
+ol[role="list"] {
+    list-style: none;
+    padding: 0;
+}
+
+html {
+    // Scroll suave salvo que el usuario pida reducir movimiento.
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+body {
+    min-block-size: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+// Multimedia como bloque y sin desbordar su contenedor.
+img,
+picture,
+svg,
+video,
+canvas {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+}
+
+// Los form controls no heredan tipografía por defecto: forzamos herencia.
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+// Tablas: bordes colapsados para poder dibujar separadores finos.
+table {
+    border-collapse: collapse;
+    inline-size: 100%;
+}
+
+// Ayuda a que el foco por teclado sea siempre visible.
+:focus-visible {
+    outline: 2px solid #39FF6A;
+    outline-offset: 2px;
+}

@@ -1,0 +1,88 @@
+// ============================================================
+//  GRAFICO-DESVIO — "desvío vs promedio" (equipo o jugador)
+// ------------------------------------------------------------
+//  Cada fila tiene una línea central = promedio de la liga (equipo) o de
+//  la posición (jugador). La barra crece del centro hacia afuera:
+//    - a la derecha (verde) si el valor está POR ENCIMA del promedio
+//    - a la izquierda (rojo) si está POR DEBAJO
+//  El mixin barra-desvio hace la barra; el JS pone --est-val (0..1) y la
+//  clase de dirección.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.grafico-desvio {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.desvio-fila {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr 3.5rem;
+    align-items: center;
+    gap: 10px;
+}
+
+.desvio-fila__label {
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $color-texto-2;
+    text-align: end;
+}
+
+// Pista con la línea central.
+.desvio-fila__pista {
+    position: relative;
+    block-size: 20px;
+    background: $color-panel-alt;
+    border-radius: $radio-chico;
+    overflow-x: clip;
+
+    // Línea del promedio.
+    &::after {
+        content: "";
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: 50%;
+        inline-size: 2px;
+        background: $color-texto-3;
+    }
+}
+
+.desvio-fila__pista .barra-desvio--sobre { @include barra-desvio($direccion: sobre); }
+.desvio-fila__pista .barra-desvio--bajo  { @include barra-desvio($direccion: bajo); }
+
+.desvio-fila__valor {
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.875rem;
+    text-align: start;
+}
+
+// Leyenda.
+.grafico-desvio__leyenda {
+    display: flex;
+    gap: 16px;
+    margin-block-start: 4px;
+    font-family: $fuente-mono;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $color-texto-3;
+
+    span::before {
+        content: "";
+        display: inline-block;
+        inline-size: 10px;
+        block-size: 6px;
+        margin-inline-end: 6px;
+        transform: skewX($sesgo);
+    }
+    .ley-sobre::before { background: $color-acento; }
+    .ley-bajo::before  { background: $color-alerta; }
+}

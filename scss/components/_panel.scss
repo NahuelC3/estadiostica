@@ -1,0 +1,52 @@
+// ============================================================
+//  PANEL — superficie base de casi todas las tarjetas
+// ------------------------------------------------------------
+//  Separación extend / mixin:
+//   · %panel-base → lo IDÉNTICO en todos los paneles (radio, borde 1px,
+//                   position). Se @extiende sólo desde selectores simples.
+//   · panel(...)  → lo que VARÍA: color de fondo, color de borde, padding.
+//  El mixin vive acá (no en utilities/_mixins.scss) para no cruzar un
+//  @extend entre módulos.
+// ============================================================
+
+@use "../utilities/variables" as *;
+
+%panel-base {
+    position: relative;
+    border: 1px solid $color-borde;
+    border-radius: $radio;
+}
+
+@mixin panel($fondo: $color-panel, $borde: $color-borde, $esp: 16px) {
+    @extend %panel-base;
+    background: $fondo;
+    border-color: $borde;
+    padding: $esp;
+}
+
+// Clases de uso directo.
+.panel {
+    @include panel();
+}
+
+.panel--alt {
+    @include panel($fondo: $color-panel-alt);
+}
+
+.panel--compacto {
+    @include panel($esp: 12px);
+}
+
+.panel--plano {
+    // Sólo fondo, sin borde (para agrupar sin "encajonar").
+    @extend %panel-base;
+    background: $color-panel;
+    border-color: transparent;
+    padding: 16px;
+}
+
+// Título interno de un panel.
+.panel__titulo {
+    font-size: 1rem;
+    margin-block-end: 12px;
+}

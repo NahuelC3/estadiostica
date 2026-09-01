@@ -1,0 +1,66 @@
+// ============================================================
+//  SHELL — el andamiaje de todas las páginas
+// ------------------------------------------------------------
+//  Mobile: una sola columna. Orden: navbar → main → sidebar → pie
+//          (la sidebar es contenido secundario, va después del main).
+//  Desktop: navbar full-width arriba, [sidebar | main] en el medio,
+//           pie full-width abajo. Todo con CSS Grid + grid-template-areas.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.layout {
+    display: grid;
+    min-block-size: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas:
+        "navbar"
+        "main"
+        "sidebar"
+        "pie";
+
+    @include desktop {
+        // Columna lateral fija + contenido flexible.
+        grid-template-columns: $ancho-sidebar 1fr;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            "navbar  navbar"
+            "sidebar main"
+            "pie     pie";
+    }
+}
+
+// Variante sin sidebar (partido, equipo, jugador).
+.layout--simple {
+    grid-template-areas:
+        "navbar"
+        "main"
+        "pie";
+
+    @include desktop {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "navbar"
+            "main"
+            "pie";
+    }
+}
+
+.layout__navbar  { grid-area: navbar; }
+.layout__sidebar { grid-area: sidebar; }
+.layout__pie     { grid-area: pie; }
+
+.layout__main {
+    grid-area: main;
+    min-inline-size: 0;        // deja que el contenido interno tenga scroll-x propio
+    padding-block: 20px 40px;
+}
+
+// Contenido del main centrado y en pila.
+.layout__main > .contenedor {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}

@@ -1,0 +1,154 @@
+// ============================================================
+//  GLOBALES — fondo de página, enlaces, utilidades transversales
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+body {
+    background: $color-fondo;
+    color: $color-texto;
+}
+
+// ------------------------------------------------------------
+//  Reducir movimiento — regla global única
+// ------------------------------------------------------------
+//  Si el sistema pide menos animación, neutralizamos transiciones y
+//  @keyframes en todo el sitio de una sola vez (en lugar de repetir la
+//  media query en cada mixin `transicion`).
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+// Enlaces "de contenido" (dentro de texto): subrayado sutil al hover.
+a.enlace {
+    color: $color-acento;
+    @include transicion(color);
+
+    &:hover {
+        color: $color-texto;
+    }
+}
+
+// ------------------------------------------------------------
+//  %sr-only — visible sólo para lectores de pantalla
+// ------------------------------------------------------------
+//  Patrón estándar: saca el elemento del flujo visual sin ocultarlo
+//  del árbol de accesibilidad.
+%sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.sr-only {
+    @extend %sr-only;
+}
+
+// Texto secundario suelto (notas, estados vacíos dentro de paneles).
+.apagado {
+    color: $color-texto-2;
+    font-size: 0.875rem;
+}
+
+// ------------------------------------------------------------
+//  Helpers de layout muy usados
+// ------------------------------------------------------------
+
+// Centra contenido con ancho máximo y padding lateral responsivo.
+.contenedor {
+    inline-size: 100%;
+    max-inline-size: $ancho-maximo;
+    margin-inline: auto;
+    padding-inline: 16px;
+
+    @include desktop {
+        padding-inline: 24px;
+    }
+}
+
+// Pila vertical con separación uniforme (evita repetir margin-top).
+// Sin custom properties: las variantes de separación van por modificador.
+.pila     { display: flex; flex-direction: column; gap: 16px; }
+.pila--sm { gap: 8px; }
+.pila--lg { gap: 24px; }
+
+// Oculta un elemento hasta desktop (o al revés).
+.solo-desktop { display: none; }
+@include desktop {
+    .solo-desktop { display: revert; }
+    .solo-mobile  { display: none; }
+}
+
+// ------------------------------------------------------------
+//  Layout de 2 columnas: contenido + panel lateral
+// ------------------------------------------------------------
+//  Lo usan posiciones (tabla + movimientos/líderes) y sirve de base
+//  a otras páginas. Una sola columna en mobile.
+.dos-columnas {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+
+    @include desktop {
+        grid-template-columns: minmax(0, 1fr) 300px;
+        align-items: start;
+    }
+}
+
+.dos-columnas__lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+// Tablita genérica (trayectoria del jugador, datos varios).
+.tabla-simple {
+    inline-size: 100%;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+
+    th, td {
+        text-align: start;
+        padding: 8px 10px;
+        border-block-start: $borde-fino;
+    }
+    th {
+        font-family: $fuente-mono;
+        font-size: 0.625rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $color-texto-3;
+        border-block-start: 0;
+    }
+    td.num { text-align: end; }
+}
+
+// Aviso de "servir con Live Server" que el guard file:// inyecta en <main>.
+.aviso-servidor {
+    max-inline-size: 40rem;
+    margin: 48px auto;
+    padding: 24px;
+    border: 1px solid $color-borde;
+    border-radius: $radio;
+    background: $color-panel;
+
+    h2 { margin-bottom: 8px; }
+    code {
+        font-family: $fuente-mono;
+        color: $color-acento;
+    }
+}

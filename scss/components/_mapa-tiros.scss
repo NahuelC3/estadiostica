@@ -1,0 +1,82 @@
+// ============================================================
+//  MAPA-TIROS — remates del jugador sobre medio campo de ataque
+// ------------------------------------------------------------
+//  Contenedor con proporción de medio campo. Cada remate se posiciona
+//  con left/top en % (los escribe el JS inline desde {x,y}) y su clase
+//  data-res codifica el resultado (gol / al arco / desviado).
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.mapa-tiros {
+    position: relative;
+    inline-size: 100%;
+    max-inline-size: 420px;
+    margin-inline: auto;
+    aspect-ratio: 68 / 52;         // medio campo (más ancho que alto)
+    background: $color-panel-alt;
+    border: $borde-fino;
+    border-radius: $radio;
+    overflow: hidden;
+
+    // Arco + área simplificados con pseudos.
+    &::before {   // línea del área grande
+        content: "";
+        position: absolute;
+        inset-inline: 20%;
+        inset-block-start: 0;
+        block-size: 42%;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-block-start: 0;
+    }
+    &::after {    // punto de penal
+        content: "";
+        position: absolute;
+        inset-inline-start: 50%;
+        inset-block-start: 28%;
+        inline-size: 4px;
+        block-size: 4px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateX(-50%);
+    }
+}
+
+.mapa-tiros__tiro {
+    position: absolute;
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid $color-fondo;
+
+    &[data-res="gol"]      { background: $color-acento; }
+    &[data-res="al-arco"]  { background: #6fa8ff; }
+    &[data-res="desviado"] { background: transparent; border-color: $color-texto-3; }
+}
+
+.mapa-tiros__leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-block-start: 10px;
+    font-family: $fuente-mono;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $color-texto-3;
+
+    span::before {
+        content: "";
+        display: inline-block;
+        inline-size: 8px;
+        block-size: 8px;
+        border-radius: 50%;
+        margin-inline-end: 6px;
+        vertical-align: middle;
+    }
+    .ley-gol::before      { background: $color-acento; }
+    .ley-alarco::before   { background: #6fa8ff; }
+    .ley-desviado::before { border: 1px solid $color-texto-3; }
+}

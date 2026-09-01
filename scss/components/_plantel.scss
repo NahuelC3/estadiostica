@@ -1,0 +1,93 @@
+// ============================================================
+//  PLANTEL — jugadores agrupados por puesto
+// ------------------------------------------------------------
+//  Grupos: Arqueros / Defensores / Mediocampistas / Delanteros.
+//  Cada tarjeta muestra el dorsal, el nombre y la métrica relevante
+//  para ese puesto (vallas invictas, quites, asistencias, goles...).
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.plantel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.plantel__grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.plantel__grupo-titulo {
+    @include encabezado-sesgado($color-linea: $color-borde);
+}
+
+.plantel__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+
+    @include desktop {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.jugador-tarjeta {
+    display: grid;
+    grid-template-columns: 2rem 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: $borde-fino;
+    border-radius: $radio;
+    background: $color-panel;
+    @include transicion(border-color);
+
+    &:hover { border-color: $color-texto-3; }
+
+    .jugador-tarjeta__dorsal {
+        font-family: $fuente-mono;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        color: $color-texto-3;
+        text-align: center;
+    }
+    .jugador-tarjeta__nombre {
+        font-size: 0.875rem;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        .pos {
+            display: block;
+            font-family: $fuente-mono;
+            font-size: 0.5625rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: $color-texto-3;
+        }
+    }
+    .jugador-tarjeta__metrica {
+        text-align: end;
+
+        .valor {
+            font-family: $fuente-titulo;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: $color-acento;
+        }
+        .unidad {
+            display: block;
+            font-family: $fuente-mono;
+            font-size: 0.5rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: $color-texto-3;
+        }
+    }
+}

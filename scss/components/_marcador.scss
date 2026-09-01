@@ -1,0 +1,95 @@
+// ============================================================
+//  MARCADOR — el número grande de la página de partido (~76px)
+// ------------------------------------------------------------
+//  Estructura: [ equipo local ] [ 1 / 0 ] [ equipo visitante ]
+//  con el badge "EN VIVO" arriba del número si el partido está en curso.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.marcador {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 16px;
+
+    @include desktop {
+        gap: 32px;
+        padding: 28px 24px;
+    }
+}
+
+// -- Lado de equipo -----------------------------------
+.marcador__equipo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+
+    .marcador__nombre {
+        font-family: $fuente-titulo;
+        font-weight: 800;
+        font-size: 1rem;
+        letter-spacing: -0.01em;
+    }
+}
+
+// -- Números -----------------------------------------
+.marcador__cifras {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.marcador__numeros {
+    // número protagonista (inline)
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    font-size: clamp(3rem, 12vw, 4.75rem);   // ~48px → 76px
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    color: $color-texto;
+}
+
+.marcador__sep {
+    color: $color-texto-3;
+    font-weight: 500;
+}
+
+// Estado del partido debajo del marcador (FINALIZADO / 63' / 20:00).
+.marcador__estado {
+    font-family: $fuente-mono;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+}
+
+.marcador__estado--vivo {
+    color: $color-alerta;
+}
+
+// -- Lista de goles (página de partido) ----------------
+.lista-goles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.875rem;
+
+    .gol-min {
+        font-family: $fuente-mono;
+        font-weight: 600;
+        color: $color-acento;
+        margin-inline-end: 4px;
+    }
+}

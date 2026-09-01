@@ -1,0 +1,64 @@
+// ============================================================
+//  BADGE "EN VIVO" — usa el patrón lift-the-content (fondo-sesgado)
+// ------------------------------------------------------------
+//  Marcado: <span class="badge-vivo"><span>EN VIVO</span></span>
+//  El <span> interno es obligatorio: el mixin fondo-sesgado sube
+//  `> *` a z-index:1 por encima del ::before inclinado.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.badge-vivo {
+    @include fondo-sesgado($color: $color-alerta, $radio: $radio-chico);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+
+    // El texto interno (ya subido a z-index:1 por el mixin).
+    > span {
+        font-family: $fuente-mono;
+        font-size: 0.625rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #fff;
+    }
+
+    // Puntito que "late". Es hijo directo → también va sobre el ::before.
+    &::marker { content: none; }
+}
+
+// Punto pulsante opcional dentro del badge.
+.badge-vivo__punto {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: #fff;
+    animation: badge-vivo-late 1.2s ease-in-out infinite;
+}
+
+@keyframes badge-vivo-late {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+}
+
+// Respeta la preferencia de reducir movimiento.
+@media (prefers-reduced-motion: reduce) {
+    .badge-vivo__punto { animation: none; }
+}
+
+// Chip de resultado en vivo (marcador con fondo sesgado verde).
+.chip-vivo {
+    @include fondo-sesgado($color: $color-acento, $radio: $radio-chico);
+    display: inline-flex;
+    padding: 2px 8px;
+
+    > span {
+        font-family: $fuente-titulo;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        color: $color-fondo;   // texto oscuro sobre verde
+    }
+}

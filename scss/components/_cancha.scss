@@ -1,0 +1,114 @@
+// ============================================================
+//  CANCHA — campo de juego con jugadores posicionados
+// ------------------------------------------------------------
+//  El contenedor es un rectángulo con proporción de cancha. Cada jugador
+//  se posiciona en % con left/top calculados desde detail.lineups[].{x,y}
+//  (0..100 en ambos ejes), que escribe el JS inline.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.cancha {
+    position: relative;
+    inline-size: 100%;
+    // Proporción alto:ancho de una cancha vista de arriba.
+    aspect-ratio: 68 / 105;
+    max-inline-size: 460px;
+    margin-inline: auto;
+    background:
+        // línea de mediocampo
+        linear-gradient(to bottom, transparent calc(50% - 1px), rgba(255,255,255,0.12) 50%, transparent calc(50% + 1px)),
+        $color-panel-alt;
+    border: $borde-fino;
+    border-radius: $radio;
+    overflow: hidden;
+
+    // Círculo central.
+    &::after {
+        content: "";
+        position: absolute;
+        inset-block-start: 50%;
+        inset-inline-start: 50%;
+        inline-size: 22%;
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+    }
+}
+
+// Áreas (dibujadas con un pseudo por lado sería más CSS; alcanza con bordes).
+.cancha__area {
+    position: absolute;
+    inset-inline: 22%;
+    block-size: 16%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-block-start: 0;
+
+    &--arriba { inset-block-start: 0; border-block-start: 1px solid rgba(255,255,255,0.12); border-block-end: 0; }
+    &--abajo  { inset-block-end: 0; }
+}
+
+// -- Ficha de jugador --------------------------------
+//  El JS posiciona cada ficha escribiendo inline left/top como porcentaje
+//  real (style.left = x + "%"), calculado desde detail.lineups[].{x,y}.
+//  Sin custom properties.
+.cancha__jugador {
+    position: absolute;
+    inset-inline-start: 50%;   // fallback; el JS lo pisa
+    inset-block-start: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    inline-size: 44px;
+    text-align: center;
+}
+
+.cancha__dorsal {
+    display: grid;
+    place-items: center;
+    inline-size: 26px;
+    block-size: 26px;
+    border-radius: 50%;
+    background: $color-acento;
+    color: $color-fondo;
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+// Ficha del equipo visitante en otro color para distinguir.
+.cancha__jugador--visita .cancha__dorsal {
+    background: $color-texto;
+    color: $color-fondo;
+}
+
+.cancha__nombre {
+    font-family: $fuente-mono;
+    font-size: 0.5625rem;
+    line-height: 1.1;
+    color: $color-texto-2;
+    max-inline-size: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// -- Encabezado con formaciones ---------------------
+.cancha-formaciones {
+    display: flex;
+    justify-content: space-between;
+    font-family: $fuente-mono;
+    font-size: 0.75rem;
+    color: $color-texto-3;
+    margin-block-end: 10px;
+
+    strong {
+        color: $color-texto;
+        font-weight: 600;
+    }
+}

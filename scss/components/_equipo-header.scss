@@ -1,0 +1,95 @@
+// ============================================================
+//  EQUIPO-HEADER — cabecera de la página de equipo
+// ------------------------------------------------------------
+//  Escudo grande + nombre + liga + (posición · puntos) + racha +
+//  próximo partido, en una banda superior.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.equipo-header {
+    display: grid;
+    gap: 16px;
+    padding: 20px 16px;
+
+    @include desktop {
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 24px;
+        padding: 24px;
+    }
+}
+
+.equipo-header__identidad {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.equipo-header__nombre {
+    font-family: $fuente-titulo;
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.equipo-header__meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+}
+
+// Bloque de números (posición / puntos).
+.equipo-header__stats {
+    display: flex;
+    gap: 20px;
+}
+
+.equipo-header__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .valor {
+        // número protagonista (inline: no @extend desde selector descendiente)
+        font-family: $fuente-titulo;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+        font-size: 1.5rem;
+        color: $color-texto;
+    }
+    .label {
+        font-family: $fuente-mono;
+        font-size: 0.5625rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: $color-texto-3;
+    }
+}
+
+// Próximo partido, compacto.
+.equipo-header__proximo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: $borde-fino;
+    border-radius: $radio;
+    background: $color-panel-alt;
+    font-size: 0.8125rem;
+
+    .etq {
+        font-family: $fuente-mono;
+        font-size: 0.5625rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: $color-texto-3;
+    }
+}

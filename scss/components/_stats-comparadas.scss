@@ -1,0 +1,68 @@
+// ============================================================
+//  STATS-COMPARADAS — métricas del partido enfrentadas desde el centro
+// ------------------------------------------------------------
+//  Cada fila: [ valor local ] [ barra izq | etiqueta | barra der ] [ valor visita ]
+//  Las barras usan el mixin barra-comparativa; su ancho lo pone JS en
+//  la custom prop --est-pct de cada barra.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.stats-comparadas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-fila {
+    display: grid;
+    grid-template-columns: 3ch 1fr 3ch;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-fila__valor {
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9375rem;
+
+    &--local  { text-align: end; }
+    &--visita { text-align: start; }
+}
+
+// Zona central: dos mitades + etiqueta encima.
+.stat-fila__centro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    position: relative;
+}
+
+.stat-fila__etiqueta {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: -16px;
+    text-align: center;
+    font-family: $fuente-mono;
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+}
+
+// Pista de cada mitad (para ver el "máximo" tenue).
+.stat-fila__pista {
+    display: flex;
+    background: $color-panel-alt;
+    overflow-x: clip;           // contiene las esquinas sesgadas de la barra
+}
+
+.stat-fila__pista--izq .stat-barra {
+    @include barra-comparativa($lado: izquierda, $color: $color-texto-3);
+}
+
+.stat-fila__pista--der .stat-barra {
+    @include barra-comparativa($lado: derecha, $color: $color-acento);
+}

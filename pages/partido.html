@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadióstica — Partido</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/css/flag-icons.min.css">
+    <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+    <div class="layout layout--simple">
+        <header class="layout__navbar navbar">
+            <a class="navbar__marca" href="../index.html" aria-label="Estadióstica — inicio">
+                <svg class="navbar__isotipo" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                    <rect x="26" y="2" width="17" height="6" rx="3" transform="rotate(28 26 2)" fill="#39FF6A"/>
+                    <rect x="10" y="19" width="44" height="10" rx="3" fill="#E6EBF0"/>
+                    <rect x="10" y="33" width="26" height="10" rx="3" fill="#39FF6A"/>
+                    <rect x="10" y="47" width="38" height="10" rx="3" fill="#5C6874"/>
+                </svg>
+                <span class="navbar__wordmark">
+                    <span class="navbar__wordmark-a">ESTADI</span><span class="navbar__wordmark-b">ÓSTICA</span>
+                </span>
+            </a>
+            <nav class="navbar__nav" aria-label="Secciones">
+                <a href="../index.html">Fixture</a>
+                <a href="posiciones.html?liga=arg-lpf">Posiciones</a>
+            </nav>
+        </header>
+
+        <main class="layout__main">
+            <div class="contenedor" id="pagina">
+                <!-- lo llena js/pages/partido.js -->
+            </div>
+        </main>
+
+        <footer class="layout__pie pie">
+            <div class="contenedor">
+                <span class="pie__tagline">
+                    <span class="pie__tagline-texto">Estadio + Estadística</span>
+                </span>
+                <p class="pie__legal">Datos de ejemplo · Estadióstica · 2026</p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="../js/pages/partido.js"></script>
+</body>
+</html>

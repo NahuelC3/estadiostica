@@ -1,0 +1,62 @@
+// ============================================================
+//  PESTAÑAS — filtro Todos / En vivo / Finalizados y pestañas internas
+// ------------------------------------------------------------
+//  Marcado (patrón WAI-ARIA tabs):
+//    <div class="pestanas" role="tablist">
+//      <button class="pestanas__tab" role="tab" aria-selected="true">Todos</button>
+//      ...
+//    </div>
+//  El indicador de pestaña activa es una barra sesgada de 4px (mixin).
+//  El JS (js/ui/pestanas.js) togglea aria-selected y muestra/oculta paneles.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.pestanas {
+    display: flex;
+    gap: 4px;
+    border-block-end: $borde-fino;
+}
+
+.pestanas__tab {
+    position: relative;
+    padding: 10px 14px;
+    font-family: $fuente-mono;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+    @include transicion(color);
+
+    &:hover {
+        color: $color-texto-2;
+    }
+
+    &[aria-selected="true"] {
+        color: $color-texto;
+    }
+
+    // Indicador inferior: barra sesgada de 4px, sólo visible en la activa.
+    &::after {
+        content: "";
+        position: absolute;
+        inset-inline: 6px;
+        inset-block-end: -1px;      // pisa el border-block-end del contenedor
+        block-size: 4px;
+        background: $color-acento;
+        transform: skewX($sesgo);
+        opacity: 0;
+        @include transicion(opacity);
+    }
+
+    &[aria-selected="true"]::after {
+        opacity: 1;
+    }
+}
+
+// Panel asociado a cada pestaña.
+.pestanas-panel[hidden] {
+    display: none;
+}

@@ -1,0 +1,110 @@
+// ============================================================
+//  TABLA-POSICIONES — tabla segmentada por zonas
+// ------------------------------------------------------------
+//  Estructura: un <table> por zona (o un <tbody> por zona con su
+//  <tr class="zona-encabezado">). Columnas:
+//    Pos | escudo+nombre | PJ PG PE PP GF GC DIF PTS | forma(5)
+//  El número de PTS lleva una mini-barra sesgada por detrás
+//  (mixin fondo-sesgado-clip, en _barra-puntos.scss).
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.tabla-posiciones {
+    inline-size: 100%;
+    font-variant-numeric: tabular-nums;
+
+    // La tabla tiene muchas columnas: scroll-x propio en pantallas chicas.
+    // El wrapper .tabla-scroll aporta el overflow.
+}
+
+.tabla-scroll {
+    overflow-x: auto;
+    border: $borde-fino;
+    border-radius: $radio;
+}
+
+.tabla-posiciones thead th {
+    font-family: $fuente-mono;
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+    text-align: center;
+    padding: 10px 6px;
+    background: $color-panel;
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+}
+
+.tabla-posiciones th.col-equipo,
+.tabla-posiciones td.col-equipo {
+    text-align: start;
+    min-inline-size: 180px;
+}
+
+.tabla-posiciones tbody td {
+    padding: 8px 6px;
+    text-align: center;
+    font-size: 0.8125rem;
+    border-block-start: $borde-fino;
+    white-space: nowrap;
+}
+
+.tabla-posiciones tbody tr {
+    background: $color-panel;
+    @include transicion(background-color);
+
+    &:hover {
+        background: $color-panel-alt;
+    }
+}
+
+// Posición.
+.tabla-posiciones .col-pos {
+    font-family: $fuente-mono;
+    color: $color-texto-2;
+    inline-size: 2.5rem;
+}
+
+// Equipo (escudo + nombre, enlazable).
+.tabla-posiciones .col-equipo a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: $color-texto;
+    @include transicion(color);
+
+    &:hover { color: $color-acento; }
+}
+
+// DIF negativo en rojo.
+.tabla-posiciones .col-dif--neg { color: $color-alerta; }
+
+// PTS: celda contenedora del número + barra de fondo.
+.tabla-posiciones .col-pts {
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    color: $color-texto;
+}
+
+// Columna de forma: contiene el componente .forma-reciente.
+.tabla-posiciones .col-forma {
+    min-inline-size: 96px;
+}
+
+// Guía de color por zona en la 1ª celda: el JS la escribe inline como
+// box-shadow real (td.style.boxShadow = "inset 3px 0 0 " + color).
+
+// Ajuste de puntos (quita estilo Everton): marca junto a PTS.
+.tabla-posiciones .ajuste-pts {
+    display: inline-block;
+    margin-inline-start: 4px;
+    font-family: $fuente-mono;
+    font-size: 0.625rem;
+    color: $color-alerta;
+    vertical-align: super;
+}

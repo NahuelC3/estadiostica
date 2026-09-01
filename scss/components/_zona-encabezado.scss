@@ -1,0 +1,49 @@
+// ============================================================
+//  ZONA-ENCABEZADO — separador de zona dentro de la tabla de posiciones
+// ------------------------------------------------------------
+//  Va como:
+//    <tr class="zona-encabezado">
+//      <td colspan="N">
+//        <div class="zona-encabezado__inner">
+//          <span class="zona-encabezado__tick"></span>
+//          Copa Libertadores
+//        </div>
+//      </td>
+//    </tr>
+//
+//  El color de cada zona viene de la config de liga (zones[].color) y el
+//  JS lo escribe inline como propiedades CSS reales:
+//    - .zona-encabezado__tick  → style.background
+//    - .zona-encabezado__inner → style.borderBottomColor
+//  (sin custom properties: el sesgo va en el <span> del tick, no en un pseudo).
+// ============================================================
+
+@use "../utilities/variables" as *;
+
+.zona-encabezado td {
+    padding: 14px 8px 6px;
+    background: $color-fondo;
+}
+
+.zona-encabezado__inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-block-end: 6px;
+    border-bottom: 2px solid $color-borde;   // fallback; el JS pisa el color
+
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: $color-texto-2;
+}
+
+.zona-encabezado__tick {
+    flex: none;
+    inline-size: 6px;
+    block-size: 16px;
+    background: $color-borde;                 // fallback; el JS pisa el color
+    transform: skewX($sesgo);
+}

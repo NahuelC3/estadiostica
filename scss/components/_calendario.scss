@@ -1,0 +1,86 @@
+// ============================================================
+//  CALENDARIO — partidos del equipo en orden cronológico
+// ------------------------------------------------------------
+//  Mezcla jugados y por jugar en una sola lista. Los jugados muestran
+//  resultado y un chip V/E/D; los futuros muestran fecha y hora.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.calendario {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.calendario__fila {
+    display: grid;
+    grid-template-columns: 64px 1fr auto 2rem;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border: $borde-fino;
+    border-radius: $radio;
+    background: $color-panel;
+    @include transicion(border-color);
+
+    &:hover { border-color: $color-texto-3; }
+}
+
+.calendario__fecha {
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    color: $color-texto-3;
+    text-transform: uppercase;
+}
+
+.calendario__rival {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-inline-size: 0;
+
+    .cl { // condición: L (local) / V (visitante)
+        font-family: $fuente-mono;
+        font-size: 0.5625rem;
+        color: $color-texto-3;
+    }
+    span.nombre {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.875rem;
+    }
+}
+
+.calendario__resultado {
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.875rem;
+
+    &--pendiente {
+        font-family: $fuente-mono;
+        font-weight: 500;
+        color: $color-texto-3;
+    }
+}
+
+// Chip V/E/D reutilizando los colores de forma-reciente.
+.calendario__chip {
+    display: grid;
+    place-items: center;
+    inline-size: 18px;
+    block-size: 18px;
+    border-radius: $radio-chico;
+    font-family: $fuente-mono;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    color: $color-fondo;
+
+    &[data-r="V"] { background: $color-acento; }
+    &[data-r="E"] { background: $color-texto-3; }
+    &[data-r="D"] { background: $color-alerta; color: #fff; }
+    &[data-r=""]  { background: transparent; }
+}

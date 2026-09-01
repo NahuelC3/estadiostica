@@ -1,0 +1,223 @@
+// ============================================================
+//  MIXINS — toda la lógica reutilizable y parametrizada
+// ------------------------------------------------------------
+//  Regla de arquitectura del proyecto:
+//   · @extend  → SÓLO para lo idéntico byte-a-byte entre ≥2 consumidores,
+//                y NUNCA dentro de @media ni desde selectores contextuales.
+//   · @mixin   → todo lo que varía (tamaño, color, origen, contexto).
+//
+//  Los mixins usan argumentos NOMBRADOS y toman por defecto los tokens
+//  de _variables.scss, así los llamados quedan cortos y legibles.
+// ============================================================
+
+@use "sass:math";
+@use "variables" as *;
+@use "funciones" as *;
+
+// ------------------------------------------------------------
+//  desktop — LA ÚNICA media query de todo el proyecto
+// ------------------------------------------------------------
+//  Mobile-first: el CSS base es para pantalla chica; esto agrega
+//  lo que cambia de $bp-desktop para arriba.
+//  Uso:  @include desktop { ... reglas de escritorio ... }
+@mixin desktop {
+    @media (min-width: $bp-desktop) {
+        @content;
+    }
+}
+
+// ------------------------------------------------------------
+//  transicion — animación corta y homogénea
+// ------------------------------------------------------------
+//  Para hover, foco y cambios de marcador. Centraliza duración/easing
+//  y respeta prefers-reduced-motion en un solo lugar.
+//  Para varias propiedades hay que pasar una lista con coma ENTRE paréntesis
+//  para que Sass no la lea como argumentos sueltos:
+//      @include transicion((color, background-color));
+//
+//  prefers-reduced-motion NO se maneja acá (emitiría una media query por
+//  cada llamada). Hay UNA regla global en base/_globales.scss que neutraliza
+//  transiciones y animaciones cuando el usuario pide reducir movimiento.
+@mixin transicion($props, $dur: 150ms, $easing: ease-out) {
+    transition-property: $props;
+    transition-duration: $dur;
+    transition-timing-function: $easing;
+}
+
+// ------------------------------------------------------------
+//  barra-sesgada — el rectángulo inclinado de la marca
+// ------------------------------------------------------------
+//  Marcador rectangular con el sesgo aplicado SIEMPRE en la barra,
+//  nunca en el elemento que la contiene (así el host nunca crea
+//  containing block / stacking context por accidente).
+//  Usos: tick de encabezado, indicador de pestaña activa (4px de alto),
+//        adornos varios.
+@mixin barra-sesgada($ancho, $alto, $color, $angulo: $sesgo) {
+    display: inline-block;
+    inline-size: $ancho;
+    block-size: $alto;
+    background: $color;
+    transform: skewX($angulo);
+}
+
+// ------------------------------------------------------------
+//  fondo-sesgado — patrón "lift-the-content"
+// ------------------------------------------------------------
+//  Pinta un fondo inclinado DETRÁS del contenido del host, con ::before.
+//
+//  Cómo se usa (importante, es fácil equivocarse):
+//   1. El host recibe position:relative; isolation:isolate; (lo hace el mixin).
+//   2. El ::before va con z-index:0  → NUNCA z-index:-1, porque -1 lo manda
+//      detrás del fondo del panel y se deja de ver.
+//   3. El contenido real del host debe ir en position:relative; z-index:1.
+//      El mixin lo empuja con `> *`, pero si el texto es hijo directo de
+//      texto suelto, envolverlo en un <span>.
+//
+//  Usos: chip de resultado en vivo, badge "EN VIVO", realce de encabezado
+//        de torneo.
+@mixin fondo-sesgado($color, $angulo: $sesgo, $radio: 0) {
+    position: relative;
+    isolation: isolate;   // el host es su propio contexto de apilado
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: $color;
+        border-radius: $radio;
+        transform: skewX($angulo);
+        z-index: 0;        // detrás del contenido, delante del panel
+    }
+
+    // Sube el contenido real por encima del fondo inclinado.
+    > * {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+// ------------------------------------------------------------
+//  fondo-sesgado-clip — mini barra inclinada SIN pseudo
+// ------------------------------------------------------------
+//  Igual idea que fondo-sesgado, pero recortando el propio elemento con
+//  clip-path en vez de usar ::before. Ventajas: no crea stacking context
+//  y no hay esquinas que sobresalgan. Ideal detrás de un número en un <td>
+//  de la tabla de posiciones.
+//
+//  El offset horizontal del paralelogramo se calcula con sesgo-offset()
+//  a partir del alto, para que la inclinación visual coincida con skewX($sesgo).
+@mixin fondo-sesgado-clip($alto, $color) {
+    $off: sesgo-offset($alto);
+    background: $color;
+    // Paralelogramo inclinado hacia la izquierda arriba (coherente con
+    // un skewX negativo): esquina sup-izq y esquina inf-der "metidas".
+    clip-path: polygon(#{$off} 0, 100% 0, calc(100% - #{$off}) 100%, 0 100%);
+}
+
+// ------------------------------------------------------------
+//  encabezado-sesgado — título de sección / de zona
+// ------------------------------------------------------------
+//  Compone: un ::before con barra sesgada + la tipografía de etiqueta mono
+//  + un border-bottom opcional. Cada zona de la tabla de posiciones pasa
+//  SU color de línea.
+//
+//  Nota: la tipografía mono se escribe acá directamente (mismas reglas que
+//  el placeholder %etiqueta-mono). No usamos @extend dentro de un mixin
+//  porque el mixin se incluye en muchos módulos y contextos, y un @extend
+//  "viajero" es justo lo que la regla de arquitectura prohíbe.
+@mixin encabezado-sesgado($color-linea: $color-borde, $gap: 8px) {
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;              // ~11px
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+
+    display: flex;
+    align-items: center;
+    gap: $gap;
+    padding-block-end: 6px;
+    border-bottom: 1px solid $color-linea;
+
+    &::before {
+        content: "";
+        flex: none;
+        inline-size: 6px;
+        block-size: 16px;
+        background: $color-linea;
+        transform: skewX($sesgo);
+    }
+}
+
+// ------------------------------------------------------------
+//  barra-comparativa — stats del partido enfrentadas
+// ------------------------------------------------------------
+//  Dos barras que crecen desde el centro hacia su lado. El ancho lo pone
+//  JS en la custom prop --est-pct (0..100); el SCSS deja fallback 0.
+//   $lado: izquierda  → anclada a la derecha (centro), crece a la izquierda
+//          derecha    → espejada: anclada a la izquierda, crece a la derecha
+@mixin barra-comparativa($lado, $color, $angulo: $sesgo) {
+    block-size: 10px;
+    background: $color;
+    inline-size: calc(var(--est-pct, 0) * 1%);
+    @include transicion(inline-size, 220ms);
+
+    @if $lado == izquierda {
+        margin-inline-start: auto;        // empuja la barra contra el centro
+        transform: skewX($angulo);
+        transform-origin: right center;
+    } @else if $lado == derecha {
+        margin-inline-end: auto;
+        transform: skewX(-1 * $angulo);   // espejo del sesgo
+        transform-origin: left center;
+    } @else {
+        @error "barra-comparativa: $lado debe ser 'izquierda' o 'derecha' (recibí #{$lado}).";
+    }
+}
+
+// ------------------------------------------------------------
+//  barra-desvio — "desvío vs promedio", centro hacia afuera
+// ------------------------------------------------------------
+//  Se posiciona absoluta dentro de una celda que tiene una línea central.
+//   $direccion: sobre → crece a la derecha, color acento (por encima del prom.)
+//               bajo  → crece a la izquierda, color alerta (por debajo)
+//  El valor normalizado (0..1) lo pone JS en --est-val.
+@mixin barra-desvio($direccion, $angulo: $sesgo) {
+    position: absolute;
+    inset-block: 0;
+    block-size: 8px;
+    margin-block: auto;                        // centrado vertical
+    inline-size: calc(var(--est-val, 0) * 50%);
+    transform: skewX($angulo);
+    @include transicion(inline-size, 220ms);
+
+    @if $direccion == sobre {
+        inset-inline-start: 50%;
+        background: $color-acento;
+        transform-origin: left center;
+    } @else if $direccion == bajo {
+        inset-inline-end: 50%;
+        background: $color-alerta;
+        transform-origin: right center;
+    } @else {
+        @error "barra-desvio: $direccion debe ser 'sobre' o 'bajo' (recibí #{$direccion}).";
+    }
+}
+
+// Nota: el mixin `panel(...)` NO vive acá sino en components/_panel.scss,
+// junto al placeholder %panel-base que compone, para no cruzar un @extend
+// entre módulos.
+
+// ============================================================
+//  NOTAS — trampas de skewX que este archivo evita a propósito
+// ------------------------------------------------------------
+//  1. z-index:-1 en un pseudo → queda invisible detrás de cualquier host
+//     con background. Solución: patrón lift-the-content (fondo-sesgado).
+//  2. skewX en un flex-child o en un <td>: las esquinas sobresalen
+//     ~0.25 × alto. Mitigar con `overflow-x: clip` (NO hidden) en la fila,
+//     o con margen horizontal = sesgo-offset(alto); en <td>, envolver en
+//     <span> + `contain: paint`, o usar la variante clip-path.
+//  3. NUNCA aplicar transform al host completo: crea containing block y
+//     stacking context, y rompería un position:fixed hijo a futuro.
+//     Por eso el sesgo va siempre en la barra / pseudo, nunca en el host.
+// ============================================================

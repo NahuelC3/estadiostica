@@ -1,0 +1,40 @@
+// ============================================================
+//  FORMA-RECIENTE — últimos 5 resultados (V / E / D)
+// ------------------------------------------------------------
+//  Marcado: <ul class="forma-reciente"><li class="forma-reciente__item"
+//           data-r="V">V</li> ... </ul>
+//  V = victoria (acento) · E = empate (texto-3) · D = derrota (alerta)
+// ============================================================
+
+@use "../utilities/variables" as *;
+
+.forma-reciente {
+    display: inline-flex;
+    gap: 3px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.forma-reciente__item {
+    display: grid;
+    place-items: center;
+    inline-size: 16px;
+    block-size: 16px;
+    border-radius: $radio-chico;
+    font-family: $fuente-mono;
+    font-size: 0.5625rem;
+    font-weight: 600;
+    color: $color-fondo;
+
+    &[data-r="V"] { background: $color-acento; }
+    &[data-r="E"] { background: $color-texto-3; }
+    &[data-r="D"] { background: $color-alerta; color: #fff; }
+}
+
+// Variante grande (página de equipo).
+.forma-reciente--lg .forma-reciente__item {
+    inline-size: 22px;
+    block-size: 22px;
+    font-size: 0.6875rem;
+}

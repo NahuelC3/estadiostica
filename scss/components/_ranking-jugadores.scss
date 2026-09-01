@@ -1,0 +1,81 @@
+// ============================================================
+//  RANKING-JUGADORES — mejores por métrica, con mini-historial de forma
+// ------------------------------------------------------------
+//  Se usa en la página de partido (ranking por métrica del encuentro) y
+//  como bloque de "líderes" en otras pantallas.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.ranking {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ranking__fila {
+    display: grid;
+    // posición | jugador | valor | mini-historial
+    grid-template-columns: 1.5rem 1fr auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: $radio;
+    background: $color-panel-alt;
+    @include transicion(background-color);
+
+    &:hover {
+        background: $color-borde;
+    }
+}
+
+.ranking__pos {
+    font-family: $fuente-mono;
+    font-size: 0.75rem;
+    color: $color-texto-3;
+    text-align: center;
+}
+
+.ranking__jugador {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+
+    .ranking__nombre {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .ranking__equipo {
+        font-family: $fuente-mono;
+        font-size: 0.625rem;
+        color: $color-texto-3;
+    }
+}
+
+.ranking__valor {
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: $color-acento;
+}
+
+// Mini-historial de forma (últimos N valores como barritas).
+// El JS escribe la altura de cada barrita inline como porcentaje real
+// (span.style.height = "60%"), sin custom properties.
+.ranking__spark {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    block-size: 18px;
+
+    span {
+        inline-size: 4px;
+        block-size: 20%;                 // fallback; el JS la pisa
+        background: $color-texto-3;
+        transform: skewX($sesgo);
+    }
+}

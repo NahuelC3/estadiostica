@@ -1,0 +1,92 @@
+// ============================================================
+//  PANEL-MOVIMIENTOS — "movimientos de la fecha" + líderes del torneo
+// ------------------------------------------------------------
+//  En la página de posiciones, columna lateral. Los movimientos se
+//  calculan comparando la posición actual con prevPos (ver db/computeTable).
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.movimientos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.movimientos__fila {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: $radio;
+    background: $color-panel-alt;
+    font-size: 0.8125rem;
+}
+
+.movimientos__delta {
+    font-family: $fuente-mono;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    // Triangulito direccional (pseudo → puede llevar sesgo).
+    &::before {
+        content: "";
+        inline-size: 0;
+        block-size: 0;
+        border-inline: 4px solid transparent;
+    }
+
+    &--sube {
+        color: $color-acento;
+        &::before { border-block-end: 6px solid $color-acento; }
+    }
+    &--baja {
+        color: $color-alerta;
+        &::before { border-block-start: 6px solid $color-alerta; }
+    }
+    &--igual {
+        color: $color-texto-3;
+        &::before { border: 0; content: "–"; }
+    }
+}
+
+// -- Líderes del torneo -----------------------------
+.lideres {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lideres__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .lideres__label {
+        font-family: $fuente-mono;
+        font-size: 0.625rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: $color-texto-3;
+        inline-size: 5.5rem;
+        flex: none;
+    }
+    .lideres__nombre {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .lideres__valor {
+        margin-inline-start: auto;
+        font-family: $fuente-titulo;
+        font-weight: 800;
+        color: $color-acento;
+    }
+}

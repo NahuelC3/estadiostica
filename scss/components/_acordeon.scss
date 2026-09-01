@@ -1,0 +1,89 @@
+// ============================================================
+//  ACORDEÓN — países / torneos en la sidebar
+// ------------------------------------------------------------
+//  Marcado esperado:
+//    <div class="acordeon">
+//      <div class="acordeon__item">
+//        <button class="acordeon__cabecera" aria-expanded="false"
+//                aria-controls="p-arg">Argentina</button>
+//        <div class="acordeon__cuerpo" id="p-arg" hidden> ...torneos... </div>
+//      </div>
+//    </div>
+//  El JS (js/ui/acordeon.js) sólo togglea aria-expanded y el atributo hidden.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.acordeon {
+    display: flex;
+    flex-direction: column;
+    border: $borde-fino;
+    border-radius: $radio;
+    overflow: hidden;
+}
+
+.acordeon__item + .acordeon__item {
+    border-block-start: $borde-fino;
+}
+
+.acordeon__cabecera {
+    inline-size: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 12px;
+    background: $color-panel;
+    text-align: start;
+    font-family: $fuente-mono;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: $color-texto;
+    @include transicion(background-color);
+
+    &:hover {
+        background: $color-panel-alt;
+    }
+
+    // Flecha ▸ que rota al abrir. Es un pseudo, así que puede llevar el sesgo.
+    &::after {
+        content: "";
+        margin-inline-start: auto;
+        inline-size: 8px;
+        block-size: 8px;
+        border-inline-end: 2px solid $color-texto-3;
+        border-block-end: 2px solid $color-texto-3;
+        transform: rotate(-45deg);
+        @include transicion(transform);
+    }
+
+    &[aria-expanded="true"]::after {
+        transform: rotate(45deg);
+    }
+}
+
+.acordeon__cuerpo {
+    background: $color-panel-alt;
+    padding: 4px 0;
+
+    // El navegador oculta [hidden] por defecto, pero lo forzamos por si
+    // alguna regla de display lo pisa.
+    &[hidden] {
+        display: none;
+    }
+}
+
+.acordeon__enlace {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px 9px 20px;
+    font-size: 0.8125rem;
+    color: $color-texto-2;
+    @include transicion(color);
+
+    &:hover,
+    &[aria-current="page"] {
+        color: $color-acento;
+    }
+}

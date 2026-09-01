@@ -1,0 +1,66 @@
+// ============================================================
+//  PARTIDO-A-PARTIDO — rendimiento del jugador juego por juego
+// ------------------------------------------------------------
+//  Una barra por partido; la altura la escribe el JS inline como % real.
+//  El color codifica el tipo de aporte (gol / asistencia / sin aporte),
+//  explicado en la leyenda.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.pap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pap__grafico {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    block-size: 120px;
+    padding: 8px;
+    border: $borde-fino;
+    border-radius: $radio;
+    background: $color-panel;
+    overflow-x: auto;
+}
+
+.pap__barra {
+    flex: none;
+    inline-size: 14px;
+    block-size: 8%;               // fallback; el JS la pisa
+    background: $color-texto-3;
+    transform: skewX($sesgo);
+    @include transicion(block-size, 200ms);
+
+    &[data-tipo="gol"]  { background: $color-acento; }
+    &[data-tipo="asis"] { background: #6fa8ff; }
+    &[data-tipo="gol-asis"] {
+        background: linear-gradient(to top, $color-acento 50%, #6fa8ff 50%);
+    }
+}
+
+.pap__leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-family: $fuente-mono;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $color-texto-3;
+
+    span::before {
+        content: "";
+        display: inline-block;
+        inline-size: 10px;
+        block-size: 6px;
+        margin-inline-end: 6px;
+        transform: skewX($sesgo);
+    }
+    .ley-gol::before  { background: $color-acento; }
+    .ley-asis::before { background: #6fa8ff; }
+    .ley-nada::before { background: $color-texto-3; }
+}

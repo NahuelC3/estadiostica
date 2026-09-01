@@ -1,0 +1,30 @@
+// ============================================================
+//  BARRA-PUNTOS — mini fondo inclinado detrás del número de PTS
+// ------------------------------------------------------------
+//  Va DENTRO del <td class="col-pts">, envolviendo el número:
+//    <td class="col-pts"><span class="barra-puntos">37</span></td>
+//
+//  Usa el mixin fondo-sesgado-clip: recorta el propio <span> con clip-path
+//  (sin pseudo, sin stacking context) para no pelear con el <td>.
+//  El ancho relativo del realce lo da la clase; si se quisiera proporcional
+//  al puntaje, el JS ajusta el padding-inline-end inline (propiedad real).
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.col-pts .barra-puntos {
+    display: inline-block;
+    padding: 3px 10px;
+    // El realce inclinado va detrás del número, tenue.
+    @include fondo-sesgado-clip($alto: 22px, $color: $color-borde);
+    color: $color-texto;
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+// El líder de cada zona resalta con acento translúcido.
+.col-pts .barra-puntos--lider {
+    @include fondo-sesgado-clip($alto: 22px, $color: rgba($color-acento, 0.22));
+}

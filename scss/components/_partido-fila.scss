@@ -1,0 +1,83 @@
+// ============================================================
+//  PARTIDO-FILA — una fila de la lista de fixture
+// ------------------------------------------------------------
+//  Layout: [ hora/min | local | resultado | visitante ] como grid.
+//  - En vivo: la hora se reemplaza por el minuto en rojo.
+//  - Resultado en vivo: chip con fondo sesgado verde (.chip-vivo).
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.partido-fila {
+    display: grid;
+    grid-template-columns: 52px 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: $borde-fino;
+    border-radius: $radio;
+    background: $color-panel;
+    // overflow-x: clip (NO hidden) contiene las esquinas de barras sesgadas
+    // sin romper posibles sticky/scroll de ancestros.
+    overflow-x: clip;
+    @include transicion(border-color);
+
+    &:hover {
+        border-color: $color-texto-3;
+    }
+}
+
+// -- Hora / minuto -------------------------------------
+.partido-fila__hora {
+    font-family: $fuente-mono;
+    font-size: 0.8125rem;
+    color: $color-texto-3;
+    text-align: center;
+}
+
+.partido-fila__min {
+    font-family: $fuente-mono;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-alerta;         // minuto en vivo, rojo
+    text-align: center;
+}
+
+// -- Equipos -----------------------------------------
+.partido-fila__equipo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-inline-size: 0;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.875rem;
+    }
+}
+
+// El visitante alinea a la derecha (escudo después del nombre).
+.partido-fila__equipo--visita {
+    flex-direction: row-reverse;
+    text-align: end;
+}
+
+// -- Resultado ---------------------------------------
+.partido-fila__resultado {
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9375rem;
+    letter-spacing: 0.02em;
+    padding-inline: 6px;
+    white-space: nowrap;
+}
+
+// Partido programado: guion tenue en lugar del marcador.
+.partido-fila__resultado--pendiente {
+    color: $color-texto-3;
+    font-weight: 500;
+}

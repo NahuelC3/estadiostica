@@ -1,0 +1,31 @@
+// ============================================================
+//  BARRA — clases de uso directo del motivo inclinado
+// ------------------------------------------------------------
+//  .barra                → el rectángulo sesgado suelto (adorno, tick)
+//  .encabezado-seccion   → título de sección con barra + border-bottom
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+// Barra suelta con tamaño por defecto; se puede ajustar con modificadores.
+.barra {
+    @include barra-sesgada(28px, 6px, $color-acento);
+}
+
+.barra--fina  { block-size: 3px; }
+.barra--alta  { block-size: 16px; }
+.barra--borde { background: $color-borde; }
+.barra--texto { background: $color-texto-3; }
+
+// Encabezado de sección reutilizable (fuera de la tabla de posiciones,
+// que usa su propia variante en _zona-encabezado.scss).
+.encabezado-seccion {
+    @include encabezado-sesgado($color-linea: $color-borde);
+    margin-block-end: 12px;
+
+    // El texto del encabezado (después del ::before).
+    span {
+        display: inline-block;
+    }
+}

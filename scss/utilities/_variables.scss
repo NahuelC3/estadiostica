@@ -1,0 +1,52 @@
+// ============================================================
+//  TOKENS DE MARCA — Estadióstica
+// ------------------------------------------------------------
+//  Todo lo "fijo" del diseño vive acá como variables Sass planas.
+//  IMPORTANTE: NO se vuelca nada de esto a :root. La paleta queda
+//  100% en Sass; el CSS compilado no lleva custom properties de color.
+//  Las únicas custom properties del proyecto son --est-pct y --est-val,
+//  que escribe el JavaScript (ver _mixins.scss).
+// ============================================================
+
+@use "sass:math";
+
+// -- Paleta --------------------------------------------------
+// Nombres en español para que se lea el rol, no el valor.
+$color-fondo:      #0D1117;   // fondo general de la página
+$color-panel:      #10161D;   // panel principal (cards, columnas)
+$color-panel-alt:  #141B23;   // panel secundario / filas alternas
+$color-borde:      #1E262F;   // bordes, separadores, líneas finas
+$color-acento:     #39FF6A;   // verde de marca — acento y estados "vivos"
+$color-texto:      #E6EBF0;   // texto principal
+$color-texto-2:    #A0A8B0;   // texto secundario
+$color-texto-3:    #566270;   // texto terciario / etiquetas mono
+$color-alerta:     #C4404A;   // rojo — en vivo, valores negativos, descenso
+
+// -- Tipografía -------------------------------------------
+// Las fuentes se cargan por <link> de Google Fonts en cada HTML.
+// Acá sólo definimos las pilas con fallback del sistema.
+$fuente-titulo: "Archivo", "Segoe UI", system-ui, -apple-system, sans-serif;
+$fuente-mono:   "IBM Plex Mono", "SFMono-Regular", "Consolas", monospace;
+
+// -- EL SESGO ---------------------------------------------
+// Un único token gobierna toda la identidad "inclinada" del sitio.
+// Cambiar $sesgo y recompilar re-inclina TODAS las barras a la vez.
+$sesgo:      -14deg;
+// Magnitud positiva de la tangente del ángulo, para calcular offsets
+// de clip-path (donde no podemos usar transform). math.tan() acepta
+// el ángulo en grados y devuelve un número sin unidad.
+$sesgo-tan:  math.tan(14deg);
+
+// -- Breakpoint ------------------------------------------
+// El proyecto tiene UNA sola media query en todo el CSS: el mixin
+// `desktop` (ver _mixins.scss). Este es su punto de corte.
+$bp-desktop: 960px;
+
+// -- Radios y medidas base ------------------------------
+$radio:        4px;   // radio estándar de paneles y chips
+$radio-chico:  2px;   // radio de elementos pequeños (ticks, badges)
+$borde-fino:   1px solid $color-borde;
+
+// -- Anchos de layout ----------------------------------
+$ancho-maximo:   1280px;  // ancho máximo del contenido centrado
+$ancho-sidebar:  280px;   // columna lateral en desktop

@@ -1,0 +1,21 @@
+// ============================================================
+//  FUNCIONES — helpers de cálculo para el sistema de sesgo
+// ============================================================
+
+@use "sass:math";
+@use "variables" as *;
+
+// sesgo-offset($alto)
+// ------------------------------------------------------------
+//  Cuando un elemento de alto $alto se inclina con skewX($sesgo),
+//  cada esquina se desplaza en horizontal una cantidad = tan(ángulo) * alto.
+//  Esta función devuelve ese desplazamiento, conservando la unidad de $alto
+//  (normalmente px), para usarlo en:
+//    - offsets de clip-path (mixin fondo-sesgado-clip)
+//    - márgenes de mitigación cuando una barra inclinada sobresale de su fila
+//
+//  math.div(x, 1) no cambia el valor: sólo fuerza a que el resultado
+//  quede como número "dividido", evitando sorpresas de tipo en Sass.
+@function sesgo-offset($alto) {
+    @return math.div($sesgo-tan * $alto, 1);
+}

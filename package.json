@@ -1,0 +1,13 @@
+{
+  "name": "estadiostica",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Estadióstica — sitio estático de estadísticas de fútbol (fixture, partidos, posiciones, equipos y jugadores).",
+  "scripts": {
+    "build": "sass scss/main.scss styles/styles.css --no-source-map --style=expanded",
+    "watch": "sass --watch scss/main.scss:styles/styles.css --no-source-map --style=expanded"
+  },
+  "devDependencies": {
+    "sass": "^1.103.1"
+  }
+}

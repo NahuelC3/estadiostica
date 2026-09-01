@@ -1,0 +1,51 @@
+// ============================================================
+//  main.scss — ÚNICO punto de entrada del CSS
+// ------------------------------------------------------------
+//  Sólo @use, en orden: utilities → base → layout → components.
+//  Sin _index.scss y sin @forward: cada partial se lista explícito
+//  para que el orden de cascada quede a la vista.
+// ============================================================
+
+// -- utilities (no emiten CSS por sí solas) --
+@use "utilities/variables";
+@use "utilities/funciones";
+@use "utilities/mixins";
+
+// -- base --
+@use "base/reset";
+@use "base/tipografia";
+@use "base/globales";
+
+// -- layout --
+@use "layout/shell";
+@use "layout/navbar";
+@use "layout/sidebar";
+@use "layout/pie";
+
+// -- components --
+@use "components/barra";
+@use "components/panel";
+@use "components/escudo";
+@use "components/acordeon";
+@use "components/selector-fecha";
+@use "components/pestanas";
+@use "components/badge-vivo";
+@use "components/partido-fila";
+@use "components/partido-lista";
+@use "components/marcador";
+@use "components/cancha";
+@use "components/stats-comparadas";
+@use "components/ranking-jugadores";
+@use "components/tabla-posiciones";
+@use "components/zona-encabezado";
+@use "components/forma-reciente";
+@use "components/barra-puntos";
+@use "components/panel-movimientos";
+@use "components/equipo-header";
+@use "components/plantel";
+@use "components/calendario";
+@use "components/grafico-desvio";
+@use "components/jugador-header";
+@use "components/stat-destacada";
+@use "components/partido-a-partido";
+@use "components/mapa-tiros";

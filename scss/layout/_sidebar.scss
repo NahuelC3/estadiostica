@@ -1,0 +1,68 @@
+// ============================================================
+//  SIDEBAR — bloque "Destacados" + acordeón de países / torneos
+// ------------------------------------------------------------
+//  El comportamiento (abrir/cerrar) del acordeón vive en
+//  components/_acordeon.scss; acá sólo el contenedor y el bloque destacados.
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 16px;
+    border-bottom: $borde-fino;
+
+    @include desktop {
+        border-bottom: 0;
+        border-inline-end: $borde-fino;
+        padding: 24px 20px;
+        // Se queda fija mientras el main scrollea.
+        position: sticky;
+        inset-block-start: 0;
+        align-self: start;
+        block-size: 100vh;
+        overflow-y: auto;
+    }
+}
+
+// -- Bloque "Destacados" -------------------------------
+.destacados {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.destacados__titulo {
+    // etiqueta mono inline
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+}
+
+.destacados__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: $borde-fino;
+    border-radius: $radio;
+    background: $color-panel-alt;
+    @include transicion(border-color);
+
+    &:hover {
+        border-color: $color-texto-3;
+    }
+
+    .destacados__dato {
+        margin-inline-start: auto;
+        font-family: $fuente-mono;
+        font-weight: 600;
+        color: $color-acento;
+    }
+}
