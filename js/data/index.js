@@ -39,6 +39,18 @@ import { EQUIPOS as EQ_KSA } from "./ksa-proleague/teams.js";
 import { PARTIDOS as PA_KSA } from "./ksa-proleague/matches.js";
 import { PLANTELES as PL_KSA } from "./ksa-proleague/squads.js";
 
+import { EQUIPOS as EQ_BRA } from "./bra-serieA/teams.js";
+import { PARTIDOS as PA_BRA } from "./bra-serieA/matches.js";
+import { PLANTELES as PL_BRA } from "./bra-serieA/squads.js";
+
+import { EQUIPOS as EQ_CHI } from "./chi-primera/teams.js";
+import { PARTIDOS as PA_CHI } from "./chi-primera/matches.js";
+import { PLANTELES as PL_CHI } from "./chi-primera/squads.js";
+
+import { EQUIPOS as EQ_URU } from "./uru-primera/teams.js";
+import { PARTIDOS as PA_URU } from "./uru-primera/matches.js";
+import { PLANTELES as PL_URU } from "./uru-primera/squads.js";
+
 /**
  * @typedef {Object} BloqueLiga
  * @property {import("./leagues.js").LigaConfig} cfg
@@ -60,5 +72,8 @@ export const DATOS_CRUDOS = {
         { cfg: LIGAS[5], equipos: EQ_FRA, partidos: PA_FRA, planteles: PL_FRA },
         { cfg: LIGAS[6], equipos: EQ_POR, partidos: PA_POR, planteles: PL_POR },
         { cfg: LIGAS[7], equipos: EQ_KSA, partidos: PA_KSA, planteles: PL_KSA },
+        { cfg: LIGAS[8], equipos: EQ_BRA, partidos: PA_BRA, planteles: PL_BRA },
+        { cfg: LIGAS[9], equipos: EQ_CHI, partidos: PA_CHI, planteles: PL_CHI },
+        { cfg: LIGAS[10], equipos: EQ_URU, partidos: PA_URU, planteles: PL_URU },
     ],
 };

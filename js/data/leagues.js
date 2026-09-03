@@ -312,6 +312,101 @@ export const LIGAS = [
             goles: 1.6, xg: 1.55,
         },
     },
+    {
+        id: "league:bra-serieA",
+        slug: "bra-serieA",
+        nombre: "Brasileirão Série A",
+        pais: "Brasil",
+        bandera: "br",
+        temporada: "2026",
+        // Brasil: tras los puntos, diferencia de gol, goles a favor y por último el mano a mano.
+        tiebreakers: ["PTS", "DIF", "GF", "H2H"],
+        matchdays: 7,
+        zones: [
+            { from: 1, to: 4, key: "libertadores", label: "Copa Libertadores (fase de grupos)", color: "#39FF6A" },
+            { from: 5, to: 5, key: "libertadores-previa", label: "Copa Libertadores (fase previa)", color: "#6FA8FF" },
+            { from: 6, to: 11, key: "sudamericana", label: "Copa Sudamericana", color: "#2FBF9B" },
+            { from: 12, to: 16, key: "media", label: "Zona media", color: "#566270" },
+            { from: 17, to: 20, key: "descenso", label: "Descenso a Série B", color: "#C4404A" },
+        ],
+        adjustments: [],
+        // Promedios POR PARTIDO por posición (Brasil: físico, muchas faltas y amarillas).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.02, pasesClave: 0.2,  entradas: 0.2, despejes: 1.2, duelosGanados: 1.5 },
+            DEF: { goles: 0.06, asistencias: 0.06, pasesClave: 0.5,  entradas: 2.3, despejes: 3.7, duelosGanados: 5.3 },
+            MID: { goles: 0.11, asistencias: 0.14, pasesClave: 1.3,  entradas: 1.9, despejes: 1.1, duelosGanados: 5.6 },
+            FWD: { goles: 0.33, asistencias: 0.16, pasesClave: 1.1,  entradas: 0.9, despejes: 0.5, duelosGanados: 4.2 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 12.2, rematesAlArco: 4.2, corners: 5.0,
+            faltas: 15.5, amarillas: 3.0, pases: 435, precisionPases: 79, offsides: 2.0,
+            goles: 1.35, xg: 1.35,
+        },
+    },
+    {
+        id: "league:chi-primera",
+        slug: "chi-primera",
+        nombre: "Primera División de Chile",
+        pais: "Chile",
+        bandera: "cl",
+        temporada: "2026",
+        tiebreakers: ["PTS", "DIF", "GF", "H2H"],
+        matchdays: 7,
+        // 16 equipos: repesca de permanencia en el 14, descenso directo 15-16.
+        zones: [
+            { from: 1, to: 2, key: "libertadores", label: "Copa Libertadores", color: "#39FF6A" },
+            { from: 3, to: 3, key: "libertadores-previa", label: "Copa Libertadores (fase previa)", color: "#6FA8FF" },
+            { from: 4, to: 6, key: "sudamericana", label: "Copa Sudamericana", color: "#2FBF9B" },
+            { from: 7, to: 13, key: "media", label: "Zona media", color: "#566270" },
+            { from: 14, to: 14, key: "repesca", label: "Repesca de permanencia", color: "#E8A13C" },
+            { from: 15, to: 16, key: "descenso", label: "Descenso a Primera B", color: "#C4404A" },
+        ],
+        adjustments: [],
+        // Promedios POR PARTIDO por posición (Chile: juego directo, menos pases).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.02, pasesClave: 0.2,  entradas: 0.2, despejes: 1.2, duelosGanados: 1.5 },
+            DEF: { goles: 0.05, asistencias: 0.05, pasesClave: 0.45, entradas: 2.3, despejes: 3.8, duelosGanados: 5.2 },
+            MID: { goles: 0.10, asistencias: 0.13, pasesClave: 1.2,  entradas: 1.9, despejes: 1.2, duelosGanados: 5.4 },
+            FWD: { goles: 0.31, asistencias: 0.15, pasesClave: 1.0,  entradas: 0.9, despejes: 0.5, duelosGanados: 4.1 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 11.4, rematesAlArco: 3.9, corners: 4.6,
+            faltas: 14.8, amarillas: 2.9, pases: 400, precisionPases: 76, offsides: 2.1,
+            goles: 1.25, xg: 1.28,
+        },
+    },
+    {
+        id: "league:uru-primera",
+        slug: "uru-primera",
+        nombre: "Primera División de Uruguay",
+        pais: "Uruguay",
+        bandera: "uy",
+        temporada: "2026",
+        // El formato real (Apertura + Clausura + Tabla Anual + finales) se simplifica a una
+        // Tabla Anual única con zonas, igual que se hizo con arg-lpf.
+        tiebreakers: ["PTS", "DIF", "GF", "H2H"],
+        matchdays: 7,
+        zones: [
+            { from: 1, to: 2, key: "libertadores", label: "Copa Libertadores", color: "#39FF6A" },
+            { from: 3, to: 4, key: "libertadores-previa", label: "Copa Libertadores (fase previa)", color: "#6FA8FF" },
+            { from: 5, to: 7, key: "sudamericana", label: "Copa Sudamericana", color: "#2FBF9B" },
+            { from: 8, to: 13, key: "media", label: "Zona media", color: "#566270" },
+            { from: 14, to: 16, key: "descenso", label: "Descenso a Segunda División", color: "#C4404A" },
+        ],
+        adjustments: [],
+        // Promedios POR PARTIDO por posición (Uruguay: muy físico, posesión imprecisa).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.02, pasesClave: 0.2, entradas: 0.2, despejes: 1.3, duelosGanados: 1.6 },
+            DEF: { goles: 0.05, asistencias: 0.05, pasesClave: 0.4, entradas: 2.4, despejes: 3.9, duelosGanados: 5.4 },
+            MID: { goles: 0.10, asistencias: 0.12, pasesClave: 1.1, entradas: 2.0, despejes: 1.2, duelosGanados: 5.5 },
+            FWD: { goles: 0.30, asistencias: 0.14, pasesClave: 1.0, entradas: 0.9, despejes: 0.5, duelosGanados: 4.0 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 11.0, rematesAlArco: 3.8, corners: 4.4,
+            faltas: 16.2, amarillas: 3.2, pases: 385, precisionPases: 74, offsides: 2.0,
+            goles: 1.2, xg: 1.22,
+        },
+    },
 ];
 
 /** FECHA_DEMO — la "jornada actual" del sitio (hay partidos en vivo/programados).

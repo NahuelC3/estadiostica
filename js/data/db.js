@@ -135,6 +135,9 @@ const NAC_LIGA = {
     "fra-ligue1":     ["fr", "be"],
     "por-primeira":   ["pt", "br"],
     "ksa-proleague":  ["sa", "eg"],
+    "bra-serieA":     ["br", "ar"],
+    "chi-primera":    ["cl", "ar"],
+    "uru-primera":    ["uy", "ar"],
 };
 
 /**
