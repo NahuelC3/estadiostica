@@ -729,6 +729,15 @@ a.enlace:hover {
   font-size: 24px;
 }
 
+.escudo--img {
+  display: inline-block;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+  object-fit: contain;
+  padding: 1px;
+}
+
 .equipo-nombre {
   display: inline-flex;
   align-items: center;

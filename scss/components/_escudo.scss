@@ -1,11 +1,12 @@
 // ============================================================
-//  ESCUDO — badge monograma (placeholder de escudo real)
+//  ESCUDO — escudo real (imagen) con fallback a monograma
 // ------------------------------------------------------------
-//  Círculo con las iniciales del equipo sobre su brandColor.
-//  El JS escribe inline SOLO propiedades CSS reales:
-//    background (brandColor) y color (claro/oscuro según luminancia).
-//  Ver js/lib/escudo.js. El día que haya escudos reales, sólo cambia
-//  esa función y este componente pasa a ser el fallback.
+//  · .escudo.escudo--img  → <img> del crest real (assets/escudos/).
+//  · .escudo (solo)        → círculo con las iniciales sobre brandColor,
+//                            para los 30 equipos sin escudo. El JS escribe
+//                            inline background (brandColor) y color (por
+//                            luminancia). Ver js/lib/escudo.js.
+//  Ambas variantes ocupan la misma caja (20/28/40/64 px).
 //
 //  Nota de arquitectura: no usamos custom properties acá. Las únicas del
 //  proyecto son --est-pct y --est-val (mixins barra-comparativa/desvio).
@@ -40,6 +41,17 @@
 .escudo--md { inline-size: 28px; block-size: 28px; font-size: 11px; }
 .escudo--lg { inline-size: 40px; block-size: 40px; font-size: 15px; }
 .escudo--xl { inline-size: 64px; block-size: 64px; font-size: 24px; }
+
+// Escudo REAL (imagen). Ocupa la misma caja que el monograma pero sin
+// recorte circular ni fondo: el crest se ve entero.
+.escudo--img {
+    display: inline-block;
+    border-radius: 0;
+    box-shadow: none;
+    background: none;
+    object-fit: contain;
+    padding: 1px;                 // respiro mínimo dentro de la caja
+}
 
 // Escudo + nombre de equipo, en línea, con recorte por elipsis.
 .equipo-nombre {

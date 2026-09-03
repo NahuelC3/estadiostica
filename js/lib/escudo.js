@@ -1,14 +1,25 @@
 // ============================================================
-//  escudo.js — badge monograma (placeholder de escudo real)
+//  escudo.js — escudo real (imagen) con fallback a monograma
 // ------------------------------------------------------------
-//  Mientras no haya escudos reales, cada equipo se representa con un
-//  círculo de su color de marca y sus iniciales. El color del texto
-//  (claro u oscuro) se decide por la LUMINANCIA del fondo para que
-//  siempre haya contraste.
+//  Si el equipo tiene entrada en la tabla js/data/escudos.js, se pinta
+//  su escudo real (un <img> de assets/escudos/). Si no la tiene (30
+//  equipos: los 18 saudíes + West Ham, Wolves, Leicester, Southampton,
+//  Málaga, Schalke, y 6 con colisión de nombre de archivo), se sigue
+//  usando el círculo con las iniciales sobre su brandColor.
 //
-//  El día que existan escudos reales, se cambia SÓLO este archivo
-//  (p. ej. `pintarEscudo` devuelve un <img>) y las páginas no se tocan.
+//  Los dos casos ocupan la MISMA caja (20/28/40/64 px) → no hay salto
+//  de layout al mezclarlos en una lista.
 // ============================================================
+
+import { ESCUDOS } from "../data/escudos.js";
+
+// Ruta base de los escudos. El proyecto usa rutas relativas: desde las
+// páginas de pages/ hay que subir un nivel.
+const PREFIJO = location.pathname.includes("/pages/") ? "../" : "";
+const BASE_ESCUDOS = `${PREFIJO}assets/escudos/`;
+
+// Lado en px de cada tamaño (para fijar width/height del <img> y evitar reflow).
+const TAM_PX = { sm: 20, md: 28, lg: 40, xl: 64 };
 
 /**
  * iniciales — 2 letras a partir del nombre del equipo.
@@ -55,14 +66,40 @@ export function colorTextoPara(hexFondo) {
 }
 
 /**
- * pintarEscudo — crea el elemento del badge monograma ya coloreado.
- *  Escribe SÓLO propiedades CSS reales inline (background y color), nada
- *  de custom properties.
- * @param {{nombre: string, brandColor: string}} equipo
+ * tieneEscudoReal — ¿este equipo tiene escudo (imagen) o va con monograma?
+ * @param {string} teamId
+ * @returns {boolean}
+ */
+export function tieneEscudoReal(teamId) {
+    return Object.prototype.hasOwnProperty.call(ESCUDOS, teamId);
+}
+
+/**
+ * pintarEscudo — devuelve el elemento del escudo del equipo.
+ *  · con escudo real → <img class="escudo escudo--<tam> escudo--img">
+ *  · sin escudo      → <span class="escudo escudo--<tam>"> con las iniciales
+ *  Ambos tienen la misma caja, así que las páginas no distinguen entre uno y otro.
+ * @param {{id?: string, nombre: string, brandColor: string}} equipo
  * @param {"sm"|"md"|"lg"|"xl"} [tam="md"]
- * @returns {HTMLSpanElement}
+ * @returns {HTMLImageElement|HTMLSpanElement}
  */
 export function pintarEscudo(equipo, tam = "md") {
+    const archivo = equipo.id ? ESCUDOS[equipo.id] : undefined;
+
+    if (archivo) {
+        const img = document.createElement("img");
+        img.className = `escudo escudo--${tam} escudo--img`;
+        img.src = BASE_ESCUDOS + archivo;
+        img.alt = "";                       // decorativo: el nombre del equipo va al lado
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.width = TAM_PX[tam] ?? 28;      // evita reflow mientras carga
+        img.height = TAM_PX[tam] ?? 28;
+        img.setAttribute("aria-hidden", "true");
+        return img;
+    }
+
+    // -- Fallback: monograma (círculo con iniciales sobre el color de marca) --
     const span = document.createElement("span");
     span.className = `escudo escudo--${tam}`;
     span.textContent = iniciales(equipo.nombre);
