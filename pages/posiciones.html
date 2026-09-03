@@ -27,8 +27,28 @@
                 </span>
             </a>
             <nav class="navbar__nav" aria-label="Secciones">
-                <a href="../index.html">Fixture</a>
-                <a href="posiciones.html?liga=arg-lpf" aria-current="page">Posiciones</a>
+                <a class="navbar__nav-link navbar__nav-link--vivo" href="../index.html" data-nav="vivo">
+                    <span class="navbar__nav-inner">
+                        <span class="navbar__nav-dot" aria-hidden="true"></span>
+                        En vivo
+                        <span class="navbar__nav-count" aria-hidden="true">0</span>
+                    </span>
+                </a>
+                <a class="navbar__nav-link" href="../index.html" data-nav="fixture">
+                    <span class="navbar__nav-inner">Fixture</span>
+                </a>
+                <a class="navbar__nav-link" href="posiciones.html?liga=arg-lpf" data-nav="posiciones">
+                    <span class="navbar__nav-inner">Posiciones</span>
+                </a>
+                <span class="navbar__sep" aria-hidden="true"></span>
+                <button type="button" class="navbar__buscar" aria-label="Buscar">
+                    <span class="navbar__nav-inner">
+                        <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true">
+                            <circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <line x1="13.5" y1="13.5" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                </button>
             </nav>
         </header>
 
@@ -48,6 +68,7 @@
         </footer>
     </div>
 
+    <script type="module" src="../js/ui/navbar.js"></script>
     <script type="module" src="../js/pages/posiciones.js"></script>
 </body>
 </html>

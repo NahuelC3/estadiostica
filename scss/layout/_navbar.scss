@@ -47,30 +47,135 @@
 .navbar__wordmark-a { color: $color-acento; }
 .navbar__wordmark-b { color: $color-texto; }
 
-// -- Navegación de secciones (opcional, se completa por página) --
+// ------------------------------------------------------------
+//  Navegación de secciones — píldoras anguladas
+// ------------------------------------------------------------
+//  Cada link (y el botón de búsqueda) es una "píldora" con el fondo
+//  inclinado por `fondo-sesgado`: el sesgo va en el ::before, el <a>/<button>
+//  NO se transforma (no crea stacking context / containing block) y el
+//  contenido queda recto sin contra-sesgo. El estado activo lo marca
+//  js/ui/navbar.js poniendo aria-current="page".
+
 .navbar__nav {
     display: none;
     margin-inline-start: auto;
-    gap: 20px;
+    align-items: center;
+    // El gap absorbe el ~3-4px que el ::before sesgado sobresale de cada
+    // píldora: sin colisión y sin necesidad de overflow:clip.
+    gap: 14px;
 
     @include desktop {
         display: flex;
     }
+}
 
-    a {
-        // Tipografía de etiqueta mono escrita inline: no usamos @extend desde
-        // un selector descendiente (lo prohíbe la regla de arquitectura).
-        font-family: $fuente-mono;
-        font-size: 0.6875rem;
-        font-weight: 500;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: $color-texto-3;
-        @include transicion(color);
+// -- Píldora base (links + botón de búsqueda) --------------
+.navbar__nav-link,
+.navbar__buscar {
+    @include fondo-sesgado($color: $color-panel-alt, $radio: 3px);
+    display: inline-flex;
+    padding: 7px 14px;
+    color: $color-texto-2;
+    @include transicion(color);
 
-        &:hover,
-        &[aria-current="page"] {
-            color: $color-acento;
+    // Borde sutil en reposo; el fondo/borde animan en el propio pseudo.
+    &::before {
+        border: 1px solid $color-borde-claro;
+        @include transicion((background-color, border-color));
+    }
+
+    &:hover {
+        color: $color-acento;
+
+        &::before {
+            background: rgba($color-acento, 0.08);
+            border-color: $color-acento;
         }
     }
+
+    // Activo (página actual): fondo verde sólido + texto oscuro = máximo contraste.
+    &[aria-current="page"] {
+        color: $color-fondo;
+
+        &::before {
+            background: $color-acento;
+            border-color: $color-acento;
+        }
+    }
+}
+
+// Contenido interno de la píldora (queda recto: el sesgo está sólo en el ::before).
+.navbar__nav-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: $fuente-titulo;
+    font-weight: 700;
+    font-size: 0.8125rem;          // ~13px
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+// -- Variante "En vivo": verde muy sutil en reposo + punto + contador --
+.navbar__nav-link--vivo {
+    color: $color-acento;
+
+    &::before {
+        background: rgba($color-acento, 0.07);
+        border-color: rgba($color-acento, 0.35);
+    }
+}
+
+.navbar__nav-dot {
+    flex: none;
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: 50%;
+    background: $color-acento;
+    animation: navbar-dot 1.4s ease-in-out infinite;
+}
+
+// prefers-reduced-motion ya frena esto desde la regla global de base/_globales.scss.
+@keyframes navbar-dot {
+    0%, 100% { opacity: 1;    transform: scale(1); }
+    50%      { opacity: 0.35; transform: scale(0.7); }
+}
+
+.navbar__nav-count {
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: $color-acento;
+}
+
+// Sin partidos en vivo: se atenúa todo y se frena el punto.
+.navbar__nav-link--vivo[data-cero] {
+    color: $color-texto-3;
+
+    &::before {
+        background: $color-panel-alt;
+        border-color: $color-borde-claro;
+    }
+
+    .navbar__nav-dot {
+        background: $color-texto-3;
+        animation: none;
+    }
+
+    .navbar__nav-count { color: $color-texto-3; }
+}
+
+// -- Separador vertical fino, con el sesgo de la marca --
+.navbar__sep {
+    @include barra-sesgada($ancho: 1px, $alto: 20px, $color: $color-borde);
+    margin-inline: 4px;
+}
+
+// -- Botón de búsqueda: misma píldora, sólo el ícono (placeholder, sin handler) --
+.navbar__buscar {
+    padding: 7px 10px;
+    cursor: pointer;
+
+    svg { display: block; }
 }
