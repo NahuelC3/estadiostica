@@ -111,9 +111,9 @@ export function computeTable(partidos, ligaCfg, opciones = {}) {
             .map((p) => resultadoPara(p, fila.teamId));
     }
 
-    // 6. Ordena aplicando los criterios de desempate de la liga.
-    const orden = Array.from(filas.values());
-    orden.sort((a, b) => desempatar(a, b, ligaCfg, jugados));
+    // 6. Ordena: primero por puntos y, dentro de cada empate, en cascada
+    //    por los criterios de desempate de la liga (ver ordenarGrupo).
+    const orden = ordenarGrupo(Array.from(filas.values()), ligaCfg.tiebreakers, jugados);
 
     // 7. Asigna posición y zona.
     orden.forEach((fila, i) => {
@@ -125,40 +125,101 @@ export function computeTable(partidos, ligaCfg, opciones = {}) {
 }
 
 /**
- * desempatar — comparador según ligaCfg.tiebreakers.
- *  Tokens soportados: "PTS", "DIF", "GF", "H2H", "nombre".
+ * ordenarGrupo — ordena un grupo de filas que ya está empatado en todos
+ *  los criterios "anteriores", aplicando en cascada la lista `criterios`
+ *  que queda por resolver.
+ *
+ *   · PTS / DIF / GF / nombre → basta comparar cada fila por su valor.
+ *   · H2H → necesita CONTEXTO de grupo: se arma una mini-tabla con los
+ *     puntos que sacó cada equipo SÓLO en los partidos contra los demás
+ *     integrantes de este mismo grupo. NO es una comparación suelta de a
+ *     pares (esa no es transitiva y rompía el orden con 3+ empatados que
+ *     tienen resultados cruzados entre sí).
+ *
+ *  Si un criterio no separa del todo (subgrupo con el mismo valor, o
+ *  grupo sin partidos entre sí en el caso de H2H), se sigue con el resto
+ *  de los criterios SÓLO sobre ese subgrupo. Cuando se acaban los
+ *  criterios de la liga, desempate final estable por id de equipo.
+ *
+ * @param {FilaTabla[]} filas      grupo a ordenar
+ * @param {string[]} criterios     criterios que faltan aplicar, en orden
+ * @param {import("../data/db.js").Partido[]} jugados  partidos finalizados
+ * @returns {FilaTabla[]}          el grupo ordenado
  */
-function desempatar(a, b, ligaCfg, jugados) {
-    for (const criterio of ligaCfg.tiebreakers) {
-        let d = 0;
-        if (criterio === "PTS") d = b.pts - a.pts;
-        else if (criterio === "DIF") d = b.dif - a.dif;
-        else if (criterio === "GF") d = b.gf - a.gf;
-        else if (criterio === "H2H") d = h2h(b, a, jugados);
-        else if (criterio === "nombre") d = a.teamId.localeCompare(b.teamId);
-        if (d !== 0) return d;
+function ordenarGrupo(filas, criterios, jugados) {
+    if (filas.length <= 1) return filas.slice();
+
+    // Se acabaron los criterios de la liga: desempate final por id.
+    if (criterios.length === 0) {
+        return filas.slice().sort((a, b) => a.teamId.localeCompare(b.teamId));
     }
-    return a.teamId.localeCompare(b.teamId);
+
+    const [criterio, ...resto] = criterios;
+
+    // "nombre": ids únicos → ordena alfabético y nunca quedan empates.
+    if (criterio === "nombre") {
+        return filas.slice().sort((a, b) => a.teamId.localeCompare(b.teamId));
+    }
+
+    // Para H2H, la mini-tabla del grupo; para el resto no hace falta.
+    const miniPuntos = criterio === "H2H"
+        ? miniTabla(filas.map((f) => f.teamId), jugados)
+        : null;
+
+    // Valor comparable de una fila para el criterio actual (más = mejor).
+    const valorDe = (fila) => {
+        if (criterio === "PTS") return fila.pts;
+        if (criterio === "DIF") return fila.dif;
+        if (criterio === "GF") return fila.gf;
+        if (criterio === "H2H") return miniPuntos.get(fila.teamId);
+        return 0;
+    };
+
+    // Ordena por ese valor (descendente) y reagrupa por valor idéntico:
+    // cada subgrupo que sigue empatado se resuelve con el resto de los
+    // criterios.
+    const ordenadas = filas.slice().sort((a, b) => valorDe(b) - valorDe(a));
+    const salida = [];
+    let i = 0;
+    while (i < ordenadas.length) {
+        let j = i + 1;
+        while (j < ordenadas.length && valorDe(ordenadas[j]) === valorDe(ordenadas[i])) j++;
+        const subgrupo = ordenadas.slice(i, j);
+        salida.push(
+            ...(subgrupo.length > 1 ? ordenarGrupo(subgrupo, resto, jugados) : subgrupo),
+        );
+        i = j;
+    }
+    return salida;
 }
 
 /**
- * h2h — mini-comparación "entre ellos": diferencia de puntos que sacó
- *  el equipo X respecto del equipo Y en los partidos que jugaron entre sí.
- *  (Simplificación del head-to-head real, suficiente para la demo.)
+ * miniTabla — "head-to-head" de verdad: puntos de cada equipo del grupo
+ *  contando SÓLO los partidos jugados contra otros equipos del MISMO
+ *  grupo (3 por victoria, 1 por empate).
+ *
+ *  Simplificación asumida (igual que antes, y suficiente para la demo):
+ *  sólo suma PUNTOS entre ellos, no aplica diferencia de gol particular.
+ *
+ * @param {string[]} ids       teamIds del grupo empatado
+ * @param {import("../data/db.js").Partido[]} jugados  partidos finalizados
+ * @returns {Map<string, number>}  teamId -> puntos en la mini-tabla
  */
-function h2h(x, y, jugados) {
-    let px = 0, py = 0;
+function miniTabla(ids, jugados) {
+    const delGrupo = new Set(ids);
+    const pts = new Map(ids.map((id) => [id, 0]));
     for (const p of jugados) {
-        const entreEllos =
-            (p.home === x.teamId && p.away === y.teamId) ||
-            (p.home === y.teamId && p.away === x.teamId);
-        if (!entreEllos) continue;
-        const rx = resultadoPara(p, x.teamId);
-        if (rx === "V") px += 3;
-        else if (rx === "E") { px += 1; py += 1; }
-        else py += 3;
+        if (!delGrupo.has(p.home) || !delGrupo.has(p.away)) continue;
+        if (p.score.home > p.score.away) {
+            pts.set(p.home, pts.get(p.home) + 3);
+        } else if (p.score.home < p.score.away) {
+            pts.set(p.away, pts.get(p.away) + 3);
+        } else {
+            pts.set(p.home, pts.get(p.home) + 1);
+            pts.set(p.away, pts.get(p.away) + 1);
+        }
     }
-    return px - py;
+    return pts;
 }
 
 /** zonaDe — encuentra la zona (Libertadores, descenso...) para una posición. */
