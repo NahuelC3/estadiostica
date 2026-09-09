@@ -10,8 +10,10 @@
 
 .navbar {
     display: flex;
+    flex-wrap: wrap;            // el panel mobile baja como fila de ancho completo
     align-items: center;
     gap: 24px;
+    row-gap: 12px;              // separación barra ↔ panel (sin tocar el gap horizontal)
     padding: 12px 16px;
     background: $color-panel;
     border-bottom: $borde-fino;
@@ -178,4 +180,235 @@
     cursor: pointer;
 
     svg { display: block; }
+}
+
+// ============================================================
+//  MENÚ MOBILE — botón hamburguesa + panel descendente (<960px)
+// ------------------------------------------------------------
+//  Lo inyecta js/ui/navbar.js dentro del <header class="navbar">.
+//  El panel es una fila de ancho completo del navbar: al abrirse crece la
+//  fila "navbar" del grid y empuja el resto de la página hacia abajo (no
+//  es overlay, no oscurece nada). Reutiliza las mismas píldoras anguladas
+//  del nav desktop: el sesgo vive en el ::before (fondo-sesgado), el
+//  contenido queda recto.
+// ============================================================
+
+// -- Botón hamburguesa: misma píldora que los links, sólo <960px --
+.navbar__hamburguesa {
+    @include fondo-sesgado($color: $color-panel-alt, $radio: 3px);
+    display: inline-flex;
+    margin-inline-start: auto;        // pegado al borde derecho
+    padding: 9px 12px;
+    cursor: pointer;
+
+    &::before {
+        border: 1px solid $color-borde-claro;
+        @include transicion((background-color, border-color));
+    }
+
+    @include desktop {
+        display: none;                // en desktop manda el .navbar__nav de siempre
+    }
+
+    // Abierto: píldora verde sólida (mismo lenguaje visual que el link activo).
+    &[aria-expanded="true"]::before {
+        background: $color-acento;
+        border-color: $color-acento;
+    }
+}
+
+// 3 líneas rectas (el sesgo va en el ::before de la píldora, no en las líneas).
+.navbar__hamburguesa-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    inline-size: 18px;
+
+    span {
+        block-size: 2px;
+        background: $color-texto-2;
+        @include transicion(background-color);
+    }
+}
+
+.navbar__hamburguesa[aria-expanded="true"] .navbar__hamburguesa-inner span {
+    background: $color-fondo;         // oscuras sobre el verde
+}
+
+// -- Panel: fila de ancho completo, debajo de la barra --
+.navbar__panel {
+    flex-basis: 100%;
+    inline-size: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-block: 14px 4px;
+    border-block-start: $borde-fino;
+
+    &[hidden] { display: none; }
+
+    @include desktop { display: none; }   // el menú mobile no existe en desktop
+}
+
+// Etiqueta de sección del panel ("Navegación", "Partidos de hoy").
+.navbar__panel-label {
+    @include encabezado-sesgado($color-linea: $color-borde-claro);
+}
+.navbar__panel-label--partidos {
+    margin-block-start: 6px;
+}
+
+// -- Píldoras del panel: ancho completo, con flecha --
+.navbar__panel-link {
+    @include fondo-sesgado($color: $color-panel-alt, $radio: 3px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 16px;
+    color: $color-texto-2;
+    @include transicion(color);
+
+    &::before {
+        border: 1px solid $color-borde-claro;
+        @include transicion((background-color, border-color));
+    }
+
+    &:hover {
+        color: $color-acento;
+
+        &::before {
+            background: rgba($color-acento, 0.08);
+            border-color: $color-acento;
+        }
+    }
+
+    // Activo (página actual): mismo tratamiento que el nav desktop.
+    &[aria-current="page"] {
+        color: $color-fondo;
+
+        &::before {
+            background: $color-acento;
+            border-color: $color-acento;
+        }
+    }
+}
+
+.navbar__panel-flecha {
+    font-family: $fuente-mono;
+    font-size: 0.9375rem;
+    line-height: 1;
+}
+
+// -- "En vivo": verde sólido siempre (destacado) --
+.navbar__panel-link--vivo {
+    color: $color-fondo;
+
+    &::before {
+        background: $color-acento;
+        border-color: $color-acento;
+    }
+
+    &:hover {
+        color: $color-fondo;
+
+        &::before {
+            background: $color-acento;
+            border-color: $color-acento;
+        }
+    }
+
+    .navbar__nav-dot { background: $color-fondo; }
+    .navbar__nav-count { color: $color-fondo; }
+
+    // Sin partidos en vivo: baja a oscuro y frena el punto.
+    &[data-cero] {
+        color: $color-texto-3;
+
+        &::before {
+            background: $color-panel-alt;
+            border-color: $color-borde-claro;
+        }
+
+        .navbar__nav-dot { background: $color-texto-3; animation: none; }
+        .navbar__nav-count { color: $color-texto-3; }
+    }
+}
+
+// -- Buscador: barra completa con la lupa --
+.navbar__panel-buscar {
+    @include fondo-sesgado($color: $color-panel-alt, $radio: 3px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    color: $color-texto-3;
+
+    &::before { border: 1px solid $color-borde-claro; }
+
+    svg { flex: none; display: block; }
+
+    input {
+        flex: 1;
+        min-inline-size: 0;
+        border: 0;
+        background: none;
+        color: $color-texto;
+        font-family: $fuente-mono;
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+
+        &::placeholder {
+            color: $color-texto-3;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        &:focus { outline: none; }
+    }
+}
+
+// -- Partidos de hoy: filas compactas con barrita angulada a la izquierda --
+.navbar__panel-partidos {
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar__panel-partido {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-block: 9px;
+    font-family: $fuente-mono;
+    font-size: 0.75rem;
+    color: $color-texto;
+    border-block-end: 1px solid $color-borde;
+
+    &:last-child { border-block-end: 0; }
+}
+
+.navbar__panel-partido-tick {
+    @include barra-sesgada($ancho: 3px, $alto: 20px, $color: $color-borde-claro);
+    flex: none;
+}
+.navbar__panel-partido-tick--vivo {
+    background: $color-acento;
+}
+
+// Columnas de ancho fijo (fuente mono): abreviaturas y marcador alineados
+// verticalmente entre las 3 filas.
+.navbar__panel-partido-eq {
+    flex: none;
+    inline-size: 3.25ch;
+}
+
+.navbar__panel-partido-centro {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-weight: 500;
+}
+.navbar__panel-partido-min {
+    font-size: 0.625rem;
+    color: $color-alerta;
 }

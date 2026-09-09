@@ -15,11 +15,29 @@
 
 .pestanas {
     display: flex;
+    flex-wrap: nowrap;
     gap: 4px;
     border-block-end: $borde-fino;
+
+    // En pantallas chicas las pestañas no entran (11 ligas en posiciones,
+    // 4 secciones en equipo/jugador): que scrolleen DENTRO de este contenedor
+    // en vez de empujar el ancho de toda la página. Mismo criterio que
+    // `.tabla-scroll` en la tabla de posiciones.
+    // `overflow-y` va explícito en `hidden`: al poner `overflow-x` distinto de
+    // `visible`, el eje Y pasaría solo a `auto` y podría recortar/scrollear el
+    // indicador `::after` de la pestaña activa.
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;               // Firefox: barra fina en vez de completa
+    -webkit-overflow-scrolling: touch;   // scroll con inercia en iOS
 }
 
 .pestanas__tab {
+    // Mobile: ancho natural en una sola línea; el que scrollea es el
+    // contenedor (`.pestanas`), no se aprieta ni se parte el texto de la
+    // pestaña. En desktop entran todas, así que ahí se dejan encoger y
+    // envolver el texto para no mostrar barra de scroll (ver más abajo).
+    flex: none;
     position: relative;
     padding: 10px 14px;
     font-family: $fuente-mono;
@@ -30,6 +48,10 @@
     color: $color-texto-3;
     @include transicion(color);
 
+    @include desktop {
+        flex: 0 1 auto;     // pueden encogerse y envolver texto: sin scroll horizontal
+    }
+
     &:hover {
         color: $color-texto-2;
     }
@@ -39,11 +61,14 @@
     }
 
     // Indicador inferior: barra sesgada de 4px, sólo visible en la activa.
+    // Apoyada en el borde inferior (inset-block-end: 0), no -1px: el
+    // contenedor ahora tiene overflow-y: hidden y recortaría el pixel que
+    // sobresalía.
     &::after {
         content: "";
         position: absolute;
         inset-inline: 6px;
-        inset-block-end: -1px;      // pisa el border-block-end del contenedor
+        inset-block-end: 0;
         block-size: 4px;
         background: $color-acento;
         transform: skewX($sesgo);

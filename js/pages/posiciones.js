@@ -6,6 +6,7 @@
 import * as repo from "../repo.js";
 import { el, qs, limpiar, paramUrl, guardFileProtocol, mostrarError } from "../lib/dom.js";
 import { pintarEscudo } from "../lib/escudo.js";
+import { centrarPestañaActiva } from "../ui/pestanas.js";
 
 const COLUMNAS = ["PJ", "PG", "PE", "PP", "GF", "GC", "DIF", "PTS"];
 
@@ -145,11 +146,16 @@ async function init() {
         el("span", { class: `fi fi-${data.liga.bandera}`, "aria-hidden": "true" }),
         el("span", {}, `${data.liga.nombre} · Tabla de posiciones`)));
 
-    cont.append(await selectorLigas(slug));
+    const selector = await selectorLigas(slug);
+    cont.append(selector);
 
     cont.append(el("div", { class: "dos-columnas" },
         tabla(data),
         lateral(data)));
+
+    // El selector no usa initPestañas (son <a> sueltos): centrar la activa
+    // a mano, una vez que ya está todo en el DOM.
+    centrarPestañaActiva(selector);
 }
 
 init();

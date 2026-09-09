@@ -11,6 +11,35 @@
 import { qsa } from "../lib/dom.js";
 
 /**
+ * centrarPestañaActiva — deja a la vista la pestaña marcada como activa
+ *  dentro de un contenedor con scroll horizontal. En mobile `.pestanas`
+ *  scrollea (11 ligas en posiciones, 4 secciones en equipo/jugador): sin
+ *  esto, al entrar directo a una liga del final, el strip arrancaría
+ *  mostrando la primera pestaña. Sin animación: se posiciona al instante.
+ *
+ *  Se corre dos veces: una ya (fuente en caché) y otra tras
+ *  `document.fonts.ready`, porque hasta que la tipografía mono se aplica
+ *  el ancho de las pestañas es menor y el scroll quedaría desfasado.
+ * @param {HTMLElement|null} root  contenedor .pestanas
+ */
+export function centrarPestañaActiva(root) {
+    if (!root) return;
+
+    const centrar = () => {
+        const activa = root.querySelector('[aria-selected="true"]');
+        // Sólo si el strip realmente scrollea (mobile); en desktop no hay efecto.
+        if (!activa || root.scrollWidth <= root.clientWidth) return;
+        const rRoot = root.getBoundingClientRect();
+        const rTab = activa.getBoundingClientRect();
+        // Corrimiento para dejar la pestaña centrada en la franja visible.
+        root.scrollLeft += (rTab.left - rRoot.left) - (root.clientWidth - rTab.width) / 2;
+    };
+
+    centrar();
+    if (document.fonts) document.fonts.ready.then(centrar);
+}
+
+/**
  * initPestañas — activa un grupo de pestañas.
  * @param {HTMLElement} root  contenedor con role="tablist"
  * @param {{ onCambio?: (valor: string, tab: HTMLElement) => void }} [opciones]
@@ -57,6 +86,9 @@ export function initPestañas(root, { onCambio } = {}) {
     // Estado inicial: el que ya tenga aria-selected="true", o el primero.
     const inicial = tabs.find((t) => t.getAttribute("aria-selected") === "true") || tabs[0];
     if (inicial) activar(inicial, false);
+
+    // Si la activa no es la primera, dejarla a la vista (strip con scroll en mobile).
+    centrarPestañaActiva(root);
 
     return {
         seleccionar(valor) {
