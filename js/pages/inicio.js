@@ -66,7 +66,8 @@ function renderFixture(fixture) {
     }
 
     for (const grupo of fixture.grupos) {
-        const encabezado = el("div", { class: "partido-grupo__encabezado" },
+        // <h2>: cada torneo del fixture. El <h1> de la página lo agrega init().
+        const encabezado = el("h2", { class: "partido-grupo__encabezado" },
             el("span", { class: `fi fi-${grupo.liga.bandera}`, "aria-hidden": "true" }),
             el("span", {}, grupo.liga.nombre));
 
@@ -141,6 +142,10 @@ async function recargar() {
 // ------------------------------------------------------------
 async function init() {
     if (guardFileProtocol()) return;
+
+    // <h1> de la página (sólo para lectores de pantalla: el título visible
+    // de la sección es la barra "Fixture"). Jerarquía: h1 → h2 por torneo.
+    qs("main")?.prepend(el("h1", { class: "sr-only" }, "Estadióstica — Fixture de fútbol en vivo"));
 
     initSelectorFecha(qs("#selector-fecha"), {
         fecha,

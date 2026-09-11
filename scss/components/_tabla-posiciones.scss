@@ -82,7 +82,7 @@
 }
 
 // DIF negativo en rojo.
-.tabla-posiciones .col-dif--neg { color: $color-alerta; }
+.tabla-posiciones .col-dif--neg { color: $color-alerta-texto; }
 
 // PTS: celda contenedora del número + barra de fondo.
 .tabla-posiciones .col-pts {
@@ -105,6 +105,6 @@
     margin-inline-start: 4px;
     font-family: $fuente-mono;
     font-size: 0.625rem;
-    color: $color-alerta;
+    color: $color-alerta-texto;
     vertical-align: super;
 }

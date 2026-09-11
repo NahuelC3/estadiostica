@@ -57,7 +57,7 @@ function filaZona(zona, totalColumnas) {
     const tick = el("span", { class: "zona-encabezado__tick" });
     tick.style.background = zona.color;
 
-    const inner = el("div", { class: "zona-encabezado__inner" }, tick, zona.label);
+    const inner = el("h2", { class: "zona-encabezado__inner" }, tick, zona.label);
     inner.style.borderBottomColor = zona.color;
 
     return el("tr", { class: "zona-encabezado" },
@@ -108,10 +108,10 @@ function lateral(data) {
 
     return el("div", { class: "dos-columnas__lateral" },
         el("div", { class: "panel" },
-            el("h3", { class: "panel__titulo" }, "Movimientos de la fecha"),
+            el("h2", { class: "panel__titulo" }, "Movimientos de la fecha"),
             data.movimientos.length ? movs : el("p", { class: "apagado" }, "Sin cambios de posición.")),
         el("div", { class: "panel" },
-            el("h3", { class: "panel__titulo" }, "Líderes del torneo"),
+            el("h2", { class: "panel__titulo" }, "Líderes del torneo"),
             el("div", { class: "lideres" }, ...lideresItems)));
 }
 
@@ -142,9 +142,10 @@ async function init() {
     }
 
     limpiar(cont);
-    cont.append(el("div", { class: "encabezado-seccion" },
+    // <h1> de la página. Jerarquía: h1 → h2 (zonas + panel lateral).
+    cont.append(el("h1", { class: "encabezado-seccion" },
         el("span", { class: `fi fi-${data.liga.bandera}`, "aria-hidden": "true" }),
-        el("span", {}, `${data.liga.nombre} · Tabla de posiciones`)));
+        el("span", {}, `Tabla de posiciones — ${data.liga.nombre}`)));
 
     const selector = await selectorLigas(slug);
     cont.append(selector);

@@ -211,7 +211,9 @@ async function init() {
             id: `tab-${clave}`,
             role: "tabpanel",
             hidden: i === 0 ? null : "",
-        }, render()));
+        // <h2> de la sección (sr-only: la pestaña ya es la etiqueta visible).
+        // Evita el salto h1 → h3 hacia los .panel__titulo internos.
+        }, el("h2", { class: "sr-only" }, label), render()));
     });
 
     cont.append(tablist, panelesWrap);

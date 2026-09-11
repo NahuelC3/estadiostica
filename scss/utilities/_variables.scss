@@ -20,8 +20,9 @@ $color-borde-claro: #232C36;  // borde un punto más claro (píldoras del navbar
 $color-acento:     #39FF6A;   // verde de marca — acento y estados "vivos"
 $color-texto:      #E6EBF0;   // texto principal
 $color-texto-2:    #A0A8B0;   // texto secundario
-$color-texto-3:    #566270;   // texto terciario / etiquetas mono
-$color-alerta:     #C4404A;   // rojo — en vivo, valores negativos, descenso
+$color-texto-3:    #78848E;   // texto terciario / etiquetas mono — AA (≥4.5:1 sobre los fondos oscuros)
+$color-alerta:     #C4404A;   // rojo — SÓLO como fondo (badge en vivo, chips D) o adorno; el blanco encima da 5:1
+$color-alerta-texto: #D9575F; // rojo aclarado para TEXTO chico sobre fondo oscuro — AA (≥4.5:1)
 
 // -- Tipografía -------------------------------------------
 // Las fuentes se cargan por <link> de Google Fonts en cada HTML.

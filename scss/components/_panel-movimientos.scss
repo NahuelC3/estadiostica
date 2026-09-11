@@ -46,8 +46,8 @@
         &::before { border-block-end: 6px solid $color-acento; }
     }
     &--baja {
-        color: $color-alerta;
-        &::before { border-block-start: 6px solid $color-alerta; }
+        color: $color-alerta-texto;
+        &::before { border-block-start: 6px solid $color-alerta-texto; }
     }
     &--igual {
         color: $color-texto-3;

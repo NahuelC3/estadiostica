@@ -90,7 +90,7 @@ function cancha(m) {
         el("span", {}, `${d.formations.away} `, el("strong", {}, m.visitante.abbr)));
 
     return el("div", { class: "panel" },
-        el("h3", { class: "panel__titulo" }, "Alineaciones"),
+        el("h2", { class: "panel__titulo" }, "Alineaciones"),
         formaciones,
         campo);
 }
@@ -121,7 +121,7 @@ function statsComparadas(m) {
     }
 
     return el("div", { class: "panel" },
-        el("h3", { class: "panel__titulo" }, "Estadísticas comparadas"),
+        el("h2", { class: "panel__titulo" }, "Estadísticas comparadas"),
         cont);
 }
 
@@ -149,7 +149,7 @@ function ranking(m) {
     });
 
     return el("div", { class: "panel" },
-        el("h3", { class: "panel__titulo" }, "Ranking de jugadores (nota del partido)"),
+        el("h2", { class: "panel__titulo" }, "Ranking de jugadores (nota del partido)"),
         cont);
 }
 
@@ -166,7 +166,7 @@ function goles(m) {
 
     if (!lista.length) return null;
     return el("div", { class: "panel" },
-        el("h3", { class: "panel__titulo" }, "Goles"),
+        el("h2", { class: "panel__titulo" }, "Goles"),
         el("ul", { class: "lista-goles" }, ...lista));
 }
 
@@ -190,13 +190,17 @@ async function init() {
     }
 
     limpiar(cont);
+    // <h1> de la página (sr-only: el título visible es el marcador grande).
+    // Jerarquía: h1 → h2 por sección (alineaciones, stats, goles, ranking).
+    cont.append(el("h1", { class: "sr-only" },
+        `${m.local.nombre} vs ${m.visitante.nombre} · ${m.liga.nombre}`));
     cont.append(el("div", { class: "encabezado-seccion" },
         el("span", {}, `${m.liga.nombre} · Fecha ${m.matchday} · ${etiquetaLarga(m.date)}`)));
     cont.append(marcador(m));
 
     if (!m.detail) {
         cont.append(el("div", { class: "panel" },
-            el("h3", { class: "panel__titulo" }, "Detalle no disponible"),
+            el("h2", { class: "panel__titulo" }, "Detalle no disponible"),
             el("p", { class: "apagado" },
                 "Este partido todavía no tiene alineaciones ni estadísticas cargadas.")));
         return;
