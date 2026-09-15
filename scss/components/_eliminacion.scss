@@ -1,0 +1,284 @@
+// ============================================================
+//  ELIMINACIÓN — bracket de rondas (Copa Argentina, Champions League)
+// ------------------------------------------------------------
+//  Dos modos por RONDA (no por liga: Champions mezcla ida-vuelta con una
+//  final a partido único dentro del mismo bracket):
+//   · ida-vuelta → [data-formato="ida-vuelta"]: parciales de las 2 idas +
+//     el global agregado.
+//   · único      → [data-formato="unico"]: el número grande ES el resultado
+//     del partido, sin concepto de "global".
+//
+//  Desktop: columnas lado a lado + conectores SVG dibujados por JS
+//  (medidos con getBoundingClientRect, ver js/pages/eliminacion.js) sobre
+//  el mismo <div class="pestanas-panel"> que en mobile funciona como
+//  panel de pestaña por ronda (mismo patrón que equipo.html/jugador.html,
+//  js/ui/pestanas.js). En desktop se fuerzan visibles TODOS los paneles a
+//  la vez y se oculta el selector de ronda (no hace falta: ya se ven todas).
+// ============================================================
+
+@use "../utilities/variables" as *;
+@use "../utilities/mixins" as *;
+
+// ------------------------------------------------------------
+//  Selector de ronda (mobile) — sólo visible bajo $bp-desktop
+// ------------------------------------------------------------
+.eliminacion-bracket__rondas {
+    margin-block-start: 16px;
+
+    @include desktop {
+        display: none;
+    }
+}
+
+// ------------------------------------------------------------
+//  Contenedor de columnas + overlay de conectores
+// ------------------------------------------------------------
+.eliminacion-bracket__paneles {
+    position: relative;
+    margin-block-start: 16px;
+
+    @include desktop {
+        display: flex;
+        align-items: stretch;
+        gap: 36px;
+        overflow-x: auto;
+        padding-block-end: 8px;
+    }
+}
+
+// Fuerza visibles TODAS las rondas en desktop (mobile: sólo la activa,
+// vía [hidden] que togglea js/ui/pestanas.js).
+.eliminacion-bracket__paneles .pestanas-panel[hidden] {
+    @include desktop {
+        display: block;
+    }
+}
+
+.eliminacion-bracket__conectores {
+    display: none;
+    pointer-events: none;
+
+    @include desktop {
+        display: block;
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        overflow: visible;
+        z-index: 0;
+    }
+}
+
+.eliminacion-conector {
+    fill: none;
+    stroke: $color-borde;
+    stroke-width: 2;
+}
+
+.eliminacion-conector--definida {
+    stroke: $color-acento-oscuro;
+}
+
+// ------------------------------------------------------------
+//  Columna de ronda
+// ------------------------------------------------------------
+.eliminacion-columna {
+    position: relative;
+    z-index: 1;                    // por encima del overlay de conectores
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @include desktop {
+        flex: 0 0 240px;
+        justify-content: space-around;
+    }
+}
+
+.eliminacion-columna__titulo {
+    @include encabezado-sesgado($color-linea: $color-borde);
+}
+
+// -- Columna de la Final: destacada -----------------------
+.eliminacion-columna--final {
+    @include desktop {
+        flex: 0 0 260px;
+        border: 1px solid $color-acento;
+        border-radius: $radio;
+        padding: 16px 12px;
+        background: rgba($color-acento, 0.05);
+    }
+}
+
+.eliminacion-columna--final .eliminacion-columna__titulo {
+    border-bottom-color: $color-acento;
+}
+
+.eliminacion-columna--final .eliminacion-columna__titulo::before {
+    background: $color-acento;
+}
+
+// ------------------------------------------------------------
+//  Tarjeta de cruce
+// ------------------------------------------------------------
+.llave-card {
+    position: relative;
+    border: $borde-fino;
+    border-radius: $radio;
+    background: $color-panel;
+    overflow-x: clip;
+    @include transicion(border-color);
+}
+
+.llave-card--definida {
+    border-color: $color-acento-oscuro;
+}
+
+.llave-card__lado {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+
+    &:first-child {
+        border-block-end: $borde-fino;
+    }
+}
+
+.llave-card__equipo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-inline-size: 0;
+    color: $color-texto;
+    text-decoration: none;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.875rem;
+    }
+
+    &:hover span {
+        text-decoration: underline;
+    }
+}
+
+// Lado ganador: "camino del clasificado" — verde vivo.
+.llave-card__lado--avanza .llave-card__equipo {
+    color: $color-acento;
+    font-weight: 700;
+}
+
+.llave-card__lado--avanza .llave-card__marcador {
+    color: $color-acento;
+}
+
+// -- Marcador (derecha de cada lado) -----------------------
+.llave-card__marcador {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    justify-self: end;
+    font-family: $fuente-titulo;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.0625rem;
+    color: $color-texto;
+    white-space: nowrap;
+}
+
+.llave-card__parciales {
+    font-family: $fuente-mono;
+    font-weight: 500;
+    font-size: 0.75rem;
+    color: $color-texto-3;
+}
+
+.llave-card__marcador--pendiente {
+    color: $color-texto-3;
+    font-weight: 500;
+    font-size: 0.9375rem;
+}
+
+// Penales: nota chica bajo la tarjeta.
+.llave-card__penales {
+    padding: 0 12px 8px;
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    color: $color-texto-3;
+    text-transform: uppercase;
+}
+
+// ------------------------------------------------------------
+//  Bye — media altura, un solo lado, separador punteado
+// ------------------------------------------------------------
+.llave-card--bye {
+    display: flex;
+    flex-direction: column;
+    border-color: $color-ambar;
+}
+
+.llave-card--bye .llave-card__lado {
+    border-block-end: none;
+}
+
+.llave-card__separador-bye {
+    border-block-start: 1px dashed $color-borde-claro;
+    margin-inline: 12px;
+}
+
+.llave-card__etiqueta-bye {
+    padding: 6px 12px 10px;
+    font-family: $fuente-mono;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $color-ambar;
+}
+
+// ------------------------------------------------------------
+//  Rótulo de regla + leyenda de colores
+// ------------------------------------------------------------
+.eliminacion-bracket__regla {
+    margin-block-start: 20px;
+    font-family: $fuente-mono;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $color-texto-3;
+}
+
+.eliminacion-leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-block-start: 10px;
+    padding-block-start: 12px;
+    border-block-start: $borde-fino;
+}
+
+.eliminacion-leyenda__item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: $fuente-mono;
+    font-size: 0.75rem;
+    color: $color-texto-2;
+}
+
+.eliminacion-leyenda__swatch {
+    flex: none;
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: $radio-chico;
+}
+
+.eliminacion-leyenda__swatch--clasificado { background: $color-acento; }
+.eliminacion-leyenda__swatch--definida    { background: $color-acento-oscuro; }
+.eliminacion-leyenda__swatch--bye         { background: $color-ambar; }
+.eliminacion-leyenda__swatch--pendiente   { background: $color-texto-3; }

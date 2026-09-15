@@ -6,9 +6,51 @@
 //  zonas de la tabla (que alimentan los separadores sesgados), quitas de
 //  puntos y los PROMEDIOS usados por los gráficos de "desvío".
 //
-//  Para sumar una liga nueva: agregar acá su objeto y crear su carpeta
-//  en js/data/ con teams.js / squads.js / matches.js. Nada más.
+//  Para sumar una liga SIMPLE (tabla única): agregar acá su objeto con
+//  `zones`/`tiebreakers`/`adjustments` a nivel liga (como las primeras 8
+//  de este archivo) y crear su carpeta en js/data/ con teams/squads/matches.
+//
+//  Para una liga con FASES (Apertura/Clausura/Anual, fase de liga +
+//  eliminación, etc.): en vez de `zones`/`tiebreakers`/`adjustments` a
+//  nivel liga, declarar `fases` (ver typedef FaseConfig más abajo). Cada
+//  fase trae los suyos propios. `positionAverages`/`teamAverages` se
+//  quedan siempre a nivel liga (no varían entre fases).
 // ============================================================
+
+import { asignarCuposInternacionales, agruparPorCupos } from "../lib/clasificacionArgentina.js";
+import { LLAVES as LLAVES_ARG_COPA } from "./arg-copa/llaves.js";
+import { LLAVES as LLAVES_UEFA_CHAMPIONS } from "./uefa-champions/llaves.js";
+
+/**
+ * @typedef {Object} GrupoConfig
+ * @property {string} key       "A"
+ * @property {string} nombre    "Zona A"
+ * @property {string[]} equipos teamIds que juegan SOLO entre sí dentro de este grupo
+ */
+
+/**
+ * @typedef {Object} FaseConfig
+ * @property {string} key      "apertura" | "clausura" | "anual" | "fase-liga" | "eliminacion" | ...
+ * @property {string} nombre
+ * @property {'liga'|'grupos'|'combinada'|'eliminacion'} tipo
+ *   'liga'       -> tabla única (ej. fase de liga de Champions, 36 equipos sin grupos)
+ *   'grupos'     -> N tablas paralelas independientes (ej. Apertura Zona A / Zona B)
+ *   'combinada'  -> no tiene partidos propios: es la SUMA de otras fases por `combinaFases`
+ *   'eliminacion'-> no es tabla, es bracket (ver `rondas`/`llaves`, js/lib/llave.js)
+ * @property {string[]} [equipos]        tipo 'liga': quién participa (si falta, participan todos los de la liga)
+ * @property {GrupoConfig[]} [grupos]    tipo 'grupos'
+ * @property {string[]} [combinaFases]   tipo 'combinada': qué fases (por key) sumar
+ * @property {string} [campeon]          teamId campeón, declarado a mano (no se modela una final
+ *                                        entre ganadores de grupo — ver CLAUDE.md/plan de esta tanda)
+ * @property {Zona[]} [zones]            propias de ESTA fase/grupo
+ * @property {string[]} [tiebreakers]
+ * @property {{team:string,points:number,reason:string}[]} [adjustments]
+ * @property {(filas:Object[], contexto:Object) => {key:string,label:string,color:string,filas:Object[]}[]} [resolverCupos]
+ *   sólo la fase "anual" de arg-lpf: reemplaza el agrupado por rango de `zones`
+ *   por la cascada real de cupos internacionales (ver js/lib/clasificacionArgentina.js)
+ * @property {{key:string,nombre:string,formato:'unico'|'ida-vuelta'}[]} [rondas]   tipo 'eliminacion'
+ * @property {import("../lib/llave.js").LlaveEliminacion[]} [llaves]                tipo 'eliminacion'
+ */
 
 /**
  * @typedef {Object} Zona
@@ -48,6 +90,33 @@
  * @property {Object} teamAverages  promedios de equipo para el desvío
  */
 
+// -- Argentina: 2 grupos de 15, iguales en Apertura y Clausura. --
+const ARG_ZONA_A = [
+    "team:arg-pla", "team:arg-dyj", "team:arg-cco", "team:arg-lan", "team:arg-rie",
+    "team:arg-tal", "team:arg-boc", "team:arg-est", "team:arg-ins", "team:arg-gem",
+    "team:arg-slo", "team:arg-ind", "team:arg-nob", "team:arg-uni", "team:arg-vel",
+];
+const ARG_ZONA_B = [
+    "team:arg-arg", "team:arg-ald", "team:arg-atu", "team:arg-ban", "team:arg-bar",
+    "team:arg-bel", "team:arg-riv", "team:arg-gim", "team:arg-erc", "team:arg-ivd",
+    "team:arg-hur", "team:arg-rac", "team:arg-cen", "team:arg-sar", "team:arg-tig",
+];
+const ARG_GRUPOS = [
+    { key: "A", nombre: "Zona A", equipos: ARG_ZONA_A },
+    { key: "B", nombre: "Zona B", equipos: ARG_ZONA_B },
+];
+// Corte real: los 8 primeros de cada zona clasifican a Octavos de la Copa
+// de la Liga (no modelada como bracket acá, sólo la zona de la tabla).
+const ARG_ZONAS_GRUPO = [
+    { from: 1, to: 8, key: "clasificacion", label: "Clasifica a Octavos", color: "#39FF6A" },
+    { from: 9, to: 15, key: "eliminado", label: "Eliminado", color: "#566270" },
+];
+// Campeones declarados a mano: no se modela una final entre los 2 ganadores
+// de zona (Zona A vs Zona B) — sería un torneo dentro del torneo que esta
+// tanda no pide. Ver plan de arquitectura (fases/grupos + cascada de cupos).
+const ARG_CAMPEON_APERTURA = "team:arg-riv";
+const ARG_CAMPEON_CLAUSURA = "team:arg-riv";
+
 /** @type {LigaConfig[]} */
 export const LIGAS = [
     {
@@ -58,19 +127,57 @@ export const LIGAS = [
         bandera: "ar",
         temporada: "2026",
         matchdays: 7,
-        // Argentina: tras los puntos, primero el mano a mano (H2H).
-        tiebreakers: ["PTS", "H2H", "DIF", "GF"],
-        zones: [
-            { from: 1, to: 4, key: "libertadores", label: "Copa Libertadores", color: "#39FF6A" },
-            { from: 5, to: 8, key: "sudamericana", label: "Copa Sudamericana", color: "#6FA8FF" },
-            { from: 9, to: 17, key: "media", label: "Zona media", color: "#566270" },
-            { from: 18, to: 20, key: "descenso", label: "Descenso", color: "#C4404A" },
+        // Formato real: Apertura y Clausura por zonas + Tabla Anual combinada
+        // con la cascada real de cupos (Libertadores/Sudamericana/descenso).
+        fases: [
+            {
+                key: "apertura", nombre: "Torneo Apertura", tipo: "grupos",
+                campeon: ARG_CAMPEON_APERTURA,
+                grupos: ARG_GRUPOS,
+                tiebreakers: ["PTS", "H2H", "DIF", "GF"],
+                zones: ARG_ZONAS_GRUPO,
+                adjustments: [],
+            },
+            {
+                key: "clausura", nombre: "Torneo Clausura", tipo: "grupos",
+                campeon: ARG_CAMPEON_CLAUSURA,
+                grupos: ARG_GRUPOS,
+                tiebreakers: ["PTS", "H2H", "DIF", "GF"],
+                zones: ARG_ZONAS_GRUPO,
+                // Ejemplo de quita de puntos (estilo Everton). Se aplica en computeTable.
+                adjustments: [
+                    { team: "team:arg-pla", points: -3, reason: "Sanción administrativa" },
+                ],
+            },
+            {
+                key: "anual", nombre: "Tabla Anual", tipo: "combinada",
+                combinaFases: ["apertura", "clausura"],
+                tiebreakers: ["PTS", "H2H", "DIF", "GF"],
+                // Fallback por rango (no se usa en la práctica: `resolverCupos`
+                // abajo manda siempre que esté presente). Se deja documentado
+                // por si algún día se quita la cascada y hace falta un rango simple.
+                zones: [
+                    { from: 1, to: 6, key: "libertadores", label: "Copa Libertadores", color: "#39FF6A" },
+                    { from: 7, to: 12, key: "sudamericana", label: "Copa Sudamericana", color: "#6FA8FF" },
+                    { from: 13, to: 28, key: "media", label: "Zona media", color: "#566270" },
+                    { from: 29, to: 30, key: "descenso", label: "Descenso", color: "#C4404A" },
+                ],
+                adjustments: [],
+                // Cascada real: 6 Libertadores (campeón Apertura + Clausura + Copa
+                // Argentina + mejores de la Anual, saltando a quien ya clasificó) +
+                // 6 Sudamericana (siguientes mejores) + descenso SIMPLIFICADO a los
+                // últimos 2 de la Anual (la regla real usa promedios de 3
+                // temporadas — no se modela, igual criterio que Uruguay).
+                resolverCupos: (filas, { campeonCopaArgentina }) => agruparPorCupos(
+                    filas,
+                    asignarCuposInternacionales(
+                        filas.map((f) => ({ teamId: f.equipo.id, pos: f.pos })),
+                        ARG_CAMPEON_APERTURA, ARG_CAMPEON_CLAUSURA, campeonCopaArgentina,
+                    ),
+                ),
+            },
         ],
-        // Ejemplo de quita de puntos (estilo Everton). Se aplica en computeTable.
-        adjustments: [
-            { team: "team:arg-pla", points: -3, reason: "Sanción administrativa" },
-        ],
-        // Promedios POR PARTIDO por posición (Argentina).
+        // Promedios POR PARTIDO por posición (Argentina). No varían por fase.
         positionAverages: {
             GK:  { goles: 0.00, asistencias: 0.02, pasesClave: 0.2, entradas: 0.2, despejes: 1.2, duelosGanados: 1.5 },
             DEF: { goles: 0.05, asistencias: 0.05, pasesClave: 0.5, entradas: 2.2, despejes: 3.6, duelosGanados: 5.0 },
@@ -383,7 +490,8 @@ export const LIGAS = [
         bandera: "uy",
         temporada: "2026",
         // El formato real (Apertura + Clausura + Tabla Anual + finales) se simplifica a una
-        // Tabla Anual única con zonas, igual que se hizo con arg-lpf.
+        // Tabla Anual única con zonas — a diferencia de arg-lpf, que sí modela las fases
+        // completas (ver más arriba). Uruguay queda simplificado deliberadamente.
         tiebreakers: ["PTS", "DIF", "GF", "H2H"],
         matchdays: 7,
         zones: [
@@ -405,6 +513,93 @@ export const LIGAS = [
             posesion: 50, remates: 11.0, rematesAlArco: 3.8, corners: 4.4,
             faltas: 16.2, amarillas: 3.2, pases: 385, precisionPases: 74, offsides: 2.0,
             goles: 1.2, xg: 1.22,
+        },
+    },
+    {
+        id: "league:arg-copa",
+        slug: "arg-copa",
+        nombre: "Copa Argentina",
+        pais: "Argentina",
+        bandera: "ar",
+        temporada: "2026",
+        // Eliminación directa desde Dieciseisavos, partido único todas las
+        // rondas. Mismos 30 equipos que arg-lpf (sin sumar categorías
+        // inferiores): NO tiene teams.js/squads.js propios, reusa esos ids
+        // —ver el fix de leagueId-scoping en db.js para no mezclar stats de
+        // esta competencia con las de arg-lpf.
+        fases: [
+            {
+                key: "eliminacion", nombre: "Copa Argentina", tipo: "eliminacion",
+                rondas: [
+                    { key: "dieciseisavos", nombre: "Dieciseisavos de Final", formato: "unico" },
+                    { key: "octavos", nombre: "Octavos de Final", formato: "unico" },
+                    { key: "cuartos", nombre: "Cuartos de Final", formato: "unico" },
+                    { key: "semifinal", nombre: "Semifinales", formato: "unico" },
+                    { key: "final", nombre: "Final", formato: "unico" },
+                ],
+                llaves: LLAVES_ARG_COPA,
+            },
+        ],
+        // Sin positionAverages/teamAverages: ningún Equipo tiene esta liga
+        // como leagueId (todos son de arg-lpf), así que nada las lee nunca.
+    },
+    {
+        id: "league:uefa-champions",
+        slug: "uefa-champions",
+        nombre: "UEFA Champions League",
+        pais: "Europa",
+        bandera: "eu",
+        temporada: "2026-27",
+        // Fase de liga (36 equipos, tabla única) + Playoff (9º-24º, ida y
+        // vuelta) + eliminación directa (octavos→cuartos→semis ida/vuelta,
+        // final a partido único). 23 de los 36 equipos ya existen en otras
+        // 10 ligas (mismo id, mismo escudo, no se duplican); los 13 sin liga
+        // doméstica modelada están en ./teams.js con leagueId acá mismo.
+        fases: [
+            {
+                key: "fase-liga", nombre: "Fase de Liga", tipo: "liga",
+                equipos: [
+                    "team:esp-rma", "team:esp-bar", "team:esp-atm", "team:esp-vil", "team:esp-bet",
+                    "team:eng-ars", "team:eng-mci", "team:eng-mun", "team:eng-avl", "team:eng-liv",
+                    "team:ale-fcb", "team:ale-bvb", "team:ale-rbl", "team:ale-vfb",
+                    "team:ita-int", "team:ita-nap", "team:ita-rom", "team:ita-com",
+                    "team:fra-psg", "team:fra-len", "team:fra-lil",
+                    "team:por-por", "team:por-spo",
+                    "team:ucl-psv", "team:ucl-fey", "team:ucl-brg", "team:ucl-shk", "team:ucl-sla",
+                    "team:ucl-gal", "team:ucl-aek", "team:ucl-lsk", "team:ucl-vik", "team:ucl-slb",
+                    "team:ucl-sab", "team:ucl-bod", "team:ucl-fen",
+                ],
+                tiebreakers: ["PTS", "DIF", "GF", "H2H"],
+                zones: [
+                    { from: 1, to: 8, key: "octavos-directo", label: "Octavos de Final (directo)", color: "#39FF6A" },
+                    { from: 9, to: 24, key: "playoff", label: "Playoff", color: "#6FA8FF" },
+                    { from: 25, to: 36, key: "eliminado", label: "Eliminado", color: "#566270" },
+                ],
+                adjustments: [],
+            },
+            {
+                key: "eliminacion", nombre: "Eliminación directa", tipo: "eliminacion",
+                rondas: [
+                    { key: "playoff", nombre: "Playoff", formato: "ida-vuelta" },
+                    { key: "octavos", nombre: "Octavos de Final", formato: "ida-vuelta" },
+                    { key: "cuartos", nombre: "Cuartos de Final", formato: "ida-vuelta" },
+                    { key: "semifinal", nombre: "Semifinales", formato: "ida-vuelta" },
+                    { key: "final", nombre: "Final", formato: "unico" },
+                ],
+                llaves: LLAVES_UEFA_CHAMPIONS,
+            },
+        ],
+        // Promedios de referencia "nivel Champions" (aprox. a las 5 grandes ligas europeas).
+        positionAverages: {
+            GK:  { goles: 0.00, asistencias: 0.03, pasesClave: 0.3, entradas: 0.2, despejes: 1.0, duelosGanados: 1.3 },
+            DEF: { goles: 0.07, asistencias: 0.07, pasesClave: 0.6, entradas: 2.0, despejes: 3.8, duelosGanados: 5.2 },
+            MID: { goles: 0.14, asistencias: 0.18, pasesClave: 1.6, entradas: 1.6, despejes: 1.0, duelosGanados: 5.7 },
+            FWD: { goles: 0.42, asistencias: 0.21, pasesClave: 1.4, entradas: 0.6, despejes: 0.4, duelosGanados: 4.3 },
+        },
+        teamAverages: {
+            posesion: 50, remates: 13.5, rematesAlArco: 5.0, corners: 5.3,
+            faltas: 11.0, amarillas: 1.9, pases: 490, precisionPases: 84, offsides: 2.1,
+            goles: 1.6, xg: 1.58,
         },
     },
 ];

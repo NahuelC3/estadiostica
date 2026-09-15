@@ -23,6 +23,8 @@ $color-texto-2:    #A0A8B0;   // texto secundario
 $color-texto-3:    #78848E;   // texto terciario / etiquetas mono — AA (≥4.5:1 sobre los fondos oscuros)
 $color-alerta:     #C4404A;   // rojo — SÓLO como fondo (badge en vivo, chips D) o adorno; el blanco encima da 5:1
 $color-alerta-texto: #D9575F; // rojo aclarado para TEXTO chico sobre fondo oscuro — AA (≥4.5:1)
+$color-acento-oscuro: #1F7A43; // verde oscuro — estado "definido/resuelto" (conectores de llave ya jugada); no es texto
+$color-ambar:      #F2A93D;   // ámbar — estado "bye / pasa sin jugar" (bracket de eliminación). ~9.5:1 sobre el fondo, sirve como texto
 
 // -- Tipografía -------------------------------------------
 // Las fuentes se cargan por <link> de Google Fonts en cada HTML.

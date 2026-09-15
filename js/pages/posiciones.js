@@ -127,6 +127,40 @@ async function selectorLigas(slugActual) {
         }, L.nombre)));
 }
 
+// -- fase "principal" por defecto, mismo criterio que repo.getStandings --
+function faseDefault(fases) {
+    return fases.find((f) => f.tipo === "combinada")
+        ?? fases.find((f) => f.tipo === "liga" || f.tipo === "grupos")
+        ?? null;
+}
+
+// -- selector de fase (Apertura/Clausura/Anual, Fase de Liga/Eliminación...) --
+function selectorFases(fases, slug, faseKey) {
+    return el("div", { class: "pestanas", role: "tablist", "aria-label": "Elegir fase" },
+        ...fases.map((f) => {
+            const href = f.tipo === "eliminacion"
+                ? `eliminacion.html?liga=${slug}&fase=${f.key}`
+                : `posiciones.html?liga=${slug}&fase=${f.key}`;
+            return el("a", {
+                class: "pestanas__tab",
+                role: "tab",
+                href,
+                "aria-selected": String(f.key === faseKey),
+            }, f.nombre);
+        }));
+}
+
+// -- selector de grupo (Zona A/B) dentro de una fase tipo 'grupos' --
+function selectorGrupos(grupos, slug, faseKey, grupoKey) {
+    return el("div", { class: "pestanas", role: "tablist", "aria-label": "Elegir zona" },
+        ...grupos.map((g) => el("a", {
+            class: "pestanas__tab",
+            role: "tab",
+            href: `posiciones.html?liga=${slug}&fase=${faseKey}&grupo=${g.key}`,
+            "aria-selected": String(g.key === grupoKey),
+        }, g.nombre)));
+}
+
 // ------------------------------------------------------------
 //  init
 // ------------------------------------------------------------
@@ -134,8 +168,25 @@ async function init() {
     if (guardFileProtocol()) return;
     const cont = qs("#pagina");
     const slug = paramUrl("liga") || "arg-lpf";
+    const leagueId = `league:${slug}`;
 
-    const data = await repo.getStandings(`league:${slug}`);
+    const fases = await repo.getFasesDeLiga(leagueId);
+    const faseUrl = paramUrl("fase");
+    const faseActual = faseUrl ? fases.find((f) => f.key === faseUrl) : faseDefault(fases);
+
+    // Liga sólo de eliminación (Copa Argentina): no hay tabla que mostrar acá.
+    if (fases.length && !faseActual) {
+        limpiar(cont);
+        cont.append(el("h1", { class: "encabezado-seccion" }, `${slug} — sólo eliminación directa`));
+        const elimKey = fases.find((f) => f.tipo === "eliminacion")?.key;
+        cont.append(el("a", { class: "pestanas__tab", href: `eliminacion.html?liga=${slug}&fase=${elimKey}` }, "Ver el cuadro →"));
+        return;
+    }
+
+    const grupoUrl = paramUrl("grupo");
+    const grupoKey = faseActual?.tipo === "grupos" ? (grupoUrl || faseActual.grupos[0].key) : null;
+
+    const data = await repo.getStandings(leagueId, { fase: faseActual?.key ?? null, grupo: grupoKey });
     if (!data) {
         mostrarError(cont, "Liga no encontrada", `No existe la liga “${slug}”.`);
         return;
@@ -150,6 +201,17 @@ async function init() {
     const selector = await selectorLigas(slug);
     cont.append(selector);
 
+    // Ligas con fases (Argentina, Champions): pestañas de fase, y de zona
+    // cuando la fase actual es de tipo 'grupos'.
+    let selectorFase = null;
+    if (fases.length) {
+        selectorFase = selectorFases(fases, slug, faseActual.key);
+        cont.append(selectorFase);
+        if (faseActual.tipo === "grupos") {
+            cont.append(selectorGrupos(faseActual.grupos, slug, faseActual.key, grupoKey));
+        }
+    }
+
     cont.append(el("div", { class: "dos-columnas" },
         tabla(data),
         lateral(data)));
@@ -157,6 +219,7 @@ async function init() {
     // El selector no usa initPestañas (son <a> sueltos): centrar la activa
     // a mano, una vez que ya está todo en el DOM.
     centrarPestañaActiva(selector);
+    if (selectorFase) centrarPestañaActiva(selectorFase);
 }
 
 init();

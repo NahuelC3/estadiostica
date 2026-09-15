@@ -51,6 +51,14 @@ import { EQUIPOS as EQ_URU } from "./uru-primera/teams.js";
 import { PARTIDOS as PA_URU } from "./uru-primera/matches.js";
 import { PLANTELES as PL_URU } from "./uru-primera/squads.js";
 
+// Copa Argentina: sin teams.js ni squads.js propios — reusa los 30 ids de
+// arg-lpf (mismo Equipo, misma liga doméstica; sólo cambian los partidos).
+import { PARTIDOS as PA_ARGCOPA } from "./arg-copa/matches.js";
+
+import { EQUIPOS as EQ_UCL } from "./uefa-champions/teams.js";
+import { PARTIDOS as PA_UCL } from "./uefa-champions/matches.js";
+import { PLANTELES as PL_UCL } from "./uefa-champions/squads.js";
+
 /**
  * @typedef {Object} BloqueLiga
  * @property {import("./leagues.js").LigaConfig} cfg
@@ -75,5 +83,7 @@ export const DATOS_CRUDOS = {
         { cfg: LIGAS[8], equipos: EQ_BRA, partidos: PA_BRA, planteles: PL_BRA },
         { cfg: LIGAS[9], equipos: EQ_CHI, partidos: PA_CHI, planteles: PL_CHI },
         { cfg: LIGAS[10], equipos: EQ_URU, partidos: PA_URU, planteles: PL_URU },
+        { cfg: LIGAS[11], equipos: [], partidos: PA_ARGCOPA, planteles: {} },
+        { cfg: LIGAS[12], equipos: EQ_UCL, partidos: PA_UCL, planteles: PL_UCL },
     ],
 };

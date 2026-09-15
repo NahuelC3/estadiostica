@@ -1,7 +1,9 @@
 // ============================================================
 //  data/arg-lpf/teams.js — equipos de la liga (GENERADO)
-//  Datos de ejemplo estáticos y deterministas. brandColor alimenta el
-//  badge monograma (js/lib/escudo.js).
+//  30 equipos de la Liga Profesional Argentina — Zona A y Zona B, con
+//  fuente confirmada por el usuario (ligaprofesional.ar). Los primeros 20
+//  son los mismos ids/valores que ya existían; los últimos 10 son los
+//  clubes nuevos que completan las 2 zonas de 15.
 // ============================================================
 
 /**
@@ -45,12 +47,21 @@ export const EQUIPOS = [
         leagueId: "league:arg-lpf"
     },
     {
-        id: "team:arg-est",
-        abbr: "EST",
-        nombre: "Estudiantes",
-        ciudad: "La Plata",
-        brandColor: "#E4022A",
+        id: "team:arg-ind",
+        abbr: "IND",
+        nombre: "Independiente",
+        ciudad: "Avellaneda",
+        brandColor: "#E30613",
         fundado: 1905,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-slo",
+        abbr: "SLO",
+        nombre: "San Lorenzo",
+        ciudad: "Buenos Aires",
+        brandColor: "#16337A",
+        fundado: 1908,
         leagueId: "league:arg-lpf"
     },
     {
@@ -72,21 +83,12 @@ export const EQUIPOS = [
         leagueId: "league:arg-lpf"
     },
     {
-        id: "team:arg-ind",
-        abbr: "IND",
-        nombre: "Independiente",
-        ciudad: "Avellaneda",
-        brandColor: "#E30613",
+        id: "team:arg-est",
+        abbr: "EST",
+        nombre: "Estudiantes",
+        ciudad: "La Plata",
+        brandColor: "#E4022A",
         fundado: 1905,
-        leagueId: "league:arg-lpf"
-    },
-    {
-        id: "team:arg-slo",
-        abbr: "SLO",
-        nombre: "San Lorenzo",
-        ciudad: "Buenos Aires",
-        brandColor: "#16337A",
-        fundado: 1908,
         leagueId: "league:arg-lpf"
     },
     {
@@ -96,24 +98,6 @@ export const EQUIPOS = [
         ciudad: "Buenos Aires",
         brandColor: "#D6242B",
         fundado: 1904,
-        leagueId: "league:arg-lpf"
-    },
-    {
-        id: "team:arg-lan",
-        abbr: "LAN",
-        nombre: "Lanús",
-        ciudad: "Lanús",
-        brandColor: "#7A0C1E",
-        fundado: 1915,
-        leagueId: "league:arg-lpf"
-    },
-    {
-        id: "team:arg-dyj",
-        abbr: "DYJ",
-        nombre: "Defensa y Justicia",
-        ciudad: "Florencio Varela",
-        brandColor: "#1FA84A",
-        fundado: 1935,
         leagueId: "league:arg-lpf"
     },
     {
@@ -144,12 +128,21 @@ export const EQUIPOS = [
         leagueId: "league:arg-lpf"
     },
     {
-        id: "team:arg-gim",
-        abbr: "GIM",
-        nombre: "Gimnasia La Plata",
-        ciudad: "La Plata",
-        brandColor: "#0B67B2",
-        fundado: 1887,
+        id: "team:arg-lan",
+        abbr: "LAN",
+        nombre: "Lanús",
+        ciudad: "Lanús",
+        brandColor: "#7A0C1E",
+        fundado: 1915,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-dyj",
+        abbr: "DYJ",
+        nombre: "Defensa y Justicia",
+        ciudad: "Florencio Varela",
+        brandColor: "#1FA84A",
+        fundado: 1935,
         leagueId: "league:arg-lpf"
     },
     {
@@ -168,6 +161,15 @@ export const EQUIPOS = [
         ciudad: "Córdoba",
         brandColor: "#5FB0E5",
         fundado: 1905,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-gim",
+        abbr: "GIM",
+        nombre: "Gimnasia y Esgrima (La Plata)",
+        ciudad: "La Plata",
+        brandColor: "#0B67B2",
+        fundado: 1887,
         leagueId: "league:arg-lpf"
     },
     {
@@ -195,6 +197,96 @@ export const EQUIPOS = [
         ciudad: "Vicente López",
         brandColor: "#6E6E6E",
         fundado: 1905,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-tig",
+        abbr: "TIG",
+        nombre: "Tigre",
+        ciudad: "Victoria",
+        brandColor: "#1B3B8C",
+        fundado: 1902,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-uni",
+        abbr: "UNI",
+        nombre: "Unión",
+        ciudad: "Santa Fe",
+        brandColor: "#D21B2B",
+        fundado: 1907,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-atu",
+        abbr: "ATU",
+        nombre: "Atlético Tucumán",
+        ciudad: "San Miguel de Tucumán",
+        brandColor: "#6FB7E8",
+        fundado: 1902,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-cco",
+        abbr: "CCO",
+        nombre: "Central Córdoba (SdE)",
+        ciudad: "Santiago del Estero",
+        brandColor: "#171717",
+        fundado: 1919,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-sar",
+        abbr: "SAR",
+        nombre: "Sarmiento",
+        ciudad: "Junín",
+        brandColor: "#1C8A43",
+        fundado: 1911,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-ald",
+        abbr: "ALD",
+        nombre: "Aldosivi",
+        ciudad: "Mar del Plata",
+        brandColor: "#1E7145",
+        fundado: 1913,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-ivd",
+        abbr: "IVD",
+        nombre: "Independiente Rivadavia",
+        ciudad: "Mendoza",
+        brandColor: "#1D3F8C",
+        fundado: 1911,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-gem",
+        abbr: "GEM",
+        nombre: "Gimnasia y Esgrima (Mendoza)",
+        ciudad: "Mendoza",
+        brandColor: "#3A3A3A",
+        fundado: 1929,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-rie",
+        abbr: "RIE",
+        nombre: "Deportivo Riestra",
+        ciudad: "Buenos Aires",
+        brandColor: "#C9A227",
+        fundado: 1932,
+        leagueId: "league:arg-lpf"
+    },
+    {
+        id: "team:arg-erc",
+        abbr: "ERC",
+        nombre: "Estudiantes (Río Cuarto)",
+        ciudad: "Río Cuarto",
+        brandColor: "#C21E2C",
+        fundado: 1922,
         leagueId: "league:arg-lpf"
     }
 ];

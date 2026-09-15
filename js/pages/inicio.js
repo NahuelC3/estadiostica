@@ -85,10 +85,13 @@ async function construirSidebar() {
     const ligas = await repo.getLeagues();
 
     // -- Destacados: goleador de cada liga --
+    // Una liga sólo de eliminación directa (Copa Argentina) no tiene tabla:
+    // getStandings devuelve null, y esa liga no aporta destacado acá.
     const destacados = qs("#destacados");
     for (const liga of ligas) {
         const st = await repo.getStandings(liga.id);
-        const g = st.lideres.goleador;
+        const g = st?.lideres?.goleador;
+        if (!g) continue;
         destacados.append(
             el("div", { class: "destacados__item" },
                 el("span", { class: `fi fi-${liga.bandera}`, "aria-hidden": "true" }),

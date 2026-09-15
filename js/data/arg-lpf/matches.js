@@ -1,1639 +1,2772 @@
 // ============================================================
 //  data/arg-lpf/matches.js — partidos de la liga (GENERADO)
-//  70 partidos en 7 jornadas (5 finalizadas, 1 en curso,
-//  1 próxima). Dos partidos finalizados traen `detail` completo
-//  (alineaciones x/y, formación, 12 métricas, eventos y ratings).
-//  Las páginas comprueban `match.detail`, no un campo aparte.
+//  Torneo Apertura y Torneo Clausura, cada uno con Zona A y Zona B jugando
+//  sólo entre sí (7 fechas de un round-robin a una vuelta por zona).
+//  Ningún partido lleva "detail" (alineaciones x/y): simplificación
+//  deliberada de esta tanda, centrada en fases/grupos/cascada, no en el
+//  detalle de partido (que ya está probado con las otras 10 ligas).
 // ============================================================
 
 /**
  * @typedef {Object} PartidoCrudo
  * @property {string} id
  * @property {string} leagueId
- * @property {number} matchday
- * @property {string} date        "YYYY-MM-DD"
- * @property {string} time        "HH:MM"
+ * @property {string} fase        "apertura" | "clausura"
+ * @property {string} grupo       "A" | "B"
+ * @property {number} matchday    jornada DENTRO de la fase (reinicia en 1 en Clausura)
+ * @property {string} date
+ * @property {string} time
  * @property {'finished'|'live'|'scheduled'} status
- * @property {string} home        teamId
- * @property {string} away        teamId
+ * @property {string} home
+ * @property {string} away
  * @property {{home:number,away:number}|null} score
- * @property {number|null} minute  minuto de juego si status==='live'
- * @property {Object} [detail]     presente sólo en partidos con detalle profundo
+ * @property {number|null} minute
  */
 
 /** @type {PartidoCrudo[]} */
 export const PARTIDOS = [
     {
-        id: "match:arg-2026-08-08-riv-pla",
+        id: "match:arg-apertura-A-1",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 1,
-        date: "2026-08-08",
+        date: "2026-02-07",
         time: "15:00",
         status: "finished",
-        home: "team:arg-riv",
+        home: "team:arg-dyj",
+        away: "team:arg-vel",
+        score: { home: 2, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-2",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cco",
+        away: "team:arg-uni",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-3",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-lan",
+        away: "team:arg-nob",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-4",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rie",
+        away: "team:arg-ind",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-5",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tal",
+        away: "team:arg-slo",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-6",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-boc",
+        away: "team:arg-gem",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-7",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-est",
+        away: "team:arg-ins",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-8",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-vel",
         away: "team:arg-pla",
-        score: {
-            home: 3,
-            away: 0
-        },
-        minute: null,
-        detail: {
-            formations: {
-                home: "4-2-3-1",
-                away: "4-4-2"
-            },
-            lineups: {
-                home: [
-                    {
-                        playerId: "player:arg-riv-1",
-                        number: 1,
-                        x: 50,
-                        y: 93
-                    },
-                    {
-                        playerId: "player:arg-riv-2",
-                        number: 2,
-                        x: 12,
-                        y: 78
-                    },
-                    {
-                        playerId: "player:arg-riv-3",
-                        number: 3,
-                        x: 37,
-                        y: 78
-                    },
-                    {
-                        playerId: "player:arg-riv-4",
-                        number: 4,
-                        x: 63,
-                        y: 78
-                    },
-                    {
-                        playerId: "player:arg-riv-5",
-                        number: 5,
-                        x: 88,
-                        y: 78
-                    },
-                    {
-                        playerId: "player:arg-riv-6",
-                        number: 6,
-                        x: 12,
-                        y: 62
-                    },
-                    {
-                        playerId: "player:arg-riv-7",
-                        number: 7,
-                        x: 88,
-                        y: 62
-                    },
-                    {
-                        playerId: "player:arg-riv-8",
-                        number: 8,
-                        x: 12,
-                        y: 47
-                    },
-                    {
-                        playerId: "player:arg-riv-9",
-                        number: 9,
-                        x: 50,
-                        y: 47
-                    },
-                    {
-                        playerId: "player:arg-riv-10",
-                        number: 10,
-                        x: 88,
-                        y: 47
-                    },
-                    {
-                        playerId: "player:arg-riv-11",
-                        number: 11,
-                        x: 50,
-                        y: 34
-                    }
-                ],
-                away: [
-                    {
-                        playerId: "player:arg-pla-1",
-                        number: 1,
-                        x: 50,
-                        y: 7
-                    },
-                    {
-                        playerId: "player:arg-pla-2",
-                        number: 2,
-                        x: 12,
-                        y: 22
-                    },
-                    {
-                        playerId: "player:arg-pla-3",
-                        number: 3,
-                        x: 37,
-                        y: 22
-                    },
-                    {
-                        playerId: "player:arg-pla-4",
-                        number: 4,
-                        x: 63,
-                        y: 22
-                    },
-                    {
-                        playerId: "player:arg-pla-5",
-                        number: 5,
-                        x: 88,
-                        y: 22
-                    },
-                    {
-                        playerId: "player:arg-pla-6",
-                        number: 6,
-                        x: 12,
-                        y: 38
-                    },
-                    {
-                        playerId: "player:arg-pla-7",
-                        number: 7,
-                        x: 37,
-                        y: 38
-                    },
-                    {
-                        playerId: "player:arg-pla-8",
-                        number: 8,
-                        x: 63,
-                        y: 38
-                    },
-                    {
-                        playerId: "player:arg-pla-9",
-                        number: 9,
-                        x: 88,
-                        y: 38
-                    },
-                    {
-                        playerId: "player:arg-pla-10",
-                        number: 10,
-                        x: 12,
-                        y: 53
-                    },
-                    {
-                        playerId: "player:arg-pla-11",
-                        number: 11,
-                        x: 88,
-                        y: 53
-                    }
-                ]
-            },
-            stats: {
-                home: {
-                    posesion: 55,
-                    remates: 17,
-                    rematesAlArco: 5,
-                    corners: 5,
-                    faltas: 15,
-                    amarillas: 3,
-                    rojas: 0,
-                    pases: 477,
-                    precisionPases: 71,
-                    offsides: 1,
-                    atajadas: 4,
-                    xg: 3.44
-                },
-                away: {
-                    posesion: 45,
-                    remates: 11,
-                    rematesAlArco: 4,
-                    corners: 6,
-                    faltas: 14,
-                    amarillas: 2,
-                    rojas: 0,
-                    pases: 372,
-                    precisionPases: 85,
-                    offsides: 2,
-                    atajadas: 2,
-                    xg: 0.91
-                }
-            },
-            events: [
-                {
-                    minuto: 19,
-                    tipo: "gol",
-                    equipo: "home",
-                    playerId: "player:arg-riv-8"
-                },
-                {
-                    minuto: 44,
-                    tipo: "amarilla",
-                    equipo: "home",
-                    playerId: "player:arg-riv-6"
-                },
-                {
-                    minuto: 59,
-                    tipo: "cambio",
-                    equipo: "away",
-                    playerId: "player:arg-pla-1"
-                },
-                {
-                    minuto: 63,
-                    tipo: "amarilla",
-                    equipo: "away",
-                    playerId: "player:arg-pla-5"
-                },
-                {
-                    minuto: 66,
-                    tipo: "cambio",
-                    equipo: "away",
-                    playerId: "player:arg-pla-9"
-                },
-                {
-                    minuto: 71,
-                    tipo: "gol",
-                    equipo: "home",
-                    playerId: "player:arg-riv-7"
-                },
-                {
-                    minuto: 76,
-                    tipo: "cambio",
-                    equipo: "home",
-                    playerId: "player:arg-riv-8"
-                },
-                {
-                    minuto: 78,
-                    tipo: "amarilla",
-                    equipo: "home",
-                    playerId: "player:arg-riv-9"
-                },
-                {
-                    minuto: 79,
-                    tipo: "cambio",
-                    equipo: "home",
-                    playerId: "player:arg-riv-6"
-                },
-                {
-                    minuto: 85,
-                    tipo: "gol",
-                    equipo: "home",
-                    playerId: "player:arg-riv-7"
-                }
-            ],
-            ratings: {
-                "player:arg-riv-1": {
-                    nota: 7.3
-                },
-                "player:arg-riv-2": {
-                    nota: 7.3
-                },
-                "player:arg-riv-3": {
-                    nota: 6.8
-                },
-                "player:arg-riv-4": {
-                    nota: 6.1
-                },
-                "player:arg-riv-5": {
-                    nota: 7.3
-                },
-                "player:arg-riv-6": {
-                    nota: 6.7
-                },
-                "player:arg-riv-7": {
-                    nota: 8.3
-                },
-                "player:arg-riv-8": {
-                    nota: 7.9
-                },
-                "player:arg-riv-9": {
-                    nota: 7.7
-                },
-                "player:arg-riv-10": {
-                    nota: 6.1
-                },
-                "player:arg-riv-11": {
-                    nota: 6.3
-                },
-                "player:arg-pla-1": {
-                    nota: 6.9
-                },
-                "player:arg-pla-2": {
-                    nota: 7.6
-                },
-                "player:arg-pla-3": {
-                    nota: 6.6
-                },
-                "player:arg-pla-4": {
-                    nota: 7.1
-                },
-                "player:arg-pla-5": {
-                    nota: 7.1
-                },
-                "player:arg-pla-6": {
-                    nota: 7.5
-                },
-                "player:arg-pla-7": {
-                    nota: 6.7
-                },
-                "player:arg-pla-8": {
-                    nota: 6.2
-                },
-                "player:arg-pla-9": {
-                    nota: 8.1
-                },
-                "player:arg-pla-10": {
-                    nota: 6.5
-                },
-                "player:arg-pla-11": {
-                    nota: 8
-                }
-            }
-        }
-    },
-    {
-        id: "match:arg-2026-08-08-bar-boc",
-        leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
-        time: "17:30",
-        status: "finished",
-        home: "team:arg-bar",
-        away: "team:arg-boc",
-        score: {
-            home: 1,
-            away: 1
-        },
+        score: { home: 2, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-08-rac-ban",
+        id: "match:arg-apertura-A-9",
         leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
-        time: "20:00",
-        status: "finished",
-        home: "team:arg-rac",
-        away: "team:arg-ban",
-        score: {
-            home: 1,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-08-bel-est",
-        leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-bel",
-        away: "team:arg-est",
-        score: {
-            home: 2,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-08-vel-ins",
-        leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-02-14",
         time: "15:00",
         status: "finished",
-        home: "team:arg-vel",
-        away: "team:arg-ins",
-        score: {
-            home: 2,
-            away: 2
-        },
-        minute: null,
-        detail: {
-            formations: {
-                home: "4-2-3-1",
-                away: "3-4-3"
-            },
-            lineups: {
-                home: [
-                    {
-                        playerId: "player:arg-vel-1",
-                        number: 1,
-                        x: 50,
-                        y: 93
-                    },
-                    {
-                        playerId: "player:arg-vel-2",
-                        number: 2,
-                        x: 12,
-                        y: 78
-                    },
-                    {
-                        playerId: "player:arg-vel-3",
-                        number: 3,
-                        x: 37,
-                        y: 78
-                    },
-                    {
-                        playerId: "player:arg-vel-4",
-                        number: 4,
-                        x: 63,
-                        y: 78
-                    },
-                    {
-                        playerId: "player:arg-vel-5",
-                        number: 5,
-                        x: 88,
-                        y: 78
-                    },
-                    {
-                        playerId: "player:arg-vel-6",
-                        number: 6,
-                        x: 12,
-                        y: 62
-                    },
-                    {
-                        playerId: "player:arg-vel-7",
-                        number: 7,
-                        x: 88,
-                        y: 62
-                    },
-                    {
-                        playerId: "player:arg-vel-8",
-                        number: 8,
-                        x: 12,
-                        y: 47
-                    },
-                    {
-                        playerId: "player:arg-vel-9",
-                        number: 9,
-                        x: 50,
-                        y: 47
-                    },
-                    {
-                        playerId: "player:arg-vel-10",
-                        number: 10,
-                        x: 88,
-                        y: 47
-                    },
-                    {
-                        playerId: "player:arg-vel-11",
-                        number: 11,
-                        x: 50,
-                        y: 34
-                    }
-                ],
-                away: [
-                    {
-                        playerId: "player:arg-ins-1",
-                        number: 1,
-                        x: 50,
-                        y: 7
-                    },
-                    {
-                        playerId: "player:arg-ins-2",
-                        number: 2,
-                        x: 12,
-                        y: 22
-                    },
-                    {
-                        playerId: "player:arg-ins-3",
-                        number: 3,
-                        x: 50,
-                        y: 22
-                    },
-                    {
-                        playerId: "player:arg-ins-4",
-                        number: 4,
-                        x: 88,
-                        y: 22
-                    },
-                    {
-                        playerId: "player:arg-ins-5",
-                        number: 5,
-                        x: 12,
-                        y: 38
-                    },
-                    {
-                        playerId: "player:arg-ins-6",
-                        number: 6,
-                        x: 37,
-                        y: 38
-                    },
-                    {
-                        playerId: "player:arg-ins-7",
-                        number: 7,
-                        x: 63,
-                        y: 38
-                    },
-                    {
-                        playerId: "player:arg-ins-8",
-                        number: 8,
-                        x: 88,
-                        y: 38
-                    },
-                    {
-                        playerId: "player:arg-ins-9",
-                        number: 9,
-                        x: 12,
-                        y: 53
-                    },
-                    {
-                        playerId: "player:arg-ins-10",
-                        number: 10,
-                        x: 50,
-                        y: 53
-                    },
-                    {
-                        playerId: "player:arg-ins-11",
-                        number: 11,
-                        x: 88,
-                        y: 53
-                    }
-                ]
-            },
-            stats: {
-                home: {
-                    posesion: 60,
-                    remates: 17,
-                    rematesAlArco: 7,
-                    corners: 5,
-                    faltas: 12,
-                    amarillas: 3,
-                    rojas: 0,
-                    pases: 502,
-                    precisionPases: 73,
-                    offsides: 3,
-                    atajadas: 3,
-                    xg: 3.12
-                },
-                away: {
-                    posesion: 40,
-                    remates: 11,
-                    rematesAlArco: 5,
-                    corners: 2,
-                    faltas: 12,
-                    amarillas: 3,
-                    rojas: 0,
-                    pases: 342,
-                    precisionPases: 71,
-                    offsides: 2,
-                    atajadas: 5,
-                    xg: 2.3
-                }
-            },
-            events: [
-                {
-                    minuto: 6,
-                    tipo: "gol",
-                    equipo: "away",
-                    playerId: "player:arg-ins-11"
-                },
-                {
-                    minuto: 22,
-                    tipo: "amarilla",
-                    equipo: "away",
-                    playerId: "player:arg-ins-2"
-                },
-                {
-                    minuto: 23,
-                    tipo: "gol",
-                    equipo: "away",
-                    playerId: "player:arg-ins-7"
-                },
-                {
-                    minuto: 38,
-                    tipo: "amarilla",
-                    equipo: "home",
-                    playerId: "player:arg-vel-10"
-                },
-                {
-                    minuto: 50,
-                    tipo: "amarilla",
-                    equipo: "away",
-                    playerId: "player:arg-ins-9"
-                },
-                {
-                    minuto: 54,
-                    tipo: "gol",
-                    equipo: "home",
-                    playerId: "player:arg-vel-10"
-                },
-                {
-                    minuto: 61,
-                    tipo: "cambio",
-                    equipo: "home",
-                    playerId: "player:arg-vel-7"
-                },
-                {
-                    minuto: 71,
-                    tipo: "cambio",
-                    equipo: "away",
-                    playerId: "player:arg-ins-9"
-                },
-                {
-                    minuto: 74,
-                    tipo: "gol",
-                    equipo: "home",
-                    playerId: "player:arg-vel-7"
-                },
-                {
-                    minuto: 78,
-                    tipo: "cambio",
-                    equipo: "home",
-                    playerId: "player:arg-vel-9"
-                },
-                {
-                    minuto: 83,
-                    tipo: "cambio",
-                    equipo: "away",
-                    playerId: "player:arg-ins-1"
-                }
-            ],
-            ratings: {
-                "player:arg-vel-1": {
-                    nota: 6.2
-                },
-                "player:arg-vel-2": {
-                    nota: 6.5
-                },
-                "player:arg-vel-3": {
-                    nota: 7
-                },
-                "player:arg-vel-4": {
-                    nota: 7.1
-                },
-                "player:arg-vel-5": {
-                    nota: 7.4
-                },
-                "player:arg-vel-6": {
-                    nota: 6.4
-                },
-                "player:arg-vel-7": {
-                    nota: 8.2
-                },
-                "player:arg-vel-8": {
-                    nota: 7.9
-                },
-                "player:arg-vel-9": {
-                    nota: 6.6
-                },
-                "player:arg-vel-10": {
-                    nota: 8.2
-                },
-                "player:arg-vel-11": {
-                    nota: 7.7
-                },
-                "player:arg-ins-1": {
-                    nota: 6.4
-                },
-                "player:arg-ins-2": {
-                    nota: 6.8
-                },
-                "player:arg-ins-3": {
-                    nota: 6.9
-                },
-                "player:arg-ins-4": {
-                    nota: 6
-                },
-                "player:arg-ins-5": {
-                    nota: 7.7
-                },
-                "player:arg-ins-6": {
-                    nota: 7.9
-                },
-                "player:arg-ins-7": {
-                    nota: 8.2
-                },
-                "player:arg-ins-8": {
-                    nota: 7.1
-                },
-                "player:arg-ins-9": {
-                    nota: 7.8
-                },
-                "player:arg-ins-10": {
-                    nota: 7.7
-                },
-                "player:arg-ins-11": {
-                    nota: 8.3
-                }
-            }
-        }
-    },
-    {
-        id: "match:arg-2026-08-08-gim-tal",
-        leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
-        time: "17:30",
-        status: "finished",
-        home: "team:arg-gim",
-        away: "team:arg-tal",
-        score: {
-            home: 1,
-            away: 1
-        },
+        home: "team:arg-nob",
+        away: "team:arg-dyj",
+        score: { home: 1, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-08-ind-nob",
+        id: "match:arg-apertura-A-10",
         leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
-        time: "20:00",
-        status: "finished",
-        home: "team:arg-ind",
-        away: "team:arg-nob",
-        score: {
-            home: 2,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-08-cen-slo",
-        leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-cen",
-        away: "team:arg-slo",
-        score: {
-            home: 2,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-08-arg-hur",
-        leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
-        time: "15:00",
-        status: "finished",
-        home: "team:arg-arg",
-        away: "team:arg-hur",
-        score: {
-            home: 1,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-08-dyj-lan",
-        leagueId: "league:arg-lpf",
-        matchday: 1,
-        date: "2026-08-08",
-        time: "17:30",
-        status: "finished",
-        home: "team:arg-dyj",
-        away: "team:arg-lan",
-        score: {
-            home: 1,
-            away: 2
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-bar-riv",
-        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 2,
-        date: "2026-08-13",
-        time: "17:30",
-        status: "finished",
-        home: "team:arg-bar",
-        away: "team:arg-riv",
-        score: {
-            home: 2,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-pla-ban",
-        leagueId: "league:arg-lpf",
-        matchday: 2,
-        date: "2026-08-13",
-        time: "20:00",
-        status: "finished",
-        home: "team:arg-pla",
-        away: "team:arg-ban",
-        score: {
-            home: 2,
-            away: 2
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-bel-boc",
-        leagueId: "league:arg-lpf",
-        matchday: 2,
-        date: "2026-08-13",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-bel",
-        away: "team:arg-boc",
-        score: {
-            home: 1,
-            away: 2
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-rac-ins",
-        leagueId: "league:arg-lpf",
-        matchday: 2,
-        date: "2026-08-13",
-        time: "15:00",
-        status: "finished",
-        home: "team:arg-rac",
-        away: "team:arg-ins",
-        score: {
-            home: 1,
-            away: 0
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-gim-est",
-        leagueId: "league:arg-lpf",
-        matchday: 2,
-        date: "2026-08-13",
-        time: "17:30",
-        status: "finished",
-        home: "team:arg-gim",
-        away: "team:arg-est",
-        score: {
-            home: 2,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-vel-nob",
-        leagueId: "league:arg-lpf",
-        matchday: 2,
-        date: "2026-08-13",
-        time: "20:00",
-        status: "finished",
-        home: "team:arg-vel",
-        away: "team:arg-nob",
-        score: {
-            home: 1,
-            away: 2
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-cen-tal",
-        leagueId: "league:arg-lpf",
-        matchday: 2,
-        date: "2026-08-13",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-cen",
-        away: "team:arg-tal",
-        score: {
-            home: 2,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-ind-hur",
-        leagueId: "league:arg-lpf",
-        matchday: 2,
-        date: "2026-08-13",
+        date: "2026-02-14",
         time: "15:00",
         status: "finished",
         home: "team:arg-ind",
-        away: "team:arg-hur",
-        score: {
-            home: 3,
-            away: 1
-        },
+        away: "team:arg-cco",
+        score: { home: 2, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-13-dyj-slo",
+        id: "match:arg-apertura-A-11",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 2,
-        date: "2026-08-13",
-        time: "17:30",
+        date: "2026-02-14",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-dyj",
-        away: "team:arg-slo",
-        score: {
-            home: 1,
-            away: 0
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-13-arg-lan",
-        leagueId: "league:arg-lpf",
-        matchday: 2,
-        date: "2026-08-13",
-        time: "20:00",
-        status: "finished",
-        home: "team:arg-arg",
+        home: "team:arg-slo",
         away: "team:arg-lan",
-        score: {
-            home: 2,
-            away: 2
-        },
+        score: { home: 3, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-18-riv-ban",
+        id: "match:arg-apertura-A-12",
         leagueId: "league:arg-lpf",
-        matchday: 3,
-        date: "2026-08-18",
-        time: "20:00",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-riv",
-        away: "team:arg-ban",
-        score: {
-            home: 3,
-            away: 1
-        },
+        home: "team:arg-gem",
+        away: "team:arg-rie",
+        score: { home: 2, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-18-bel-bar",
+        id: "match:arg-apertura-A-13",
         leagueId: "league:arg-lpf",
-        matchday: 3,
-        date: "2026-08-18",
-        time: "21:30",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-bel",
-        away: "team:arg-bar",
-        score: {
-            home: 3,
-            away: 1
-        },
+        home: "team:arg-ins",
+        away: "team:arg-tal",
+        score: { home: 1, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-18-pla-ins",
+        id: "match:arg-apertura-A-14",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-est",
+        away: "team:arg-boc",
+        score: { home: 0, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-15",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 3,
-        date: "2026-08-18",
+        date: "2026-02-21",
         time: "15:00",
         status: "finished",
         home: "team:arg-pla",
-        away: "team:arg-ins",
-        score: {
-            home: 1,
-            away: 1
-        },
+        away: "team:arg-uni",
+        score: { home: 2, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-18-gim-boc",
+        id: "match:arg-apertura-A-16",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 3,
-        date: "2026-08-18",
-        time: "17:30",
-        status: "finished",
-        home: "team:arg-gim",
-        away: "team:arg-boc",
-        score: {
-            home: 1,
-            away: 3
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-18-rac-nob",
-        leagueId: "league:arg-lpf",
-        matchday: 3,
-        date: "2026-08-18",
-        time: "20:00",
-        status: "finished",
-        home: "team:arg-rac",
-        away: "team:arg-nob",
-        score: {
-            home: 1,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-18-cen-est",
-        leagueId: "league:arg-lpf",
-        matchday: 3,
-        date: "2026-08-18",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-cen",
-        away: "team:arg-est",
-        score: {
-            home: 1,
-            away: 3
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-18-vel-hur",
-        leagueId: "league:arg-lpf",
-        matchday: 3,
-        date: "2026-08-18",
+        date: "2026-02-21",
         time: "15:00",
         status: "finished",
         home: "team:arg-vel",
-        away: "team:arg-hur",
-        score: {
-            home: 2,
-            away: 0
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-18-dyj-tal",
-        leagueId: "league:arg-lpf",
-        matchday: 3,
-        date: "2026-08-18",
-        time: "17:30",
-        status: "finished",
-        home: "team:arg-dyj",
-        away: "team:arg-tal",
-        score: {
-            home: 3,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-18-ind-lan",
-        leagueId: "league:arg-lpf",
-        matchday: 3,
-        date: "2026-08-18",
-        time: "20:00",
-        status: "finished",
-        home: "team:arg-ind",
-        away: "team:arg-lan",
-        score: {
-            home: 2,
-            away: 1
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-18-arg-slo",
-        leagueId: "league:arg-lpf",
-        matchday: 3,
-        date: "2026-08-18",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-arg",
-        away: "team:arg-slo",
-        score: {
-            home: 3,
-            away: 2
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-23-bel-riv",
-        leagueId: "league:arg-lpf",
-        matchday: 4,
-        date: "2026-08-23",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-bel",
-        away: "team:arg-riv",
-        score: {
-            home: 0,
-            away: 3
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-23-ban-ins",
-        leagueId: "league:arg-lpf",
-        matchday: 4,
-        date: "2026-08-23",
-        time: "15:00",
-        status: "finished",
-        home: "team:arg-ban",
-        away: "team:arg-ins",
-        score: {
-            home: 2,
-            away: 2
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-23-gim-bar",
-        leagueId: "league:arg-lpf",
-        matchday: 4,
-        date: "2026-08-23",
-        time: "17:30",
-        status: "finished",
-        home: "team:arg-gim",
-        away: "team:arg-bar",
-        score: {
-            home: 2,
-            away: 0
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-23-pla-nob",
-        leagueId: "league:arg-lpf",
-        matchday: 4,
-        date: "2026-08-23",
-        time: "20:00",
-        status: "finished",
-        home: "team:arg-pla",
         away: "team:arg-nob",
-        score: {
-            home: 2,
-            away: 2
-        },
+        score: { home: 2, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-23-cen-boc",
+        id: "match:arg-apertura-A-17",
         leagueId: "league:arg-lpf",
-        matchday: 4,
-        date: "2026-08-23",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-cen",
-        away: "team:arg-boc",
-        score: {
-            home: 2,
-            away: 2
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-23-rac-hur",
-        leagueId: "league:arg-lpf",
-        matchday: 4,
-        date: "2026-08-23",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-02-21",
         time: "15:00",
         status: "finished",
-        home: "team:arg-rac",
-        away: "team:arg-hur",
-        score: {
-            home: 2,
-            away: 2
-        },
+        home: "team:arg-dyj",
+        away: "team:arg-slo",
+        score: { home: 1, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-23-dyj-est",
+        id: "match:arg-apertura-A-18",
         leagueId: "league:arg-lpf",
-        matchday: 4,
-        date: "2026-08-23",
-        time: "17:30",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-dyj",
+        home: "team:arg-cco",
+        away: "team:arg-gem",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-19",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-lan",
+        away: "team:arg-ins",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-20",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rie",
         away: "team:arg-est",
-        score: {
-            home: 2,
-            away: 2
-        },
+        score: { home: 0, away: 2 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-23-vel-lan",
+        id: "match:arg-apertura-A-21",
         leagueId: "league:arg-lpf",
-        matchday: 4,
-        date: "2026-08-23",
-        time: "20:00",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-vel",
-        away: "team:arg-lan",
-        score: {
-            home: 3,
-            away: 0
-        },
+        home: "team:arg-tal",
+        away: "team:arg-boc",
+        score: { home: 2, away: 2 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-23-arg-tal",
+        id: "match:arg-apertura-A-22",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 4,
-        date: "2026-08-23",
-        time: "21:30",
+        date: "2026-02-28",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-arg",
-        away: "team:arg-tal",
-        score: {
-            home: 2,
-            away: 2
-        },
+        home: "team:arg-nob",
+        away: "team:arg-pla",
+        score: { home: 2, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-23-ind-slo",
+        id: "match:arg-apertura-A-23",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 4,
-        date: "2026-08-23",
+        date: "2026-02-28",
         time: "15:00",
         status: "finished",
         home: "team:arg-ind",
-        away: "team:arg-slo",
-        score: {
-            home: 2,
-            away: 1
-        },
+        away: "team:arg-uni",
+        score: { home: 3, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-riv-ins",
+        id: "match:arg-apertura-A-24",
         leagueId: "league:arg-lpf",
-        matchday: 5,
-        date: "2026-08-28",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-02-28",
         time: "15:00",
         status: "finished",
-        home: "team:arg-riv",
-        away: "team:arg-ins",
-        score: {
-            home: 3,
-            away: 1
-        },
+        home: "team:arg-slo",
+        away: "team:arg-vel",
+        score: { home: 2, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-gim-bel",
+        id: "match:arg-apertura-A-25",
         leagueId: "league:arg-lpf",
-        matchday: 5,
-        date: "2026-08-28",
-        time: "17:30",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-gim",
-        away: "team:arg-bel",
-        score: {
-            home: 2,
-            away: 2
-        },
+        home: "team:arg-ins",
+        away: "team:arg-dyj",
+        score: { home: 1, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-ban-nob",
+        id: "match:arg-apertura-A-26",
         leagueId: "league:arg-lpf",
-        matchday: 5,
-        date: "2026-08-28",
-        time: "20:00",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-ban",
-        away: "team:arg-nob",
-        score: {
-            home: 2,
-            away: 2
-        },
+        home: "team:arg-est",
+        away: "team:arg-cco",
+        score: { home: 3, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-cen-bar",
+        id: "match:arg-apertura-A-27",
         leagueId: "league:arg-lpf",
-        matchday: 5,
-        date: "2026-08-28",
-        time: "21:30",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-cen",
-        away: "team:arg-bar",
-        score: {
-            home: 3,
-            away: 1
-        },
+        home: "team:arg-boc",
+        away: "team:arg-lan",
+        score: { home: 1, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-pla-hur",
+        id: "match:arg-apertura-A-28",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tal",
+        away: "team:arg-rie",
+        score: { home: 3, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-29",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 5,
-        date: "2026-08-28",
+        date: "2026-03-07",
         time: "15:00",
         status: "finished",
         home: "team:arg-pla",
-        away: "team:arg-hur",
-        score: {
-            home: 2,
-            away: 2
-        },
+        away: "team:arg-ind",
+        score: { home: 1, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-dyj-boc",
+        id: "match:arg-apertura-A-30",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 5,
-        date: "2026-08-28",
-        time: "17:30",
+        date: "2026-03-07",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-dyj",
-        away: "team:arg-boc",
-        score: {
-            home: 1,
-            away: 2
-        },
+        home: "team:arg-nob",
+        away: "team:arg-slo",
+        score: { home: 0, away: 2 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-rac-lan",
+        id: "match:arg-apertura-A-31",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 5,
-        date: "2026-08-28",
-        time: "20:00",
+        date: "2026-03-07",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-rac",
-        away: "team:arg-lan",
-        score: {
-            home: 2,
-            away: 2
-        },
+        home: "team:arg-uni",
+        away: "team:arg-gem",
+        score: { home: 1, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-arg-est",
+        id: "match:arg-apertura-A-32",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 5,
-        date: "2026-08-28",
-        time: "21:30",
-        status: "finished",
-        home: "team:arg-arg",
-        away: "team:arg-est",
-        score: {
-            home: 2,
-            away: 0
-        },
-        minute: null
-    },
-    {
-        id: "match:arg-2026-08-28-vel-slo",
-        leagueId: "league:arg-lpf",
-        matchday: 5,
-        date: "2026-08-28",
+        date: "2026-03-07",
         time: "15:00",
         status: "finished",
         home: "team:arg-vel",
-        away: "team:arg-slo",
-        score: {
-            home: 3,
-            away: 1
-        },
+        away: "team:arg-ins",
+        score: { home: 3, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-08-28-ind-tal",
+        id: "match:arg-apertura-A-33",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 5,
-        date: "2026-08-28",
-        time: "17:30",
+        date: "2026-03-07",
+        time: "15:00",
         status: "finished",
-        home: "team:arg-ind",
-        away: "team:arg-tal",
-        score: {
-            home: 2,
-            away: 1
-        },
+        home: "team:arg-dyj",
+        away: "team:arg-boc",
+        score: { home: 0, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-01-gim-riv",
+        id: "match:arg-apertura-A-34",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cco",
+        away: "team:arg-tal",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-35",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-lan",
+        away: "team:arg-rie",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-36",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 6,
-        date: "2026-09-01",
-        time: "17:30",
-        status: "live",
-        home: "team:arg-gim",
-        away: "team:arg-riv",
-        score: {
-            home: 1,
-            away: 1
-        },
-        minute: 68
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-slo",
+        away: "team:arg-pla",
+        score: { home: 3, away: 0 },
+        minute: null
     },
     {
-        id: "match:arg-2026-09-01-ins-nob",
+        id: "match:arg-apertura-A-37",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 6,
-        date: "2026-09-01",
-        time: "20:00",
-        status: "live",
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gem",
+        away: "team:arg-ind",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-38",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
         home: "team:arg-ins",
         away: "team:arg-nob",
-        score: {
-            home: 1,
-            away: 0
-        },
-        minute: 73
+        score: { home: 1, away: 1 },
+        minute: null
     },
     {
-        id: "match:arg-2026-09-01-cen-bel",
+        id: "match:arg-apertura-A-39",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 6,
-        date: "2026-09-01",
-        time: "21:30",
-        status: "live",
-        home: "team:arg-cen",
-        away: "team:arg-bel",
-        score: {
-            home: 1,
-            away: 1
-        },
-        minute: 51
-    },
-    {
-        id: "match:arg-2026-09-01-ban-hur",
-        leagueId: "league:arg-lpf",
-        matchday: 6,
-        date: "2026-09-01",
+        date: "2026-03-14",
         time: "15:00",
-        status: "scheduled",
-        home: "team:arg-ban",
-        away: "team:arg-hur",
-        score: null,
+        status: "finished",
+        home: "team:arg-est",
+        away: "team:arg-uni",
+        score: { home: 2, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-01-dyj-bar",
+        id: "match:arg-apertura-A-40",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 6,
-        date: "2026-09-01",
-        time: "17:30",
-        status: "scheduled",
-        home: "team:arg-dyj",
-        away: "team:arg-bar",
-        score: null,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-boc",
+        away: "team:arg-vel",
+        score: { home: 2, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-01-pla-lan",
+        id: "match:arg-apertura-A-41",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 6,
-        date: "2026-09-01",
-        time: "20:00",
-        status: "scheduled",
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rie",
+        away: "team:arg-dyj",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-42",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-lan",
+        away: "team:arg-cco",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-43",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
         home: "team:arg-pla",
-        away: "team:arg-lan",
-        score: null,
+        away: "team:arg-gem",
+        score: { home: 2, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-01-arg-boc",
+        id: "match:arg-apertura-A-44",
         leagueId: "league:arg-lpf",
-        matchday: 6,
-        date: "2026-09-01",
-        time: "21:30",
-        status: "scheduled",
-        home: "team:arg-arg",
-        away: "team:arg-boc",
-        score: null,
-        minute: null
-    },
-    {
-        id: "match:arg-2026-09-01-rac-slo",
-        leagueId: "league:arg-lpf",
-        matchday: 6,
-        date: "2026-09-01",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-03-21",
         time: "15:00",
-        status: "scheduled",
-        home: "team:arg-rac",
-        away: "team:arg-slo",
-        score: null,
+        status: "finished",
+        home: "team:arg-slo",
+        away: "team:arg-ins",
+        score: { home: 2, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-01-ind-est",
+        id: "match:arg-apertura-A-45",
         leagueId: "league:arg-lpf",
-        matchday: 6,
-        date: "2026-09-01",
-        time: "17:30",
-        status: "scheduled",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
         home: "team:arg-ind",
         away: "team:arg-est",
-        score: null,
+        score: { home: 2, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-01-vel-tal",
+        id: "match:arg-apertura-A-46",
         leagueId: "league:arg-lpf",
-        matchday: 6,
-        date: "2026-09-01",
-        time: "20:00",
-        status: "scheduled",
-        home: "team:arg-vel",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-nob",
+        away: "team:arg-boc",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-47",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-uni",
         away: "team:arg-tal",
-        score: null,
+        score: { home: 0, away: 2 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-06-riv-nob",
+        id: "match:arg-apertura-A-48",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
         matchday: 7,
-        date: "2026-09-06",
-        time: "20:00",
-        status: "scheduled",
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-vel",
+        away: "team:arg-rie",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-A-49",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-dyj",
+        away: "team:arg-cco",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-50",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ald",
+        away: "team:arg-tig",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-51",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-atu",
+        away: "team:arg-sar",
+        score: { home: 2, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-52",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ban",
+        away: "team:arg-cen",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-53",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bar",
+        away: "team:arg-rac",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-54",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bel",
+        away: "team:arg-hur",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-55",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
         home: "team:arg-riv",
-        away: "team:arg-nob",
-        score: null,
+        away: "team:arg-ivd",
+        score: { home: 1, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-06-cen-gim",
+        id: "match:arg-apertura-B-56",
         leagueId: "league:arg-lpf",
-        matchday: 7,
-        date: "2026-09-06",
-        time: "21:30",
-        status: "scheduled",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-02-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gim",
+        away: "team:arg-erc",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-57",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tig",
+        away: "team:arg-arg",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-58",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
         home: "team:arg-cen",
+        away: "team:arg-ald",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-59",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rac",
+        away: "team:arg-atu",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-60",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-hur",
+        away: "team:arg-ban",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-61",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ivd",
+        away: "team:arg-bar",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-62",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-erc",
+        away: "team:arg-bel",
+        score: { home: 0, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-63",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-02-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gim",
+        away: "team:arg-riv",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-64",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-arg",
+        away: "team:arg-sar",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-65",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tig",
+        away: "team:arg-cen",
+        score: { home: 0, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-66",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ald",
+        away: "team:arg-hur",
+        score: { home: 0, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-67",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-atu",
+        away: "team:arg-ivd",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-68",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ban",
+        away: "team:arg-erc",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-69",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-02-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bar",
         away: "team:arg-gim",
-        score: null,
+        score: { home: 2, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-06-ins-hur",
+        id: "match:arg-apertura-B-70",
         leagueId: "league:arg-lpf",
-        matchday: 7,
-        date: "2026-09-06",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-02-21",
         time: "15:00",
-        status: "scheduled",
-        home: "team:arg-ins",
-        away: "team:arg-hur",
-        score: null,
+        status: "finished",
+        home: "team:arg-bel",
+        away: "team:arg-riv",
+        score: { home: 0, away: 2 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-06-dyj-bel",
+        id: "match:arg-apertura-B-71",
         leagueId: "league:arg-lpf",
-        matchday: 7,
-        date: "2026-09-06",
-        time: "17:30",
-        status: "scheduled",
-        home: "team:arg-dyj",
-        away: "team:arg-bel",
-        score: null,
-        minute: null
-    },
-    {
-        id: "match:arg-2026-09-06-ban-lan",
-        leagueId: "league:arg-lpf",
-        matchday: 7,
-        date: "2026-09-06",
-        time: "20:00",
-        status: "scheduled",
-        home: "team:arg-ban",
-        away: "team:arg-lan",
-        score: null,
-        minute: null
-    },
-    {
-        id: "match:arg-2026-09-06-arg-bar",
-        leagueId: "league:arg-lpf",
-        matchday: 7,
-        date: "2026-09-06",
-        time: "21:30",
-        status: "scheduled",
-        home: "team:arg-arg",
-        away: "team:arg-bar",
-        score: null,
-        minute: null
-    },
-    {
-        id: "match:arg-2026-09-06-pla-slo",
-        leagueId: "league:arg-lpf",
-        matchday: 7,
-        date: "2026-09-06",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-02-28",
         time: "15:00",
-        status: "scheduled",
-        home: "team:arg-pla",
-        away: "team:arg-slo",
-        score: null,
+        status: "finished",
+        home: "team:arg-cen",
+        away: "team:arg-arg",
+        score: { home: 2, away: 1 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-06-ind-boc",
+        id: "match:arg-apertura-B-72",
         leagueId: "league:arg-lpf",
-        matchday: 7,
-        date: "2026-09-06",
-        time: "17:30",
-        status: "scheduled",
-        home: "team:arg-ind",
-        away: "team:arg-boc",
-        score: null,
-        minute: null
-    },
-    {
-        id: "match:arg-2026-09-06-rac-tal",
-        leagueId: "league:arg-lpf",
-        matchday: 7,
-        date: "2026-09-06",
-        time: "20:00",
-        status: "scheduled",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
+        status: "finished",
         home: "team:arg-rac",
-        away: "team:arg-tal",
-        score: null,
+        away: "team:arg-sar",
+        score: { home: 2, away: 0 },
         minute: null
     },
     {
-        id: "match:arg-2026-09-06-vel-est",
+        id: "match:arg-apertura-B-73",
         leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-hur",
+        away: "team:arg-tig",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-74",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-erc",
+        away: "team:arg-ald",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-75",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gim",
+        away: "team:arg-atu",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-76",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-riv",
+        away: "team:arg-ban",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-77",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-02-28",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bel",
+        away: "team:arg-bar",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-78",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-arg",
+        away: "team:arg-rac",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-79",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cen",
+        away: "team:arg-hur",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-80",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-sar",
+        away: "team:arg-ivd",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-81",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tig",
+        away: "team:arg-erc",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-82",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ald",
+        away: "team:arg-riv",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-83",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-atu",
+        away: "team:arg-bel",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-84",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-03-07",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ban",
+        away: "team:arg-bar",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-85",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-hur",
+        away: "team:arg-arg",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-86",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ivd",
+        away: "team:arg-rac",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-87",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-erc",
+        away: "team:arg-cen",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-88",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gim",
+        away: "team:arg-sar",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-89",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-riv",
+        away: "team:arg-tig",
+        score: { home: 3, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-90",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bar",
+        away: "team:arg-ald",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-91",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-03-14",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ban",
+        away: "team:arg-atu",
+        score: { home: 2, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-92",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
         matchday: 7,
-        date: "2026-09-06",
-        time: "21:30",
-        status: "scheduled",
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-arg",
+        away: "team:arg-ivd",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-93",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-hur",
+        away: "team:arg-erc",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-94",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rac",
+        away: "team:arg-gim",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-95",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cen",
+        away: "team:arg-riv",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-96",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-sar",
+        away: "team:arg-bel",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-97",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tig",
+        away: "team:arg-bar",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-apertura-B-98",
+        leagueId: "league:arg-lpf",
+        fase: "apertura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-03-21",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ald",
+        away: "team:arg-atu",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-99",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-dyj",
+        away: "team:arg-vel",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-100",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cco",
+        away: "team:arg-uni",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-101",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-lan",
+        away: "team:arg-nob",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-102",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rie",
+        away: "team:arg-ind",
+        score: { home: 0, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-103",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tal",
+        away: "team:arg-slo",
+        score: { home: 2, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-104",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-boc",
+        away: "team:arg-gem",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-105",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-est",
+        away: "team:arg-ins",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-106",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
         home: "team:arg-vel",
+        away: "team:arg-pla",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-107",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-nob",
+        away: "team:arg-dyj",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-108",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ind",
+        away: "team:arg-cco",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-109",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-slo",
+        away: "team:arg-lan",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-110",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gem",
+        away: "team:arg-rie",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-111",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ins",
+        away: "team:arg-tal",
+        score: { home: 0, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-112",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-est",
+        away: "team:arg-boc",
+        score: { home: 2, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-113",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-pla",
+        away: "team:arg-uni",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-114",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-vel",
+        away: "team:arg-nob",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-115",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-dyj",
+        away: "team:arg-slo",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-116",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cco",
+        away: "team:arg-gem",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-117",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-lan",
+        away: "team:arg-ins",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-118",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rie",
         away: "team:arg-est",
-        score: null,
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-119",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tal",
+        away: "team:arg-boc",
+        score: { home: 0, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-120",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-nob",
+        away: "team:arg-pla",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-121",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ind",
+        away: "team:arg-uni",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-122",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-slo",
+        away: "team:arg-vel",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-123",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ins",
+        away: "team:arg-dyj",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-124",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-est",
+        away: "team:arg-cco",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-125",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-boc",
+        away: "team:arg-lan",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-126",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tal",
+        away: "team:arg-rie",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-127",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-pla",
+        away: "team:arg-ind",
+        score: { home: 2, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-128",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-nob",
+        away: "team:arg-slo",
+        score: { home: 0, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-129",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-uni",
+        away: "team:arg-gem",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-130",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-vel",
+        away: "team:arg-ins",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-131",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-dyj",
+        away: "team:arg-boc",
+        score: { home: 0, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-132",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cco",
+        away: "team:arg-tal",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-133",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-lan",
+        away: "team:arg-rie",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-134",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-slo",
+        away: "team:arg-pla",
+        score: { home: 3, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-135",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gem",
+        away: "team:arg-ind",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-136",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ins",
+        away: "team:arg-nob",
+        score: { home: 0, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-137",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-est",
+        away: "team:arg-uni",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-138",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-boc",
+        away: "team:arg-vel",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-139",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rie",
+        away: "team:arg-dyj",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-140",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-lan",
+        away: "team:arg-cco",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-141",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-pla",
+        away: "team:arg-gem",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-142",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-slo",
+        away: "team:arg-ins",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-143",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ind",
+        away: "team:arg-est",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-144",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-nob",
+        away: "team:arg-boc",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-145",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-uni",
+        away: "team:arg-tal",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-146",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-vel",
+        away: "team:arg-rie",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-A-147",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "A",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-dyj",
+        away: "team:arg-cco",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-148",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ald",
+        away: "team:arg-tig",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-149",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-atu",
+        away: "team:arg-sar",
+        score: { home: 0, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-150",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ban",
+        away: "team:arg-cen",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-151",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bar",
+        away: "team:arg-rac",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-152",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bel",
+        away: "team:arg-hur",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-153",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-riv",
+        away: "team:arg-ivd",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-154",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 1,
+        date: "2026-06-06",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gim",
+        away: "team:arg-erc",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-155",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tig",
+        away: "team:arg-arg",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-156",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cen",
+        away: "team:arg-ald",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-157",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rac",
+        away: "team:arg-atu",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-158",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-hur",
+        away: "team:arg-ban",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-159",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ivd",
+        away: "team:arg-bar",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-160",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-erc",
+        away: "team:arg-bel",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-161",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 2,
+        date: "2026-06-13",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gim",
+        away: "team:arg-riv",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-162",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-arg",
+        away: "team:arg-sar",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-163",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tig",
+        away: "team:arg-cen",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-164",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ald",
+        away: "team:arg-hur",
+        score: { home: 2, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-165",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-atu",
+        away: "team:arg-ivd",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-166",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ban",
+        away: "team:arg-erc",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-167",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bar",
+        away: "team:arg-gim",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-168",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 3,
+        date: "2026-06-20",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bel",
+        away: "team:arg-riv",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-169",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cen",
+        away: "team:arg-arg",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-170",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rac",
+        away: "team:arg-sar",
+        score: { home: 3, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-171",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-hur",
+        away: "team:arg-tig",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-172",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-erc",
+        away: "team:arg-ald",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-173",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gim",
+        away: "team:arg-atu",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-174",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-riv",
+        away: "team:arg-ban",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-175",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 4,
+        date: "2026-06-27",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bel",
+        away: "team:arg-bar",
+        score: { home: 2, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-176",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-arg",
+        away: "team:arg-rac",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-177",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cen",
+        away: "team:arg-hur",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-178",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-sar",
+        away: "team:arg-ivd",
+        score: { home: 2, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-179",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tig",
+        away: "team:arg-erc",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-180",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ald",
+        away: "team:arg-riv",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-181",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-atu",
+        away: "team:arg-bel",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-182",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 5,
+        date: "2026-07-04",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ban",
+        away: "team:arg-bar",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-183",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-hur",
+        away: "team:arg-arg",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-184",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ivd",
+        away: "team:arg-rac",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-185",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-erc",
+        away: "team:arg-cen",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-186",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-gim",
+        away: "team:arg-sar",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-187",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-riv",
+        away: "team:arg-tig",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-188",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-bar",
+        away: "team:arg-ald",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-189",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 6,
+        date: "2026-07-11",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ban",
+        away: "team:arg-atu",
+        score: { home: 1, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-190",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-arg",
+        away: "team:arg-ivd",
+        score: { home: 2, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-191",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-hur",
+        away: "team:arg-erc",
+        score: { home: 3, away: 0 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-192",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-rac",
+        away: "team:arg-gim",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-193",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-cen",
+        away: "team:arg-riv",
+        score: { home: 0, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-194",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-sar",
+        away: "team:arg-bel",
+        score: { home: 1, away: 2 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-195",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-tig",
+        away: "team:arg-bar",
+        score: { home: 1, away: 1 },
+        minute: null
+    },
+    {
+        id: "match:arg-clausura-B-196",
+        leagueId: "league:arg-lpf",
+        fase: "clausura",
+        grupo: "B",
+        matchday: 7,
+        date: "2026-07-18",
+        time: "15:00",
+        status: "finished",
+        home: "team:arg-ald",
+        away: "team:arg-atu",
+        score: { home: 2, away: 1 },
         minute: null
     }
 ];

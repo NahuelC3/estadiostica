@@ -15,6 +15,7 @@ import { DATOS_CRUDOS } from "./index.js";
 import { crearRng, rngEntero, rngMezclar, hashString } from "../lib/prng.js";
 import { compararIso } from "../lib/fecha.js";
 import { computeTable, jornadaActual, mapaPosiciones } from "../lib/tabla.js";
+import { resolverLlave } from "../lib/llave.js";
 
 /**
  * @typedef {Object} Equipo
@@ -138,6 +139,9 @@ const NAC_LIGA = {
     "bra-serieA":     ["br", "ar"],
     "chi-primera":    ["cl", "ar"],
     "uru-primera":    ["uy", "ar"],
+    // Sólo para los 13 equipos NUEVOS de Champions (leagueId acá mismo): los
+    // otros 23 ya tienen su NAC_LIGA propia en su liga doméstica, sin tocar.
+    "uefa-champions": ["nl", "tr"],
 };
 
 /**
@@ -268,10 +272,20 @@ export function partidosDeLiga(leagueId) {
         .sort((a, b) => compararIso(a.date, b.date) || a.time.localeCompare(b.time));
 }
 
-export function partidosDeEquipo(teamId) {
-    return (byTeam.get(teamId) || [])
+/**
+ * partidosDeEquipo — todos los partidos de un equipo, ordenados por fecha.
+ * @param {string} teamId
+ * @param {string|null} [leagueId]  si se pasa, filtra sólo los de ESA
+ *   competencia. Sin esto, un equipo que juega más de una competencia
+ *   (ej. liga doméstica + Copa Argentina + Champions) devuelve TODOS sus
+ *   partidos mezclados — es lo que quiere el calendario del equipo, pero
+ *   NO lo que quieren las estadísticas de temporada (ver lineasJugador).
+ */
+export function partidosDeEquipo(teamId, leagueId = null) {
+    const todos = (byTeam.get(teamId) || [])
         .map((id) => partidos.get(id))
         .sort((a, b) => compararIso(a.date, b.date) || a.time.localeCompare(b.time));
+    return leagueId ? todos.filter((p) => p.leagueId === leagueId) : todos;
 }
 
 export function fixtureDe(fecha) {
@@ -325,6 +339,132 @@ export function movimientosDeLiga(leagueId) {
 }
 
 // ------------------------------------------------------------
+//  4-bis. LIGAS CON FASES (Apertura/Clausura/Anual, fase de liga, etc.)
+// ------------------------------------------------------------
+//  Todo esto es ADITIVO: una liga sin `fases` no pasa nunca por acá.
+//  La pieza clave es que `computeTable` no cambia — se le sigue pasando
+//  una lista de partidos + un objeto con {zones,tiebreakers,adjustments},
+//  sólo que ahora ese objeto es una FASE en vez de la liga entera.
+
+/** Partidos de una fase (o de un grupo dentro de una fase 'grupos'). */
+function partidosDeFase(leagueId, faseKey, grupoKey = null) {
+    const cfg = ligasPorId.get(leagueId);
+    const fase = cfg?.fases?.find((f) => f.key === faseKey);
+    if (!fase) return [];
+    const todosLiga = partidosDeLiga(leagueId);
+    if (fase.tipo === "combinada") {
+        return todosLiga.filter((p) => fase.combinaFases.includes(p.fase));
+    }
+    return todosLiga.filter((p) => p.fase === faseKey && (!grupoKey || p.grupo === grupoKey));
+}
+
+/**
+ * equiposDeFase — roster de participantes de una fase, leído de la config
+ * (NO de Equipo.leagueId: un equipo de Champions puede tener leagueId de
+ * su liga doméstica y aun así jugar esta fase).
+ * @param {string} leagueId
+ * @param {string} faseKey
+ * @returns {string[]} teamIds
+ */
+export function equiposDeFase(leagueId, faseKey) {
+    const cfg = ligasPorId.get(leagueId);
+    const fase = cfg?.fases?.find((f) => f.key === faseKey);
+    if (!fase) return [];
+    if (fase.tipo === "grupos") return fase.grupos.flatMap((g) => g.equipos);
+    if (fase.tipo === "combinada") {
+        const otras = fase.combinaFases.map((k) => cfg.fases.find((f) => f.key === k)).filter(Boolean);
+        const ids = otras.flatMap((f) => (f.tipo === "grupos" ? f.grupos.flatMap((g) => g.equipos) : f.equipos ?? []));
+        return [...new Set(ids)];
+    }
+    return fase.equipos ?? equiposDeLiga(leagueId).map((e) => e.id);
+}
+
+/** Tabla de una fase (o de un grupo), calculada con la MISMA computeTable
+ *  de siempre — sólo cambia qué partidos y qué config de zonas/desempate
+ *  recibe. Cacheada por (liga, fase, grupo). No aplica en fases 'eliminacion'. */
+const cacheTablaFase = new Map();
+export function tablaDeFase(leagueId, faseKey, grupoKey = null) {
+    const cfg = ligasPorId.get(leagueId);
+    const fase = cfg?.fases?.find((f) => f.key === faseKey);
+    if (!fase || fase.tipo === "eliminacion") return [];
+    const clave = `${leagueId}|${faseKey}|${grupoKey ?? ""}`;
+    if (!cacheTablaFase.has(clave)) {
+        cacheTablaFase.set(clave, computeTable(partidosDeFase(leagueId, faseKey, grupoKey), fase));
+    }
+    return cacheTablaFase.get(clave);
+}
+
+/**
+ * tablaPorDefecto — para ligas con fases, la tabla "principal" a mostrar
+ * cuando no se pide una fase específica (ej. la posición de un equipo en
+ * su página): la fase 'combinada' si existe (la Anual), si no la primera
+ * fase de tipo 'liga', si no la primera 'grupos' (concatenando sus grupos:
+ * cada equipo está en uno solo, no hay colisión de ids).
+ * Para una liga SIN fases, es exactamente `tabla(leagueId)` de siempre.
+ * @param {string} leagueId
+ * @returns {import("../lib/tabla.js").FilaTabla[]}
+ */
+export function tablaPorDefecto(leagueId) {
+    const cfg = ligasPorId.get(leagueId);
+    if (!cfg?.fases) return tabla(leagueId);
+    const combinada = cfg.fases.find((f) => f.tipo === "combinada");
+    if (combinada) return tablaDeFase(leagueId, combinada.key);
+    const deLiga = cfg.fases.find((f) => f.tipo === "liga");
+    if (deLiga) return tablaDeFase(leagueId, deLiga.key);
+    const deGrupos = cfg.fases.find((f) => f.tipo === "grupos");
+    if (deGrupos) return deGrupos.grupos.flatMap((g) => tablaDeFase(leagueId, deGrupos.key, g.key));
+    return [];
+}
+
+/**
+ * statsDeFase — equivalente a statsLiga() pero acotado a una fase (y, si
+ * se pasa, a un grupo). Necesario porque equiposDeLiga() no sirve acá (ver
+ * equiposDeFase): el roster de una fase no depende de Equipo.leagueId.
+ * @param {string} leagueId
+ * @param {string} faseKey
+ * @param {string|null} [grupoKey]
+ * @returns {{jugador:Jugador, stats:Object}[]}
+ */
+export function statsDeFase(leagueId, faseKey, grupoKey = null) {
+    const partidosFase = partidosDeFase(leagueId, faseKey, grupoKey);
+    const idsEquipos = grupoKey
+        ? [...new Set(partidosFase.flatMap((p) => [p.home, p.away]))]
+        : equiposDeFase(leagueId, faseKey);
+    const filas = [];
+    for (const teamId of idsEquipos) {
+        // `lineaJugadorEnPartido` no chequea de qué equipo es el partido:
+        // asume que ya vienen filtrados a los del propio jugador (como hace
+        // siempre `partidosDeEquipo`). Acá hay que filtrar a mano porque
+        // `partidosFase` trae los partidos de TODOS los equipos de la fase.
+        const partidosDelEquipo = partidosFase.filter((p) => p.home === teamId || p.away === teamId);
+        for (const j of plantelDe(teamId)) {
+            filas.push({ jugador: j, stats: statsTemporadaJugador(j.id, { partidos: partidosDelEquipo }) });
+        }
+    }
+    return filas;
+}
+
+/**
+ * campeonDe — resuelve la ÚLTIMA ronda de la fase 'eliminacion' de una
+ * liga (se asume que es la final) y devuelve quién la ganó. null si la
+ * liga no tiene fase de eliminación, o si esa llave todavía no se jugó.
+ * Genérica: sirve para Copa Argentina hoy y para cualquier otro torneo de
+ * eliminación directa que se agregue después (Europa League, Libertadores...).
+ * @param {string} leagueId
+ * @returns {string|null}
+ */
+export function campeonDe(leagueId) {
+    const cfg = ligasPorId.get(leagueId);
+    const faseElim = cfg?.fases?.find((f) => f.tipo === "eliminacion");
+    if (!faseElim) return null;
+    const rondaFinal = faseElim.rondas.at(-1);
+    const llaveFinal = faseElim.llaves.find((l) => l.ronda === rondaFinal.key);
+    if (!llaveFinal) return null;
+    const partidosLlave = llaveFinal.partidos.map((id) => partido(id)).filter(Boolean);
+    return resolverLlave(llaveFinal, partidosLlave).avanza;
+}
+
+// ------------------------------------------------------------
 //  5. ESTADÍSTICAS DE TEMPORADA DERIVADAS
 // ------------------------------------------------------------
 //  No hay stats por partido salvo en los 2 partidos con detail, así que
@@ -368,18 +508,29 @@ function lineaJugadorEnPartido(jug, p) {
     };
 }
 
-/** Devuelve todas las líneas por partido (finalizados) de un jugador. */
-export function lineasJugador(playerId) {
+/**
+ * lineasJugador — todas las líneas por partido (finalizados) de un jugador.
+ * @param {string} playerId
+ * @param {{leagueId?:string, partidos?:Partido[]}} [opciones]
+ *   Sin opciones: TODOS los partidos del equipo del jugador (comportamiento
+ *   de siempre — para un equipo que sólo juega una competencia da igual).
+ *   `leagueId`: acota a esa competencia (evita mezclar, ej., goles de
+ *   Champions con los de la liga doméstica de un mismo jugador).
+ *   `partidos`: usa exactamente esa lista (para stats por FASE — ver
+ *   statsDeFase en db.js, que le pasa los partidos ya filtrados).
+ */
+export function lineasJugador(playerId, opciones = {}) {
     const jug = jugador(playerId);
     if (!jug) return [];
-    return partidosDeEquipo(jug.teamId)
+    const partidosBase = opciones.partidos ?? partidosDeEquipo(jug.teamId, opciones.leagueId ?? null);
+    return partidosBase
         .filter((p) => p.status === "finished")
         .map((p) => lineaJugadorEnPartido(jug, p));
 }
 
-/** Agrega la temporada de un jugador a totales + promedios. */
-export function statsTemporadaJugador(playerId) {
-    const lineas = lineasJugador(playerId).filter((l) => l.jugo);
+/** Agrega la temporada de un jugador a totales + promedios. Mismas `opciones` que lineasJugador. */
+export function statsTemporadaJugador(playerId, opciones = {}) {
+    const lineas = lineasJugador(playerId, opciones).filter((l) => l.jugo);
     const suma = (k) => lineas.reduce((acc, l) => acc + l[k], 0);
     const pj = lineas.length;
     const notaMedia = pj ? +(suma("nota") / pj).toFixed(2) : 0;
@@ -397,14 +548,19 @@ export function statsTemporadaJugador(playerId) {
     };
 }
 
-/** Cache de "todas las stats de todos los jugadores de una liga" (para rankings). */
+/**
+ * Cache de "todas las stats de todos los jugadores de una liga" (para rankings).
+ * Acotado por `leagueId`: un equipo compartido con otra competencia (Copa
+ * Argentina, Champions League) no debe filtrar esos goles acá — sólo cuentan
+ * los partidos de ESTA liga.
+ */
 const cacheStatsLiga = new Map();
 export function statsLiga(leagueId) {
     if (cacheStatsLiga.has(leagueId)) return cacheStatsLiga.get(leagueId);
     const filas = [];
     for (const eq of equiposDeLiga(leagueId)) {
         for (const j of plantelDe(eq.id)) {
-            filas.push({ jugador: j, stats: statsTemporadaJugador(j.id) });
+            filas.push({ jugador: j, stats: statsTemporadaJugador(j.id, { leagueId }) });
         }
     }
     cacheStatsLiga.set(leagueId, filas);
@@ -425,11 +581,11 @@ export function rankingDe(playerId, metrica) {
 }
 
 /** Mapa de tiros determinista de un jugador (sobre el medio campo de ataque). */
-export function mapaTirosJugador(playerId) {
+export function mapaTirosJugador(playerId, opciones = {}) {
     const jug = jugador(playerId);
     if (!jug) return [];
     const rng = crearRng(`tiros|${playerId}`);
-    const st = statsTemporadaJugador(playerId);
+    const st = statsTemporadaJugador(playerId, opciones);
     const total = Math.max(6, st.rematesAlArco + rngEntero(rng, 3, 10));
     let golesRestantes = st.goles;
     const tiros = [];

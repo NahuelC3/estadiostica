@@ -13,6 +13,7 @@
 // ============================================================
 
 import * as db from "./data/db.js";
+import { resolverLlave } from "./lib/llave.js";
 
 /** Fecha "de hoy" del sitio de ejemplo (hay partidos en vivo/programados). */
 export const FECHA_DEMO = db.fechaDemo;
@@ -212,21 +213,88 @@ export async function getMatch(id) {
  * @property {number} delta   prevPos - pos (positivo = subió)
  */
 
+/** Agrupa filas ya calculadas en zonas por rango de posición, en el orden de la config. */
+function agruparPorZonas(filas, zones) {
+    return (zones || [])
+        .map((z) => ({
+            key: z.key,
+            label: z.label,
+            color: z.color,
+            filas: filas.filter((f) => f.pos >= z.from && f.pos <= z.to),
+        }))
+        .filter((z) => z.filas.length);
+}
+
+/** Arma el panel de "líderes" (goleador/asistencias/figura) a partir de una lista statsLiga/statsDeFase. */
+function lideresDe(stats) {
+    const lider = (metrica) => {
+        const top = stats.slice().sort((a, b) => b.stats[metrica] - a.stats[metrica])[0];
+        if (!top) return null;
+        return {
+            jugador: top.jugador.nombre,
+            equipo: db.equipo(top.jugador.teamId)?.abbr ?? "",
+            valor: +top.stats[metrica].toFixed(metrica === "notaMedia" ? 2 : 0),
+        };
+    };
+    return { goleador: lider("goles"), asistencias: lider("asistencias"), figura: lider("notaMedia") };
+}
+
 /**
  * Tabla de posiciones completa, segmentada por zonas, + panel lateral.
  * @param {string} leagueId
+ * @param {{fase?: string, grupo?: string}} [opciones]
+ *   Sólo aplica a ligas con `fases` (ver getFasesDeLiga). Sin `fase`, usa la
+ *   "principal" (la combinada/Anual si existe, si no la primera de tabla).
+ *   Sin `grupo` en una fase de tipo 'grupos', usa el primer grupo declarado.
  * @returns {Promise<{
  *   liga: Liga,
  *   zonas: {key:string,label:string,color:string,filas:FilaTabla[]}[],
  *   movimientos: {team:{id,nombre,abbr,brandColor},delta:number}[],
- *   lideres: Record<string,{jugador:string,equipo:string,valor:number}>
- * }>}
+ *   lideres: Record<string,{jugador:string,equipo:string,valor:number}|null>
+ * }|null>}
  */
-export async function getStandings(leagueId) {
+export async function getStandings(leagueId, { fase = null, grupo = null } = {}) {
     await tick();
     const cfg = db.liga(leagueId);
     if (!cfg) return null;
 
+    if (cfg.fases) {
+        const faseObj = fase
+            ? cfg.fases.find((f) => f.key === fase)
+            : cfg.fases.find((f) => f.tipo === "combinada") ?? cfg.fases.find((f) => f.tipo === "liga" || f.tipo === "grupos");
+        if (!faseObj || faseObj.tipo === "eliminacion") return null;
+
+        const grupoKey = faseObj.tipo === "grupos" ? (grupo ?? faseObj.grupos[0].key) : null;
+        const tabla = db.tablaDeFase(cfg.id, faseObj.key, grupoKey);
+
+        // Sin jornada anterior por fase: no hay tracking de movimientos acá
+        // (ver `movimientos: []` más abajo, misma simplificación).
+        const filas = tabla.map((f) => ({
+            pos: f.pos,
+            equipo: mini(f.teamId),
+            pj: f.pj, pg: f.pg, pe: f.pe, pp: f.pp,
+            gf: f.gf, gc: f.gc, dif: f.dif, pts: f.pts,
+            ajuste: f.ajuste,
+            forma: f.forma,
+            prevPos: f.pos,
+            delta: 0,
+        }));
+
+        const zonas = faseObj.resolverCupos
+            ? faseObj.resolverCupos(filas, { campeonCopaArgentina: db.campeonDe("league:arg-copa") })
+            : agruparPorZonas(filas, faseObj.zones);
+
+        const stats = db.statsDeFase(cfg.id, faseObj.key, grupoKey);
+
+        return structuredClone({
+            liga: ligaPublica(cfg),
+            zonas,
+            movimientos: [],
+            lideres: lideresDe(stats),
+        });
+    }
+
+    // ---- liga sin fases: comportamiento de siempre, sin cambios ----
     const tabla = db.tabla(cfg.id);
     const prev = new Map(
         db.tablaHasta(cfg.id, Math.max(1, db.jornadaActualDe(cfg.id) - 1))
@@ -244,13 +312,7 @@ export async function getStandings(leagueId) {
         delta: (prev.get(f.teamId) ?? f.pos) - f.pos,
     }));
 
-    // Agrupa por zona respetando el orden de la config.
-    const zonas = cfg.zones.map((z) => ({
-        key: z.key,
-        label: z.label,
-        color: z.color,
-        filas: filas.filter((f) => f.pos >= z.from && f.pos <= z.to),
-    })).filter((z) => z.filas.length);
+    const zonas = agruparPorZonas(filas, cfg.zones);
 
     // Movimientos de la fecha: los 6 mayores saltos, suban o bajen.
     const movimientos = db.movimientosDeLiga(cfg.id)
@@ -259,27 +321,100 @@ export async function getStandings(leagueId) {
         .slice(0, 6)
         .map((m) => ({ equipo: mini(m.team), delta: m.delta }));
 
-    // Líderes del torneo.
-    const stats = db.statsLiga(cfg.id).slice();
-    const lider = (metrica) => {
-        const top = stats.slice().sort((a, b) => b.stats[metrica] - a.stats[metrica])[0];
-        return {
-            jugador: top.jugador.nombre,
-            equipo: db.equipo(top.jugador.teamId)?.abbr ?? "",
-            valor: +top.stats[metrica].toFixed(metrica === "notaMedia" ? 2 : 0),
-        };
-    };
+    const stats = db.statsLiga(cfg.id);
 
     return structuredClone({
         liga: ligaPublica(cfg),
         zonas,
         movimientos,
-        lideres: {
-            goleador: lider("goles"),
-            asistencias: lider("asistencias"),
-            figura: lider("notaMedia"),
-        },
+        lideres: lideresDe(stats),
     });
+}
+
+// ------------------------------------------------------------
+//  getFasesDeLiga / getEliminacion
+// ------------------------------------------------------------
+/**
+ * @typedef {Object} FasePublica
+ * @property {string} key
+ * @property {string} nombre
+ * @property {'liga'|'grupos'|'combinada'|'eliminacion'} tipo
+ * @property {{key:string,nombre:string}[]} [grupos]  sólo tipo 'grupos'
+ */
+
+/**
+ * Fases de una liga (vacío si no tiene `fases` — liga de tabla única de siempre).
+ * @param {string} leagueId
+ * @returns {Promise<FasePublica[]>}
+ */
+export async function getFasesDeLiga(leagueId) {
+    await tick();
+    const cfg = db.liga(leagueId);
+    if (!cfg?.fases) return [];
+    return structuredClone(cfg.fases.map((f) => ({
+        key: f.key,
+        nombre: f.nombre,
+        tipo: f.tipo,
+        ...(f.tipo === "grupos" ? { grupos: f.grupos.map((g) => ({ key: g.key, nombre: g.nombre })) } : {}),
+    })));
+}
+
+/** Versión pública de un lado de una llave: el equipo, o null + placeholder si todavía no está definido. */
+function ladoPublico(lado) {
+    if (!lado) return null;
+    if (!lado.equipo) return { equipo: null, placeholder: lado.placeholder ?? null };
+    return { equipo: mini(lado.equipo), placeholder: null };
+}
+
+/**
+ * @typedef {Object} LlavePublica
+ * @property {string} id
+ * @property {string} ronda
+ * @property {'unico'|'ida-vuelta'} formato
+ * @property {{equipo:{id,nombre,abbr,brandColor},placeholder:null}|{equipo:null,placeholder:string|null}|null} local
+ * @property {{equipo:{id,nombre,abbr,brandColor},placeholder:null}|{equipo:null,placeholder:string|null}|null} visitante
+ * @property {TarjetaPartido[]} partidos
+ * @property {{local:number,visitante:number}|null} marcadorGlobal
+ * @property {{id,nombre,abbr,brandColor}|null} avanza
+ * @property {boolean} definidoPorPenales
+ */
+
+/**
+ * Bracket de una fase de eliminación directa, ronda por ronda.
+ * @param {string} leagueId
+ * @param {string} faseKey
+ * @returns {Promise<{liga:Liga, fase:{key:string,nombre:string}, rondas:{key:string,nombre:string,formato:string,llaves:LlavePublica[]}[]}|null>}
+ */
+export async function getEliminacion(leagueId, faseKey) {
+    await tick();
+    const cfg = db.liga(leagueId);
+    const fase = cfg?.fases?.find((f) => f.key === faseKey && f.tipo === "eliminacion");
+    if (!fase) return null;
+
+    const rondas = fase.rondas.map((r) => ({
+        key: r.key,
+        nombre: r.nombre,
+        formato: r.formato,
+        llaves: fase.llaves
+            .filter((ll) => ll.ronda === r.key)
+            .map((ll) => {
+                const partidosLlave = ll.partidos.map((id) => db.partido(id)).filter(Boolean);
+                const { marcadorGlobal, avanza, definidoPorPenales } = resolverLlave(ll, partidosLlave);
+                return {
+                    id: ll.id,
+                    ronda: ll.ronda,
+                    formato: ll.formato,
+                    local: ladoPublico(ll.local),
+                    visitante: ladoPublico(ll.visitante),
+                    partidos: partidosLlave.map(tarjeta),
+                    marcadorGlobal,
+                    avanza: avanza ? mini(avanza) : null,
+                    definidoPorPenales,
+                };
+            }),
+    }));
+
+    return structuredClone({ liga: ligaPublica(cfg), fase: { key: fase.key, nombre: fase.nombre }, rondas });
 }
 
 // ------------------------------------------------------------
@@ -314,14 +449,18 @@ export async function getTeam(id) {
     const e = db.equipo(id);
     if (!e) return null;
     const cfg = db.liga(e.leagueId);
-    const tabla = db.tabla(cfg.id);
+    // tablaPorDefecto: para una liga con `fases` es la Anual/fase-liga; para
+    // una liga simple es exactamente `db.tabla(cfg.id)` de siempre.
+    const tabla = db.tablaPorDefecto(cfg.id);
     const fila = tabla.find((f) => f.teamId === id);
 
     // Plantel agrupado por puesto, con la métrica relevante de cada uno.
+    // Acotado a esta liga (`cfg.id`): un equipo que también juega otra
+    // competencia (Copa Argentina, Champions) no debe mezclar esos goles acá.
     const grupos = { arqueros: [], defensores: [], mediocampistas: [], delanteros: [] };
     const destino = { GK: "arqueros", DEF: "defensores", MID: "mediocampistas", FWD: "delanteros" };
     for (const j of db.plantelDe(id)) {
-        const st = db.statsTemporadaJugador(j.id);
+        const st = db.statsTemporadaJugador(j.id, { leagueId: cfg.id });
         const m = METRICA_POR_POS[j.posicion];
         grupos[destino[j.posicion]].push({
             id: j.id,
@@ -337,8 +476,9 @@ export async function getTeam(id) {
     }
     for (const k of Object.keys(grupos)) grupos[k].sort((a, b) => a.numero - b.numero);
 
-    // Calendario unificado (jugados + por jugar), cronológico.
-    const calendario = db.partidosDeEquipo(id).map((p) => {
+    // Calendario unificado (jugados + por jugar), cronológico. Acotado a
+    // esta liga por el mismo motivo que el plantel de arriba.
+    const calendario = db.partidosDeEquipo(id, cfg.id).map((p) => {
         const t = tarjeta(p);
         t.condicion = p.home === id ? "L" : "V";
         return t;
@@ -390,7 +530,10 @@ export async function getPlayer(id) {
     if (!j) return null;
     const e = db.equipo(j.teamId);
     const cfg = db.liga(j.leagueId);
-    const st = db.statsTemporadaJugador(id);
+    // Acotado a `j.leagueId` (su liga "de origen"): si su equipo también
+    // juega otra competencia (Copa Argentina, Champions), esos partidos no
+    // deben mezclarse en la temporada que se muestra acá.
+    const st = db.statsTemporadaJugador(id, { leagueId: j.leagueId });
     const promPos = cfg.positionAverages[j.posicion];
 
     const destacados = [
@@ -412,8 +555,8 @@ export async function getPlayer(id) {
         { metrica: "Duelos ganados", valor: porPartidoVal("duelosGanados"), promedioPosicion: promPos.duelosGanados },
     ];
 
-    // Partido a partido.
-    const porPartido = db.lineasJugador(id)
+    // Partido a partido. Misma acotación que arriba.
+    const porPartido = db.lineasJugador(id, { leagueId: j.leagueId })
         .filter((l) => l.jugo)
         .map((l) => {
             const p = db.partido(l.matchId);
@@ -444,7 +587,7 @@ export async function getPlayer(id) {
         liga: ligaPublica(cfg),
         temporada: { destacados, desglose },
         porPartido,
-        mapaTiros: db.mapaTirosJugador(id),
+        mapaTiros: db.mapaTirosJugador(id, { leagueId: j.leagueId }),
         trayectoria,
     });
 }
