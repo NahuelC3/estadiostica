@@ -77,12 +77,25 @@ export function asignarCuposInternacionales(tablaAnual, campeonApertura, campeon
     return { libertadores, sudamericana, descenso };
 }
 
+// "via" tal cual la devuelve asignarCuposInternacionales → clave normalizada
+// para el sello visual. Sólo los 3 títulos directos llevan sello: un cupo
+// "Tabla Anual (Nº)" es por posición, no necesita distinguirse.
+const CLAVE_SELLO = {
+    "Campeón Torneo Apertura": "apertura",
+    "Campeón Torneo Clausura": "clausura",
+    "Campeón Copa Argentina": "copa",
+};
+
 /**
  * agruparPorCupos — adaptador: convierte el resultado de la cascada en el
  * mismo shape `{key,label,color,filas}[]` que `repo.getStandings` arma para
  * cualquier liga (agrupando por RANGO de posición). Acá el agrupamiento es
  * por EQUIPO, no por rango, porque un campeón puede clasificar aunque su
  * posición en la Anual no esté dentro del rango habitual del cupo.
+ *
+ * Además marca `fila.tituloVia` ("apertura"|"clausura"|"copa"|null): la UI
+ * (ver js/pages/posiciones.js) lo usa para pintar el sello "clasificó por
+ * título, no por posición" junto al nombre del equipo.
  *
  * @param {Array<{pos:number, equipo:{id:string}}>} filas   filas ya con forma de repo.js (post mini())
  * @param {ReturnType<typeof asignarCuposInternacionales>} cupos
@@ -96,9 +109,13 @@ export function agruparPorCupos(filas, cupos) {
         descenso: { key: "descenso", label: "Descenso (simplificado a los últimos 2 de la Anual)", color: "#C4404A", filas: [] },
     };
     const claveDe = new Map();
-    for (const c of cupos.libertadores) claveDe.set(c.teamId, "libertadores");
-    for (const c of cupos.sudamericana) claveDe.set(c.teamId, "sudamericana");
+    const viaDe = new Map();
+    for (const c of cupos.libertadores) { claveDe.set(c.teamId, "libertadores"); viaDe.set(c.teamId, c.via); }
+    for (const c of cupos.sudamericana) { claveDe.set(c.teamId, "sudamericana"); viaDe.set(c.teamId, c.via); }
     for (const c of cupos.descenso) claveDe.set(c.teamId, "descenso");
-    for (const f of filas) grupos[claveDe.get(f.equipo.id) ?? "media"].filas.push(f);
+    for (const f of filas) {
+        f.tituloVia = CLAVE_SELLO[viaDe.get(f.equipo.id)] ?? null;
+        grupos[claveDe.get(f.equipo.id) ?? "media"].filas.push(f);
+    }
     return Object.values(grupos).filter((g) => g.filas.length);
 }

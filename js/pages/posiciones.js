@@ -7,8 +7,28 @@ import * as repo from "../repo.js";
 import { el, qs, limpiar, paramUrl, guardFileProtocol, mostrarError } from "../lib/dom.js";
 import { pintarEscudo } from "../lib/escudo.js";
 import { centrarPestañaActiva } from "../ui/pestanas.js";
+import { initAcordeon } from "../ui/acordeon.js";
+import { filaPartido } from "../ui/partido-fila.js";
 
 const COLUMNAS = ["PJ", "PG", "PE", "PP", "GF", "GC", "DIF", "PTS"];
+
+// -- sello "clasificó por título, no por posición" ---------
+// Sólo lo trae `fila.tituloVia` en la Tabla Anual de Argentina (la única
+// vista con cascada de cupos — ver js/lib/clasificacionArgentina.js).
+const SELLO_TITULO = {
+    apertura: { texto: "AP", clase: "" },
+    clausura: { texto: "CL", clase: "" },
+    copa: { texto: "COPA", clase: " sello-titulo--copa" },
+};
+
+function selloTitulo(via) {
+    const cfg = SELLO_TITULO[via];
+    if (!cfg) return null;
+    return el("span", {
+        class: `sello-titulo${cfg.clase}`,
+        title: "Clasificó por título, no por posición",
+    }, cfg.texto);
+}
 
 // -- fila de forma (V/E/D) --------------------------------
 function formaReciente(forma) {
@@ -32,7 +52,8 @@ function filaEquipo(fila, color) {
     const equipoCell = el("td", { class: "col-equipo" },
         el("a", { href: `equipo.html?id=${encodeURIComponent(fila.equipo.id)}` },
             pintarEscudo(fila.equipo, "sm"),
-            el("span", {}, fila.equipo.nombre)));
+            el("span", {}, fila.equipo.nombre),
+            selloTitulo(fila.tituloVia)));
 
     const tr = el("tr", { dataset: { zona: "1" } },
         el("td", { class: "col-pos" }, String(fila.pos)),
@@ -85,8 +106,24 @@ function tabla(data) {
         el("table", { class: "tabla-posiciones" }, thead, tbody));
 }
 
-// -- panel lateral: movimientos + líderes --------------
-function lateral(data) {
+// -- leyenda del sello de título, al pie de la tabla ----
+function leyendaSello(zonas) {
+    const vias = new Set();
+    for (const zona of zonas) for (const fila of zona.filas) if (fila.tituloVia) vias.add(fila.tituloVia);
+    if (!vias.size) return null;
+
+    // Apertura y Clausura comparten estilo (morado): alcanza con 1 ejemplo.
+    const ejemplos = [];
+    if (vias.has("apertura") || vias.has("clausura")) ejemplos.push(vias.has("apertura") ? "apertura" : "clausura");
+    if (vias.has("copa")) ejemplos.push("copa");
+
+    return el("p", { class: "leyenda-sello" },
+        ...ejemplos.map(selloTitulo),
+        "Clasificó por título, no por posición");
+}
+
+// -- panel lateral: movimientos + líderes + fixture de la liga --
+function lateral(data, partidosLiga) {
     const movs = el("div", { class: "movimientos" },
         ...data.movimientos.map((m) => {
             const sube = m.delta > 0;
@@ -106,25 +143,57 @@ function lateral(data) {
         el("span", { class: "lideres__nombre" }, `${d.jugador} · ${d.equipo}`),
         el("span", { class: "lideres__valor" }, String(d.valor))));
 
+    const filasFixture = el("div", { class: "partido-grupo__filas" },
+        ...partidosLiga.map((p) => filaPartido(p)));
+
     return el("div", { class: "dos-columnas__lateral" },
         el("div", { class: "panel" },
             el("h2", { class: "panel__titulo" }, "Movimientos de la fecha"),
             data.movimientos.length ? movs : el("p", { class: "apagado" }, "Sin cambios de posición.")),
         el("div", { class: "panel" },
             el("h2", { class: "panel__titulo" }, "Líderes del torneo"),
-            el("div", { class: "lideres" }, ...lideresItems)));
+            el("div", { class: "lideres" }, ...lideresItems)),
+        el("div", { class: "panel" },
+            el("h2", { class: "panel__titulo" }, "Fixture de la liga"),
+            partidosLiga.length ? filasFixture : el("p", { class: "apagado" }, "Sin partidos programados para hoy en esta liga.")));
 }
 
-// -- selector rápido de liga --------------------------
-async function selectorLigas(slugActual) {
+// -- acordeón de países/torneos (sidebar) — reemplaza el selector horizontal --
+async function construirAcordeon(slugActual) {
+    const acc = qs("#acordeon-ligas");
+    if (!acc) return;
+    limpiar(acc);
+
     const ligas = await repo.getLeagues();
-    return el("div", { class: "pestanas", role: "tablist", "aria-label": "Elegir liga" },
-        ...ligas.map((L) => el("a", {
-            class: "pestanas__tab",
-            role: "tab",
-            href: `posiciones.html?liga=${L.slug}`,
-            "aria-selected": String(L.slug === slugActual),
-        }, L.nombre)));
+    const porPais = new Map();
+    for (const liga of ligas) {
+        if (!porPais.has(liga.pais)) porPais.set(liga.pais, []);
+        porPais.get(liga.pais).push(liga);
+    }
+
+    for (const [pais, lasLigas] of porPais) {
+        const abierto = lasLigas.some((l) => l.slug === slugActual);
+        const idCuerpo = `pais-${lasLigas[0].bandera}`;
+
+        const cabecera = el("button", {
+            class: "acordeon__cabecera",
+            "aria-expanded": String(abierto),
+            "aria-controls": idCuerpo,
+        },
+            el("span", { class: `fi fi-${lasLigas[0].bandera}`, "aria-hidden": "true" }),
+            el("span", {}, pais));
+
+        const cuerpo = el("div", { class: "acordeon__cuerpo", id: idCuerpo },
+            ...lasLigas.map((liga) => el("a", {
+                class: "acordeon__enlace",
+                href: `posiciones.html?liga=${liga.slug}`,
+                "aria-current": liga.slug === slugActual ? "page" : null,
+            }, liga.nombre)));
+
+        acc.append(el("div", { class: "acordeon__item" }, cabecera, cuerpo));
+    }
+
+    initAcordeon(acc);
 }
 
 // -- fase "principal" por defecto, mismo criterio que repo.getStandings --
@@ -170,6 +239,10 @@ async function init() {
     const slug = paramUrl("liga") || "arg-lpf";
     const leagueId = `league:${slug}`;
 
+    // Sidebar: siempre, incluso si la liga es "sólo eliminación" (Copa
+    // Argentina) y #pagina termina mostrando el aviso corto de abajo.
+    await construirAcordeon(slug);
+
     const fases = await repo.getFasesDeLiga(leagueId);
     const faseUrl = paramUrl("fase");
     const faseActual = faseUrl ? fases.find((f) => f.key === faseUrl) : faseDefault(fases);
@@ -192,14 +265,15 @@ async function init() {
         return;
     }
 
+    // Fixture de HOY, acotado a esta liga (columna derecha).
+    const fixtureLiga = await repo.getFixture({ date: repo.FECHA_DEMO, leagueId });
+    const partidosLiga = fixtureLiga.grupos[0]?.partidos ?? [];
+
     limpiar(cont);
     // <h1> de la página. Jerarquía: h1 → h2 (zonas + panel lateral).
     cont.append(el("h1", { class: "encabezado-seccion" },
         el("span", { class: `fi fi-${data.liga.bandera}`, "aria-hidden": "true" }),
         el("span", {}, `Tabla de posiciones — ${data.liga.nombre}`)));
-
-    const selector = await selectorLigas(slug);
-    cont.append(selector);
 
     // Ligas con fases (Argentina, Champions): pestañas de fase, y de zona
     // cuando la fase actual es de tipo 'grupos'.
@@ -213,12 +287,11 @@ async function init() {
     }
 
     cont.append(el("div", { class: "dos-columnas" },
-        tabla(data),
-        lateral(data)));
+        el("div", {}, tabla(data), leyendaSello(data.zonas)),
+        lateral(data, partidosLiga)));
 
-    // El selector no usa initPestañas (son <a> sueltos): centrar la activa
-    // a mano, una vez que ya está todo en el DOM.
-    centrarPestañaActiva(selector);
+    // El selector de fase no usa initPestañas (son <a> sueltos): centrar la
+    // activa a mano, una vez que ya está todo en el DOM.
     if (selectorFase) centrarPestañaActiva(selectorFase);
 }
 

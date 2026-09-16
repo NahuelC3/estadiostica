@@ -1852,6 +1852,39 @@ a.enlace:hover {
   vertical-align: super;
 }
 
+.sello-titulo {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border: 1px solid rgba(156, 123, 240, 0.5);
+  background: rgba(156, 123, 240, 0.14);
+  clip-path: polygon(4.4879040512px 0, 100% 0, calc(100% - 4.4879040512px) 100%, 0 100%);
+  font-family: "IBM Plex Mono", "SFMono-Regular", "Consolas", monospace;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #B79BFF;
+  white-space: nowrap;
+}
+
+.sello-titulo--copa {
+  background: rgba(242, 169, 61, 0.14);
+  border-color: rgba(242, 169, 61, 0.5);
+  color: #F2A93D;
+}
+
+.leyenda-sello {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-block-start: 10px;
+  font-family: "IBM Plex Mono", "SFMono-Regular", "Consolas", monospace;
+  font-size: 0.75rem;
+  color: #A0A8B0;
+}
+
 .zona-encabezado td {
   padding: 14px 8px 6px;
   background: #0D1117;

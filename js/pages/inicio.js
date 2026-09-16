@@ -8,49 +8,14 @@
 import * as repo from "../repo.js";
 import { el, qs, limpiar, guardFileProtocol } from "../lib/dom.js";
 import { etiquetaLarga } from "../lib/fecha.js";
-import { pintarEscudo } from "../lib/escudo.js";
 import { initAcordeon } from "../ui/acordeon.js";
 import { initPestañas } from "../ui/pestanas.js";
 import { initSelectorFecha } from "../ui/selector-fecha.js";
+import { filaPartido } from "../ui/partido-fila.js";
 
 // -- Estado de la pantalla ---------------------------------
 let fecha = repo.FECHA_DEMO;
 let estado = "all";   // all | live | finished
-
-// ------------------------------------------------------------
-//  Render de una fila de partido
-// ------------------------------------------------------------
-function filaPartido(p) {
-    const href = `pages/partido.html?id=${encodeURIComponent(p.id)}`;
-    const esVivo = p.status === "live";
-    const esProg = p.status === "scheduled";
-
-    // Columna 1: hora (programado), "FT" (finalizado) o minuto en rojo (en vivo).
-    const hora = esVivo
-        ? el("span", { class: "partido-fila__min" }, `${p.minute}'`)
-        : el("span", { class: "partido-fila__hora" }, esProg ? p.time : "FT");
-
-    const local = el("span", { class: "partido-fila__equipo" },
-        pintarEscudo(p.local, "sm"),
-        el("span", {}, p.local.nombre));
-
-    const visita = el("span", { class: "partido-fila__equipo partido-fila__equipo--visita" },
-        pintarEscudo(p.visitante, "sm"),
-        el("span", {}, p.visitante.nombre));
-
-    // Columna 3: resultado. En vivo → chip con fondo sesgado verde.
-    let resultado;
-    if (esProg) {
-        resultado = el("span", { class: "partido-fila__resultado partido-fila__resultado--pendiente" }, "vs");
-    } else {
-        const txt = `${p.score.home} - ${p.score.away}`;
-        resultado = esVivo
-            ? el("span", { class: "chip-vivo" }, el("span", {}, txt))
-            : el("span", { class: "partido-fila__resultado" }, txt);
-    }
-
-    return el("a", { class: "partido-fila", href }, hora, local, resultado, visita);
-}
 
 // ------------------------------------------------------------
 //  Render de los grupos por torneo
@@ -72,7 +37,7 @@ function renderFixture(fixture) {
             el("span", {}, grupo.liga.nombre));
 
         const filas = el("div", { class: "partido-grupo__filas" },
-            ...grupo.partidos.map(filaPartido));
+            ...grupo.partidos.map((p) => filaPartido(p, { prefijo: "pages/" })));
 
         cont.append(el("div", { class: "partido-grupo" }, encabezado, filas));
     }

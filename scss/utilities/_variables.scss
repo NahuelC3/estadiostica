@@ -25,6 +25,8 @@ $color-alerta:     #C4404A;   // rojo — SÓLO como fondo (badge en vivo, chips
 $color-alerta-texto: #D9575F; // rojo aclarado para TEXTO chico sobre fondo oscuro — AA (≥4.5:1)
 $color-acento-oscuro: #1F7A43; // verde oscuro — estado "definido/resuelto" (conectores de llave ya jugada); no es texto
 $color-ambar:      #F2A93D;   // ámbar — estado "bye / pasa sin jugar" (bracket de eliminación). ~9.5:1 sobre el fondo, sirve como texto
+$color-titulo:       #9C7BF0; // morado — sello "clasificó por título, no por posición" (Apertura/Clausura); base para fondo/borde translúcidos
+$color-titulo-texto: #B79BFF; // morado aclarado, para TEXTO del sello sobre fondo oscuro — AA (≥4.5:1)
 
 // -- Tipografía -------------------------------------------
 // Las fuentes se cargan por <link> de Google Fonts en cada HTML.
