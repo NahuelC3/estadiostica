@@ -87,16 +87,58 @@
     z-index: 1;                    // por encima del overlay de conectores
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 16px;                     // separa el título de la lista/sub-columnas
 
     @include desktop {
         flex: 0 0 240px;
-        justify-content: space-around;
     }
 }
 
 .eliminacion-columna__titulo {
     @include encabezado-sesgado($color-linea: $color-borde);
+}
+
+// Lista simple de cruces (ronda de a lo sumo 8) — antes vivía directo en
+// .eliminacion-columna; separada en su propio wrapper para poder tener un
+// segundo tipo de contenido (sub-columnas) sin que el título se vea
+// afectado por el space-around.
+.eliminacion-columna__lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @include desktop {
+        flex: 1;
+        justify-content: space-around;
+    }
+}
+
+// ------------------------------------------------------------
+//  Ronda dividida en 2 sub-columnas (más de 8 cruces)
+// ------------------------------------------------------------
+//  Genérico por CANTIDAD (ver MAX_CRUCES_POR_COLUMNA en eliminacion.js),
+//  no por liga — hoy sólo Dieciseisavos de Copa Argentina la dispara.
+//  interna/externa se ubican con JS (medidas reales, ver
+//  posicionarSubcolumnas): los altos de tarjeta varían (bye = media
+//  altura, "Definido por penales" agrega alto), así que un desfase fijo
+//  en CSS se desalinearía en cuanto hubiera un bye de por medio.
+.eliminacion-columna--dividida {
+    @include desktop {
+        flex: 0 0 496px;   // 2 × 240px + 16px de separación entre sub-columnas
+    }
+}
+
+.eliminacion-columna__subcolumnas {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;    // mobile: lista simple en orden natural (1..N), sin partir
+
+    @include desktop {
+        // JS pasa a position:relative + block-size fijo una vez que mide
+        // las tarjetas; acá sólo el fallback antes de que corra el JS.
+        position: relative;
+        display: block;
+    }
 }
 
 // -- Columna de la Final: destacada -----------------------

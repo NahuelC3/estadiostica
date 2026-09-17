@@ -2782,7 +2782,6 @@ a.enlace:hover {
 @media (min-width: 960px) {
   .eliminacion-columna {
     flex: 0 0 240px;
-    justify-content: space-around;
   }
 }
 
@@ -2806,6 +2805,36 @@ a.enlace:hover {
   block-size: 16px;
   background: #1E262F;
   transform: skewX(-14deg);
+}
+
+.eliminacion-columna__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 960px) {
+  .eliminacion-columna__lista {
+    flex: 1;
+    justify-content: space-around;
+  }
+}
+
+@media (min-width: 960px) {
+  .eliminacion-columna--dividida {
+    flex: 0 0 496px;
+  }
+}
+
+.eliminacion-columna__subcolumnas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 960px) {
+  .eliminacion-columna__subcolumnas {
+    position: relative;
+    display: block;
+  }
 }
 
 @media (min-width: 960px) {
