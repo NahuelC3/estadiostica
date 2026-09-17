@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
-    <div class="layout layout--simple">
+    <div class="layout">
         <header class="layout__navbar navbar">
             <a class="navbar__marca" href="../index.html" aria-label="Estadióstica — inicio">
                 <svg class="navbar__isotipo" viewBox="0 0 64 64" fill="none" aria-hidden="true">
@@ -51,6 +51,12 @@
                 </button>
             </nav>
         </header>
+
+        <aside class="layout__sidebar sidebar">
+            <div class="acordeon" id="acordeon-ligas">
+                <!-- lo llena js/pages/eliminacion.js -->
+            </div>
+        </aside>
 
         <main class="layout__main">
             <div class="contenedor" id="pagina">

@@ -24,6 +24,7 @@ import * as repo from "../repo.js";
 import { el, qs, qsa, limpiar, paramUrl, guardFileProtocol, mostrarError } from "../lib/dom.js";
 import { pintarEscudo } from "../lib/escudo.js";
 import { initPestañas } from "../ui/pestanas.js";
+import { construirAcordeonLigas } from "../ui/acordeon-ligas.js";
 
 // Debe coincidir con $bp-desktop de scss/utilities/_variables.scss: por
 // debajo de este ancho el bracket es de a una ronda (pestañas), así que
@@ -197,6 +198,9 @@ async function init() {
     const cont = qs("#pagina");
     const slug = paramUrl("liga") || "arg-copa";
     const leagueId = `league:${slug}`;
+
+    // Sidebar: siempre, incluso si algo más abajo falla (fase/liga inválida).
+    await construirAcordeonLigas(qs("#acordeon-ligas"), { slugActual: slug });
 
     const fases = await repo.getFasesDeLiga(leagueId);
     const fasesElim = fases.filter((f) => f.tipo === "eliminacion");

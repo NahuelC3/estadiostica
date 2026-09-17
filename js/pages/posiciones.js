@@ -7,7 +7,7 @@ import * as repo from "../repo.js";
 import { el, qs, limpiar, paramUrl, guardFileProtocol, mostrarError } from "../lib/dom.js";
 import { pintarEscudo } from "../lib/escudo.js";
 import { centrarPestañaActiva } from "../ui/pestanas.js";
-import { initAcordeon } from "../ui/acordeon.js";
+import { construirAcordeonLigas } from "../ui/acordeon-ligas.js";
 import { filaPartido } from "../ui/partido-fila.js";
 
 const COLUMNAS = ["PJ", "PG", "PE", "PP", "GF", "GC", "DIF", "PTS"];
@@ -158,44 +158,6 @@ function lateral(data, partidosLiga) {
             partidosLiga.length ? filasFixture : el("p", { class: "apagado" }, "Sin partidos programados para hoy en esta liga.")));
 }
 
-// -- acordeón de países/torneos (sidebar) — reemplaza el selector horizontal --
-async function construirAcordeon(slugActual) {
-    const acc = qs("#acordeon-ligas");
-    if (!acc) return;
-    limpiar(acc);
-
-    const ligas = await repo.getLeagues();
-    const porPais = new Map();
-    for (const liga of ligas) {
-        if (!porPais.has(liga.pais)) porPais.set(liga.pais, []);
-        porPais.get(liga.pais).push(liga);
-    }
-
-    for (const [pais, lasLigas] of porPais) {
-        const abierto = lasLigas.some((l) => l.slug === slugActual);
-        const idCuerpo = `pais-${lasLigas[0].bandera}`;
-
-        const cabecera = el("button", {
-            class: "acordeon__cabecera",
-            "aria-expanded": String(abierto),
-            "aria-controls": idCuerpo,
-        },
-            el("span", { class: `fi fi-${lasLigas[0].bandera}`, "aria-hidden": "true" }),
-            el("span", {}, pais));
-
-        const cuerpo = el("div", { class: "acordeon__cuerpo", id: idCuerpo },
-            ...lasLigas.map((liga) => el("a", {
-                class: "acordeon__enlace",
-                href: `posiciones.html?liga=${liga.slug}`,
-                "aria-current": liga.slug === slugActual ? "page" : null,
-            }, liga.nombre)));
-
-        acc.append(el("div", { class: "acordeon__item" }, cabecera, cuerpo));
-    }
-
-    initAcordeon(acc, { unico: true });
-}
-
 // -- fase "principal" por defecto, mismo criterio que repo.getStandings --
 function faseDefault(fases) {
     return fases.find((f) => f.tipo === "combinada")
@@ -240,8 +202,11 @@ async function init() {
     const leagueId = `league:${slug}`;
 
     // Sidebar: siempre, incluso si la liga es "sólo eliminación" (Copa
-    // Argentina) y #pagina termina mostrando el aviso corto de abajo.
-    await construirAcordeon(slug);
+    // Argentina) y #pagina termina mostrando el aviso corto de abajo. En la
+    // práctica ya no se debería llegar ahí desde el propio sidebar (ver
+    // js/ui/acordeon-ligas.js: una liga 100% de eliminación linkea directo
+    // a eliminacion.html) — queda como respaldo si entran por URL directa.
+    await construirAcordeonLigas(qs("#acordeon-ligas"), { slugActual: slug });
 
     const fases = await repo.getFasesDeLiga(leagueId);
     const faseUrl = paramUrl("fase");

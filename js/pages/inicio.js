@@ -8,7 +8,7 @@
 import * as repo from "../repo.js";
 import { el, qs, limpiar, guardFileProtocol } from "../lib/dom.js";
 import { etiquetaLarga } from "../lib/fecha.js";
-import { initAcordeon } from "../ui/acordeon.js";
+import { construirAcordeonLigas } from "../ui/acordeon-ligas.js";
 import { initPestañas } from "../ui/pestanas.js";
 import { initSelectorFecha } from "../ui/selector-fecha.js";
 import { filaPartido } from "../ui/partido-fila.js";
@@ -65,35 +65,15 @@ async function construirSidebar() {
         );
     }
 
-    // -- Acordeón: un ítem por país --
-    const acc = qs("#acordeon-ligas");
-    const porPais = new Map();
-    for (const liga of ligas) {
-        if (!porPais.has(liga.pais)) porPais.set(liga.pais, []);
-        porPais.get(liga.pais).push(liga);
-    }
-
-    let n = 0;
-    for (const [pais, lasLigas] of porPais) {
-        n++;
-        const idCuerpo = `pais-${lasLigas[0].bandera}`;
-        const cabecera = el("button", {
-            class: "acordeon__cabecera",
-            "aria-expanded": n === 1 ? "true" : "false",   // el primero abierto
-            "aria-controls": idCuerpo,
-        },
-            el("span", { class: `fi fi-${lasLigas[0].bandera}`, "aria-hidden": "true" }),
-            el("span", {}, pais));
-
-        const cuerpo = el("div", { class: "acordeon__cuerpo", id: idCuerpo },
-            ...lasLigas.map((liga) =>
-                el("a", { class: "acordeon__enlace", href: `pages/posiciones.html?liga=${liga.slug}` },
-                    liga.nombre)));
-
-        acc.append(el("div", { class: "acordeon__item" }, cabecera, cuerpo));
-    }
-
-    initAcordeon(acc, { unico: true });
+    // -- Acordeón: un ítem por país (Europa primero, ver lib/ligas.js) --
+    // slugActual fijo en "arg-lpf" para que abra Argentina por defecto, como
+    // siempre — pero marcarActual:false porque acá no hay ninguna liga
+    // "actual" (es la portada del fixture, no la tabla de una liga puntual).
+    await construirAcordeonLigas(qs("#acordeon-ligas"), {
+        slugActual: "arg-lpf",
+        marcarActual: false,
+        prefijo: "pages/",
+    });
 }
 
 // ------------------------------------------------------------
