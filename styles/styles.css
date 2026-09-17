@@ -806,11 +806,7 @@ a.enlace:hover {
     border-bottom: 0;
     border-inline-end: 1px solid #1E262F;
     padding: 24px 20px;
-    position: sticky;
-    inset-block-start: 0;
     align-self: start;
-    block-size: 100vh;
-    overflow-y: auto;
   }
 }
 

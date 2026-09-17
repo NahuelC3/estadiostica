@@ -19,12 +19,21 @@
         border-bottom: 0;
         border-inline-end: $borde-fino;
         padding: 24px 20px;
-        // Se queda fija mientras el main scrollea.
-        position: sticky;
-        inset-block-start: 0;
+        // Sin position:sticky: con "Destacados" + varios países del acordeón
+        // desplegados, el contenido de este bloque suele superar el alto del
+        // viewport, y un sticky así se queda "pegado" mostrando siempre su
+        // primera pantalla hasta que el scroll llega casi al final de TODA
+        // la columna (el main es mucho más largo) — el resto del contenido
+        // queda inalcanzable con scroll normal durante un tramo larguísimo.
+        // Fluye como contenido normal: se pierde el "siempre visible" al
+        // scrollear una tabla larga, pero es 100% predecible para cualquier
+        // alto de contenido.
+        // align-self:start SÍ se mantiene (no forma parte del problema de
+        // arriba): sin esto, el grid de .layout estira la caja del sidebar
+        // al alto de la fila completa (stretch, el default), y el borde
+        // (border-inline-end) queda corriendo hasta el final de la página
+        // en vez de terminar justo debajo del acordeón.
         align-self: start;
-        block-size: 100vh;
-        overflow-y: auto;
     }
 }
 

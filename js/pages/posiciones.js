@@ -193,7 +193,7 @@ async function construirAcordeon(slugActual) {
         acc.append(el("div", { class: "acordeon__item" }, cabecera, cuerpo));
     }
 
-    initAcordeon(acc);
+    initAcordeon(acc, { unico: true });
 }
 
 // -- fase "principal" por defecto, mismo criterio que repo.getStandings --

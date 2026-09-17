@@ -93,7 +93,7 @@ async function construirSidebar() {
         acc.append(el("div", { class: "acordeon__item" }, cabecera, cuerpo));
     }
 
-    initAcordeon(acc);
+    initAcordeon(acc, { unico: true });
 }
 
 // ------------------------------------------------------------
